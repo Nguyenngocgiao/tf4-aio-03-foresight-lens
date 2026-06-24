@@ -32,6 +32,7 @@ class Recommendation(BaseModel):
     action_verb: str     # e.g., "SCALE_UP", "ROLLBACK", "RESTART"
     target: str          # e.g., "payment-gw ECS Service"
     from_to: str         # e.g., "3 tasks -> 5 tasks"
+    confidence: float = Field(ge=0.0, le=1.0)
     evidence_link: str   # e.g., "https://dashboard.internal/metrics/..."
 
 class PredictResponse(BaseModel):
@@ -39,5 +40,4 @@ class PredictResponse(BaseModel):
     severity: float = Field(ge=0.0, le=1.0)
     recommendation: Optional[Recommendation] = None
     reasoning: str = Field(max_length=300)
-    confidence: float = Field(ge=0.0, le=1.0)
     audit_id: uuid.UUID

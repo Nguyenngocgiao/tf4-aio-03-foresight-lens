@@ -11,22 +11,22 @@ class AnomalyDetector:
         """Returns (Recommendation dict, reasoning, confidence)"""
         confidence = 0.85
         if metric == "cpu_usage_percent":
-            rec = {"action_verb": "SCALE_UP", "target": f"{tenant_id} ECS Service", "from_to": "Current -> +2 Tasks", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/cpu"}
+            rec = {"action_verb": "SCALE_UP", "target": f"{tenant_id} ECS Service", "from_to": "Current -> +2 Tasks", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/cpu", "confidence": confidence}
             return rec, f"CPU drift detected. Scale ECS Service for {tenant_id}.", confidence
         elif metric == "queue_depth":
-            rec = {"action_verb": "SCALE_UP", "target": f"{tenant_id} SQS Workers", "from_to": "Current -> +5 Workers", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/queue"}
+            rec = {"action_verb": "SCALE_UP", "target": f"{tenant_id} SQS Workers", "from_to": "Current -> +5 Workers", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/queue", "confidence": confidence}
             return rec, f"Queue backlog detected. Increase worker concurrency for {tenant_id}.", confidence
         elif metric == "memory_usage_percent":
-            rec = {"action_verb": "ROLLBACK", "target": f"{tenant_id} Deployment", "from_to": "v_latest -> v_previous", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/mem"}
+            rec = {"action_verb": "ROLLBACK", "target": f"{tenant_id} Deployment", "from_to": "v_latest -> v_previous", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/mem", "confidence": confidence}
             return rec, f"Memory leak detected for {tenant_id}. Consider rollback.", confidence
         elif metric in ["active_connections", "db_connection_pool_pct", "cache_hit_rate_pct"]:
-            rec = {"action_verb": "INVESTIGATE", "target": f"{tenant_id} Database/Cache", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/db"}
+            rec = {"action_verb": "INVESTIGATE", "target": f"{tenant_id} Database/Cache", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/db", "confidence": confidence}
             return rec, f"Database or cache saturation detected for {tenant_id}.", confidence
         else:
-            rec = {"action_verb": "INVESTIGATE", "target": f"{tenant_id}", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}"}
+            rec = {"action_verb": "INVESTIGATE", "target": f"{tenant_id}", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}", "confidence": confidence}
             return rec, f"Anomalous metric {metric} detected for {tenant_id}.", confidence
 
-    def detect_drift(self, tenant_id: str, signals: List[SignalDatapoint]) -> Tuple[bool, float, str, str, float]:
+    def detect_drift(self, tenant_id: str, signals: List[SignalDatapoint]) -> Tuple[bool, float, dict, str, float]:
         """
         Runs 3-sigma logic on the signals.
         Returns: (anomaly_bool, severity, suggested_action, reasoning, confidence)
@@ -61,7 +61,7 @@ class AnomalyDetector:
                 return True, round(float(severity), 2), action, reasoning, confidence
             elif last_val < mean_val - 3 * std_val:
                 severity = min((mean_val - last_val) / (10 * std_val), 1.0)
-                action = {"action_verb": "INVESTIGATE", "target": f"{tenant_id}", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}"}
+                action = {"action_verb": "INVESTIGATE", "target": f"{tenant_id}", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}", "confidence": 0.80}
                 reasoning = f"Sudden drop in {metric} for {tenant_id}. Possible service degradation or outage."
                 confidence = 0.80
                 return True, round(float(severity), 2), action, reasoning, confidence

@@ -41,7 +41,6 @@ async def predict_capacity(
         "severity": severity,
         "recommendation": suggested_action,
         "reasoning": reasoning,
-        "confidence": confidence
     }
     
     # Extract principal_id from authorization header (mocked for now, assumes role ARN or similar is passed)
@@ -57,6 +56,5 @@ async def predict_capacity(
         severity=severity,
         recommendation=suggested_action,
         reasoning=reasoning,
-        confidence=confidence,
         audit_id=audit_id
     )
