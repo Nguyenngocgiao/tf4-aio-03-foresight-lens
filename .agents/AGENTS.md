@@ -26,3 +26,15 @@ These are the global instructions for Antigravity (Gemini CLI) when operating in
 ## 5. Evidence & Jira Tracking
 - All documents (Spec, Contracts, ADRs) must be committed to the repo, as git history is the primary evidence for grading.
 - Update Jira task status and link git commits as evidence for each task.
+
+## 6. Git & Team Collaboration Rules
+- **No Selfish Commits:** NEVER commit directly to the `master` or `main` branch. Always checkout a new feature branch (e.g. `feature/...`) before writing code.
+- **Co-authored Commits:** Every commit message MUST include `Co-authored-by:` footers to credit all team members. Use this list:
+  Co-authored-by: Nguyen Cong Thinh <nguyencongthinh.dev@gmail.com>
+  Co-authored-by: Tai <taitotang233@gmail.com>
+  Co-authored-by: Dung <lkdung0612@gmail.com>
+  Co-authored-by: Vinh <vinh2901200@gmail.com>
+  Co-authored-by: Thinh <nghungthinh05@gmail.com>
+  Co-authored-by: Thanh <phamthanh.forwork@gmail.com>
+  Co-authored-by: Giao <nguyenngocgiao0912pct@gmail.com>
+  Co-authored-by: Our Life <ourlife937@gmail.com>
