@@ -735,6 +735,162 @@ h3 {
   <div class="slide-footer"><span>TF4 Foresight Lens</span><span>05 / 29</span></div>
 </section>
 
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 06 — Architecture Diagram
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Architecture</div></div>
+    <div class="reveal reveal-delay-1"><h2>High-level Architecture</h2></div>
+    <div class="reveal reveal-delay-2" style="background:var(--glass); border:1px solid var(--glass-border); padding:20px; border-radius:var(--radius); margin-top:20px;">
+      <div class="mxgraph" style="max-width:100%; border:none; height:450px;" data-mxgraph='{"highlight":"#0000ff","nav":true,"resize":true,"toolbar":"zoom layers tags lightbox","edit":"_blank","xml":"&lt;mxfile host=&quot;Electron&quot; agent=&quot;Codex&quot;&gt;
+  &lt;diagram id=&quot;main&quot; name=&quot;TF4 Architecture&quot;&gt;
+    &lt;mxGraphModel dx=&quot;1200&quot; dy=&quot;800&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;1600&quot; pageHeight=&quot;900&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;
+      &lt;root&gt;
+        &lt;mxCell id=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;1&quot; parent=&quot;0&quot; /&gt;
+        
+        &lt;mxCell id=&quot;title&quot; parent=&quot;1&quot; style=&quot;text;html=1;resizable=0;points=[];autosize=0;align=left;verticalAlign=top;spacingTop=-4;fontSize=30;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;whiteSpace=wrap;&quot; value=&quot;TF4 Foresight Lens — AIOps Prediction Pipeline&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;42&quot; width=&quot;1200&quot; x=&quot;60&quot; y=&quot;30&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;subtitle&quot; parent=&quot;1&quot; style=&quot;text;html=1;resizable=0;points=[];autosize=0;align=left;verticalAlign=top;spacingTop=-4;fontSize=16;fontStyle=0;fontFamily=Helvetica;fontColor=#232F3E;whiteSpace=wrap;&quot; value=&quot;EWMA &amp;amp; STL Decomposition, stateless microservice, Audit Logging, CDO manual approval. Target: &amp;lt;500ms latency, Zero-cost baseline.&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;34&quot; width=&quot;1500&quot; x=&quot;62&quot; y=&quot;73&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;sep&quot; parent=&quot;1&quot; style=&quot;line;strokeWidth=2;html=1;strokeColor=#FF9900;&quot; value=&quot;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;10&quot; width=&quot;1400&quot; x=&quot;60&quot; y=&quot;112&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+
+        &lt;!-- AWS Cloud Boundary --&gt;
+        &lt;mxCell id=&quot;aws-cloud&quot; parent=&quot;1&quot; style=&quot;points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=14;fontStyle=1;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=#f8fafc;verticalAlign=top;align=left;spacingLeft=34;fontColor=#232F3E;dashed=0;fontFamily=Helvetica;&quot; value=&quot;AWS Cloud / TF4 AIOps Environment&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;600&quot; width=&quot;900&quot; x=&quot;400&quot; y=&quot;145&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;!-- CDO System Group --&gt;
+        &lt;mxCell id=&quot;grp-cdo&quot; parent=&quot;1&quot; style=&quot;fillColor=#FFF2E8;strokeColor=#ED7100;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#ED7100;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;arcSize=8;&quot; value=&quot;CDO Infrastructure&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;400&quot; width=&quot;250&quot; x=&quot;60&quot; y=&quot;240&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;ic-prom&quot; parent=&quot;grp-cdo&quot; style=&quot;sketch=0;points=[];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.traditional_server;fontFamily=Helvetica;shadow=1;&quot; value=&quot;Prometheus&amp;lt;div&amp;gt;&amp;lt;i&amp;gt;Metrics aggregation&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;64&quot; width=&quot;64&quot; x=&quot;93&quot; y=&quot;80&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;ic-alert&quot; parent=&quot;grp-cdo&quot; style=&quot;sketch=0;points=[];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.users;fontFamily=Helvetica;shadow=1;&quot; value=&quot;CDO SRE Team&amp;lt;div&amp;gt;&amp;lt;i&amp;gt;Manual Approval Gate&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;64&quot; width=&quot;64&quot; x=&quot;93&quot; y=&quot;240&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+
+        &lt;!-- API Group --&gt;
+        &lt;mxCell id=&quot;grp-api&quot; parent=&quot;1&quot; style=&quot;fillColor=#E0F2FE;strokeColor=#0284C7;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#0284C7;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;arcSize=8;&quot; value=&quot;API &amp;amp;amp; Routing Layer&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;150&quot; width=&quot;180&quot; x=&quot;480&quot; y=&quot;210&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;ic-fastapi&quot; parent=&quot;grp-api&quot; style=&quot;sketch=0;points=[];outlineConnect=0;fontColor=#232F3E;fillColor=#0284C7;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;fontFamily=Helvetica;shadow=1;&quot; value=&quot;FastAPI + Pydantic&amp;lt;div&amp;gt;&amp;lt;i&amp;gt;Schema Validation&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;64&quot; width=&quot;64&quot; x=&quot;58&quot; y=&quot;40&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;!-- Engine Group --&gt;
+        &lt;mxCell id=&quot;grp-engine&quot; parent=&quot;1&quot; style=&quot;fillColor=#E8F5E9;strokeColor=#2E7D32;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#2E7D32;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;arcSize=8;&quot; value=&quot;Anomaly Detection Engine&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;280&quot; width=&quot;220&quot; x=&quot;750&quot; y=&quot;210&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;ic-stl&quot; parent=&quot;grp-engine&quot; style=&quot;sketch=0;points=[];outlineConnect=0;fontColor=#232F3E;fillColor=#2E7D32;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sagemaker;fontFamily=Helvetica;shadow=1;&quot; value=&quot;STL Decomposition&amp;lt;div&amp;gt;&amp;lt;i&amp;gt;Noise reduction&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;64&quot; width=&quot;64&quot; x=&quot;78&quot; y=&quot;50&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;ic-ewma&quot; parent=&quot;grp-engine&quot; style=&quot;sketch=0;points=[];outlineConnect=0;fontColor=#232F3E;fillColor=#2E7D32;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sagemaker_model;fontFamily=Helvetica;shadow=1;&quot; value=&quot;EWMA Tracker&amp;lt;div&amp;gt;&amp;lt;i&amp;gt;Slow drift detection&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;64&quot; width=&quot;64&quot; x=&quot;78&quot; y=&quot;170&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;!-- Decision Router Group --&gt;
+        &lt;mxCell id=&quot;grp-decision&quot; parent=&quot;1&quot; style=&quot;fillColor=#FFF9C4;strokeColor=#FBC02D;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#FBC02D;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;arcSize=8;&quot; value=&quot;Decision Router&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;150&quot; width=&quot;180&quot; x=&quot;1050&quot; y=&quot;210&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+
+        &lt;mxCell id=&quot;ic-threshold&quot; parent=&quot;grp-decision&quot; style=&quot;sketch=0;points=[];outlineConnect=0;fontColor=#232F3E;fillColor=#FBC02D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;fontFamily=Helvetica;shadow=1;&quot; value=&quot;Static Thresholding&amp;lt;div&amp;gt;&amp;lt;i&amp;gt;Confidence Scoring&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;64&quot; width=&quot;64&quot; x=&quot;58&quot; y=&quot;40&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+
+        &lt;!-- Audit Group --&gt;
+        &lt;mxCell id=&quot;grp-audit&quot; parent=&quot;1&quot; style=&quot;fillColor=#FCE4EC;strokeColor=#E7157B;rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1;fontSize=12;fontColor=#E7157B;fontFamily=Helvetica;container=1;collapsible=0;shadow=1;strokeWidth=1.5;arcSize=8;&quot; value=&quot;Audit &amp;amp;amp; Governance&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;150&quot; width=&quot;180&quot; x=&quot;1050&quot; y=&quot;440&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;ic-dynamo&quot; parent=&quot;grp-audit&quot; style=&quot;sketch=0;points=[];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;fontFamily=Helvetica;shadow=1;&quot; value=&quot;DynamoDB / S3&amp;lt;div&amp;gt;&amp;lt;i&amp;gt;Input Hash + Decisions&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;&quot; vertex=&quot;1&quot;&gt;
+          &lt;mxGeometry height=&quot;64&quot; width=&quot;64&quot; x=&quot;58&quot; y=&quot;40&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;!-- Edges --&gt;
+        &lt;mxCell id=&quot;edge1&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;strokeColor=#232F3E;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;ic-prom&quot; target=&quot;ic-fastapi&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot; /&gt;
+          &lt;mxCell value=&quot;&amp;lt;b&amp;gt;POST /v1/predict&amp;lt;/b&amp;gt;&quot; style=&quot;edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;&quot; vertex=&quot;1&quot; connectable=&quot;0&quot; parent=&quot;edge1&quot;&gt;
+            &lt;mxGeometry x=&quot;-0.1&quot; y=&quot;-10&quot; relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+              &lt;mxPoint as=&quot;offset&quot; /&gt;
+            &lt;/mxGeometry&gt;
+          &lt;/mxCell&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;edge2&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;strokeColor=#232F3E;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;ic-fastapi&quot; target=&quot;ic-stl&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot; /&gt;
+          &lt;mxCell value=&quot;&amp;lt;b&amp;gt;Validated signal_window&amp;lt;/b&amp;gt;&quot; style=&quot;edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;&quot; vertex=&quot;1&quot; connectable=&quot;0&quot; parent=&quot;edge2&quot;&gt;
+            &lt;mxGeometry x=&quot;-0.1&quot; y=&quot;-10&quot; relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+              &lt;mxPoint as=&quot;offset&quot; /&gt;
+            &lt;/mxGeometry&gt;
+          &lt;/mxCell&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;edge3&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;strokeColor=#232F3E;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;ic-stl&quot; target=&quot;ic-ewma&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;edge4&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;strokeColor=#232F3E;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;ic-ewma&quot; target=&quot;ic-threshold&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;980&quot; y=&quot;412&quot; /&gt;
+              &lt;mxPoint x=&quot;980&quot; y=&quot;282&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+          &lt;mxCell value=&quot;&amp;lt;b&amp;gt;Anomaly Score&amp;lt;/b&amp;gt;&quot; style=&quot;edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;&quot; vertex=&quot;1&quot; connectable=&quot;0&quot; parent=&quot;edge4&quot;&gt;
+            &lt;mxGeometry x=&quot;-0.1&quot; y=&quot;-10&quot; relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+              &lt;mxPoint as=&quot;offset&quot; /&gt;
+            &lt;/mxGeometry&gt;
+          &lt;/mxCell&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;edge5&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;strokeColor=#232F3E;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;ic-threshold&quot; target=&quot;ic-dynamo&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot; /&gt;
+          &lt;mxCell value=&quot;&amp;lt;b&amp;gt;Audit Trail (SHA-256)&amp;lt;/b&amp;gt;&quot; style=&quot;edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;&quot; vertex=&quot;1&quot; connectable=&quot;0&quot; parent=&quot;edge5&quot;&gt;
+            &lt;mxGeometry x=&quot;-0.1&quot; y=&quot;-10&quot; relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+              &lt;mxPoint as=&quot;offset&quot; /&gt;
+            &lt;/mxGeometry&gt;
+          &lt;/mxCell&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;edge6&quot; style=&quot;edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;strokeColor=#232F3E;&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;ic-threshold&quot; target=&quot;ic-alert&quot;&gt;
+          &lt;mxGeometry relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+            &lt;Array as=&quot;points&quot;&gt;
+              &lt;mxPoint x=&quot;1270&quot; y=&quot;282&quot; /&gt;
+              &lt;mxPoint x=&quot;1270&quot; y=&quot;650&quot; /&gt;
+              &lt;mxPoint x=&quot;350&quot; y=&quot;650&quot; /&gt;
+              &lt;mxPoint x=&quot;350&quot; y=&quot;512&quot; /&gt;
+            &lt;/Array&gt;
+          &lt;/mxGeometry&gt;
+          &lt;mxCell value=&quot;&amp;lt;b&amp;gt;Recommendation (SCALE_UP / INVESTIGATE)&amp;lt;/b&amp;gt;&quot; style=&quot;edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;&quot; vertex=&quot;1&quot; connectable=&quot;0&quot; parent=&quot;edge6&quot;&gt;
+            &lt;mxGeometry x=&quot;-0.1&quot; y=&quot;-10&quot; relative=&quot;1&quot; as=&quot;geometry&quot;&gt;
+              &lt;mxPoint as=&quot;offset&quot; /&gt;
+            &lt;/mxGeometry&gt;
+          &lt;/mxCell&gt;
+        &lt;/mxCell&gt;
+      &lt;/root&gt;
+    &lt;/mxGraphModel&gt;
+  &lt;/diagram&gt;
+&lt;/mxfile&gt;"}'></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>06 / 29</span></div>
+</section>
+
 <!-- ═══════════════════════════════════════════════════════
      SLIDE 07 — Architectural Evolution
      ═══════════════════════════════════════════════════════ -->
@@ -1505,5 +1661,6 @@ h3 {
 <script>
   lucide.createIcons();
 </script>
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
 </body>
 </html>
