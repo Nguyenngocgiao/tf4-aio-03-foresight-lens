@@ -13,6 +13,7 @@ class PredictContext(BaseModel):
 
 class SignalDatapoint(BaseModel):
     ts: datetime
+    service_id: str
     signal_name: str
     value: float
     labels: Optional[Dict[str, Any]] = None
