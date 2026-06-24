@@ -26,6 +26,12 @@
 | **CPU per task** | 512 (0.5 vCPU) |
 | **Memory per task** | 1024 MB |
 
+## FinOps & Cost Circuit Breaker
+
+Để đảm bảo tuyệt đối không vượt ngân sách $200/tháng theo yêu cầu của Client:
+- **Cost Alerting**: Cấu hình AWS Budgets gửi cảnh báo khi chi phí đạt 80% ($160).
+- **Circuit Breaker**: Khi chi phí đạt 100% ($200), tự động trigger AWS Lambda để gỡ toàn bộ Auto Scaling Group và ép `Desired_Count = 0` (Scale to Zero) cho ECS Fargate cluster nhằm chặn đứng mọi chi phí phát sinh thêm.
+
 ## Scaling
 
 | Aspect | Value |
