@@ -45,7 +45,7 @@
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `signal_window` | array | ✓ | Time-series datapoints (BẮT BUỘC chứa dữ liệu của ≥ 60 phút gần nhất để AI có đủ context dự báo. Thiếu -> 400 Bad Request) |
+| `signal_window` | array | ✓ | Time-series datapoints (BẮT BUỘC chứa dữ liệu của ≥ 120 phút gần nhất để AI có đủ context dự báo (Test window ≥ 2h). Thiếu -> 400 Bad Request) |
 | `signal_window[].ts` | RFC3339 | ✓ | Event timestamp UTC |
 | `signal_window[].signal_name` | string | ✓ | Tên signal (khớp với Telemetry Contract) |
 | `signal_window[].value` | float | ✓ | Measurement value |
