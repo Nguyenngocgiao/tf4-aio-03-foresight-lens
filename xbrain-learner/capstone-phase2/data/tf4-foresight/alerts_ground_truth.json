@@ -1,0 +1,74 @@
+[
+  {
+    "start_time": "2026-07-02T10:00:00Z",
+    "end_time": "2026-07-02T10:15:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "DDoS Spike",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T05:00:00Z",
+    "end_time": "2026-07-03T10:00:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "mem_pct",
+    "description": "Memory Leak to OOM",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T13:20:00Z",
+    "end_time": "2026-07-04T15:20:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Bad Deployment N+1 Query",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T10:00:00Z",
+    "end_time": "2026-07-05T10:05:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Traffic surge, auto-scaled successfully",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T02:00:00Z",
+    "end_time": "2026-07-06T03:00:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Scheduled Load Test (Chaos Eng)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-07T00:00:00Z",
+    "end_time": "2026-07-07T12:00:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Slow zombie process leak",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T08:20:00Z",
+    "end_time": "2026-07-05T08:50:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Service Crash (Silent)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T13:20:00Z",
+    "end_time": "2026-07-06T14:20:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Noisy baseline (High Variance)",
+    "is_false_positive_trap": true
+  }
+]

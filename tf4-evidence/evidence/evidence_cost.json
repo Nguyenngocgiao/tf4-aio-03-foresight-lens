@@ -1,34 +1,24 @@
 {
-  "method": "AWS Pricing Calculator + free tier analysis",
+  "method": "AWS Pricing Calculator for ECS Fargate architecture",
   "services": {
-    "Lambda": {
-      "unit": "1M requests",
-      "cost": "$0.20",
-      "free_tier": "1M/month",
-      "estimated_monthly": "$0 (free tier)"
+    "ECS Fargate": {
+      "unit": "0.25 vCPU, 0.5 GB RAM (2 tasks)",
+      "cost": "$16.00/month"
     },
-    "API_Gateway_HTTP": {
-      "unit": "1M requests",
-      "cost": "$1.00",
-      "free_tier": "1M/month",
-      "estimated_monthly": "$0 (free tier)"
+    "Application Load Balancer": {
+      "unit": "1 ALB",
+      "cost": "$16.00/month"
     },
     "DynamoDB_audit": {
       "unit": "25GB + 25WCU/RCU",
-      "cost": "$0",
-      "free_tier": "permanent",
-      "estimated_monthly": "$0 (free tier)"
+      "cost": "$0 (free tier)"
     },
     "CloudWatch_Logs": {
       "unit": "5GB",
-      "cost": "$0",
-      "free_tier": "5GB/month",
-      "estimated_monthly": "$0 (free tier)"
+      "cost": "$0 (free tier)"
     }
   },
-  "total_AIO_estimated_monthly": "$0-3 (all within free tier)",
-  "total_CDO_estimated_monthly": "$30-60 (TSDB + compute)",
-  "circuit_breaker": "$10/day (safety net, actual ~$0.1/day)",
+  "total_estimated_monthly": "$32.00",
   "budget_cap": "$200/month",
-  "conclusion": "Statistical model (no LLM tokens) \u2192 cost near zero. $200 cap is comfortable safety net."
+  "conclusion": "Using ECS Fargate is cost-effective ($32/mo), fitting comfortably within the $200/month cap while aligning with the Deployment Contract."
 }
