@@ -37,7 +37,7 @@
 
 ## Secrets
 
-> Hệ thống sử dụng thuật toán Statistical 3-Sigma, KHÔNG dùng Bedrock LLM. Do đó, KHÔNG yêu cầu API Key của Bedrock.
+> Hệ thống sử dụng thuật toán Time-series Anomaly Detection (Statistical/ML thuần), KHÔNG dùng Bedrock LLM. Do đó, KHÔNG yêu cầu API Key của Bedrock. Việc chọn thuật toán cụ thể sẽ được ghi nhận trong ADR (Architecture Decision Record) sau khi audit dữ liệu từ CDO.
 
 | Secret name | Source |
 |---|---|
