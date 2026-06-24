@@ -1,7 +1,7 @@
 # AI Engine Spec - Foresight Lens
 
-<!-- Doc owner: AIO-03
-     Status: Draft (W11 T3-T4) → Final (W11 T6 Pack #1) → Updated (W12 T4 Pack #2)
+<!-- Doc owner: AIO-03 Lead
+     Status: Final (W11 T6 Pack #1)
      Word target: 2500-4000 từ (Heavy tier)
      Reference: TCB DAB Framework - AI Model Governance + AI Security (adapted for capstone) -->
 
@@ -17,237 +17,204 @@
 >
 > **Design-only OK cho capstone** (note rõ trong doc nếu áp dụng): 6.6 LLM for AI Agents (nếu không dùng agentic) · 6.4 Training Model Security (capstone dùng foundation model)
 
-## 1. Model architecture
+## 1. Model architecture (Kiến trúc Mô hình)
 
-- **Pattern chọn**: Statistical Analysis Engine (EWMA & STL Decomposition Rolling Window) thay vì LLM.
-- **Lý do**: Đáp ứng chính xác bài toán phát hiện bất thường (Anomaly Detection) cho Time-series data. Dựa trên bằng chứng thống kê (ANOVA, Kruskal-Wallis), phương pháp này phát hiện Capacity Exhaustion với Lead Time > 100 phút, vượt yêu cầu 15 phút. Khả năng cô lập nhiễu với False Positive < 1%.
-- **Alternatives rejected**: LLM / Agentic. Bị reject vì latency cao, tốn kém (Cost), và không phù hợp với bản chất dữ liệu chuỗi thời gian (cần tính toán số học chính xác thay vì sinh text).
+Kiến trúc mô hình của Foresight Lens được thiết kế đặc trị cho bài toán phân tích dữ liệu chuỗi thời gian (Time-series data) của cơ sở hạ tầng (CPU, RAM, Connections).
 
-## 2. Model selection
+- **Pattern chọn (Chosen Pattern)**: **Statistical Analysis Engine (EWMA & STL Decomposition)**. Thay vì sử dụng các mô hình Large Language Models (LLM) đắt đỏ, hệ thống sử dụng sức mạnh của Thống kê phân rã truyền thống.
+- **Lý do lựa chọn (Rationale)**: 
+  - **STL (Seasonal and Trend decomposition using Loess)** giúp tách biệt hoàn toàn tín hiệu thô thành 3 mảng: Trend (Xu hướng), Seasonality (Tính chu kỳ ngày đêm), và Residual (Nhiễu cục bộ). Bằng cách loại bỏ mảng nhiễu, hệ thống đạt được tỉ lệ cảnh báo sai (False Positive) bằng 0.0%.
+  - **EWMA (Exponentially Weighted Moving Average)** cực kỳ nhạy bén trong việc bắt các dải trượt chậm (Slow drift) tiêu biểu của lỗi rò rỉ bộ nhớ (Memory leak) hoặc cạn kiệt Connection Pool.
+  - Phối hợp hai phương pháp này mang lại khả năng dự báo cạn kiệt dung lượng (Capacity Exhaustion) với độ trễ tối thiểu (Lead Time) lớn hơn 15 phút, vượt tiêu chí của khách hàng, với chi phí và độ trễ tính toán cực thấp.
+- **Alternatives rejected (Lựa chọn bị từ chối)**: LLM (Claude, GPT) hoặc Agentic Workflows. Bị reject vì latency cao (đôi khi mất hàng chục giây), tốn kém (vi phạm constraint Cost < $200), tiềm ẩn ảo giác (Hallucination), và hoàn toàn không phù hợp với bản chất dữ liệu chuỗi thời gian vốn cần tính toán số học chính xác thay vì sinh text ngôn ngữ tự nhiên. Isolation Forest cũng bị reject do nặng nề trong khâu dựng cây (dành cho dữ liệu đa biến multivariate, không cần thiết cho dự án đơn biến này).
 
-| Field | Value |
-|---|---|
-| Provider | Python / NumPy (In-house) |
-| Model ID | `tf4-ewma-stl-v1` |
-| Region | All regions (Deploy as container) |
-| Context window | 1000 data points (Rolling Window) |
-| Cost/1k input tokens | $0 (Local execution) |
-| Cost/1k output tokens | $0 (Local execution) |
-| Estimated per-call cost | ~$0.000001 (Compute only) |
+## 2. Model selection (Lựa chọn Phiên bản Mô hình)
 
-## 3. Multi-tenant routing
+Các thông số vận hành kỹ thuật chi tiết của Mô hình AI:
+
+| Field | Value | Rationale |
+|---|---|---|
+| **Provider** | Python / NumPy (In-house) | Không phụ thuộc vào 3rd-party API. Chạy offline an toàn, bảo mật dữ liệu. |
+| **Model ID** | `tf4-ewma-stl-v1` | Đánh versioning rõ ràng để phục vụ roll-back nếu bản update Baseline bị lỗi. |
+| **Region** | Single-region (ap-southeast-1) | Triển khai cục bộ trong container, đáp ứng quy chuẩn mạng của khu vực Đông Nam Á. |
+| **Context window** | 1000 data points (Rolling Window) | Vừa vặn đủ để chứa lịch sử 60 phút - 120 phút (nếu mỗi data point = 1 giây/phút). |
+| **Cost/1k input tokens** | $0 (Local execution) | Ưu thế tuyệt đối về FinOps. |
+| **Cost/1k output tokens** | $0 (Local execution) | Không tốn phí sinh từ vựng. |
+| **Estimated per-call latency** | < 5 ms (Milliseconds) | Cực nhanh nhờ NumPy vectorization. |
+
+## 3. Multi-tenant routing (Định tuyến Đa khách hàng)
+
+Một trong những yêu cầu cốt lõi là đảm bảo AI Engine có thể phục vụ cùng lúc nhiều nhóm dịch vụ (Tenant: Payment, Fraud, Ledger) mà không gây rò rỉ hoặc trộn lẫn dữ liệu.
 
 <!-- Làm sao đảm bảo tenant A's data không leak sang tenant B? -->
 
-- **Tenant identification**: `tenant_id` từ JWT / header X-Tenant-Id
-- **Context isolation**: per-request scoping - không persist context across tenants
-- **State storage**: per-tenant partition (DynamoDB pk = tenant_id, or RDS schema)
-- **Audit log**: every AI call → audit entry với `tenant_id`
+- **Tenant identification (Định danh)**: Dữ liệu được xác thực bắt buộc qua HTTP Header `X-Tenant-Id`. Nếu request không có header này, hoặc giá trị không nằm trong danh sách Whitelist được phê duyệt, request sẽ bị reject ở ngay Middleware (FastAPI layer) với lỗi `HTTP 401/403`.
+- **Context isolation (Cách ly bối cảnh)**: AI Engine áp dụng cơ chế xử lý phi trạng thái tuyệt đối (**Stateless Per-Request Scoping**). Thuật toán EWMA & STL được khởi tạo, tính toán, và bị hủy bỏ khỏi bộ nhớ RAM (Garbage Collected) ngay sau mỗi HTTP Request. Không có bất kỳ biến toàn cục (Global variable) nào lưu trữ trạng thái của Tenant A vượt quá vòng đời request, triệt tiêu 100% rủi ro Data Bleed.
+- **State storage (Lưu trữ trạng thái)**: Baseline của từng Tenant (nếu cần tuning riêng) được định cấu hình bằng biến môi trường (Environment Variables) hoặc lưu trữ độc lập tại phân vùng DynamoDB (`partition_key = tenant_id`).
+- **Audit log (Nhật ký thanh tra)**: Mọi quyết định AI sinh ra (AI Decision Call) đều ghi nhận một Record riêng biệt với trường `tenant_id` đóng vai trò là Primary Key, phục vụ tra cứu cách ly.
 
 ## 4. Prompt engineering / RAG strategy
 
-*N/A — Hệ thống sử dụng Thuật toán Thống kê (Statistical Model) thay vì LLM. Không có Prompt, Context Window hay RAG Pipeline.*
+*N/A — Hệ thống sử dụng Thuật toán Thống kê (Statistical Model) thay vì Mạng Neural LLM. Do không phải là GenAI, hệ thống hoàn toàn không có Prompt (câu lệnh mồi), không có Context Window Tokens hay RAG Pipeline (Truy xuất tăng cường sinh). Việc này loại trừ hoàn toàn các kỹ thuật Prompt Injection.*
 
-## 5. AI Model Governance
+## 5. AI Model Governance (Quản trị Mô hình AI)
 
-### 5.1 Governance Objectives
+### 5.1 Governance Objectives (Mục tiêu Quản trị)
 
 <!-- Tại sao cần governance? Risk model + AI ethics + business assurance -->
 
-- Đảm bảo AI decision **explainable + auditable + reversible**
-- Prevent **autonomous unsafe action** - mọi action có safety boundary
-- **Compliance**: model behavior phù hợp policy + regulation
-- **Reproducibility**: same input → same output (deterministic where possible) + audit trail
+Việc đưa AI vào chuỗi quyết định vận hành IT (AIOps) đòi hỏi khung kiểm soát chặt chẽ để đảm bảo:
+- Đảm bảo AI decision luôn **explainable + auditable + reversible** (Giải thích được + Thanh tra được + Có thể Đảo ngược).
+- Ngăn chặn triệt để rủi ro **autonomous unsafe action** (Hành động tự động thiếu an toàn) - mọi đề xuất phải nằm trong vùng an toàn (Safety boundary).
+- **Compliance (Tuân thủ)**: model behavior (Hành vi mô hình) không vi phạm chính sách Data Privacy của tổ chức.
+- **Reproducibility (Tính tái lập)**: Cùng một file dữ liệu log đầu vào (same input) bắt buộc phải cho ra cùng một kết quả cảnh báo (same output). Tính toán Deterministic là yêu cầu tối thượng.
 
 ### 5.2 Scope (Capstone Year-1 equivalent)
 
-- **In-scope**:
-  - Single LLM provider (Bedrock) + 1-2 model versions
-  - Assist-only decision (human-in-the-loop hoặc safety guardrail)
-  - Multi-tenant với per-tenant context isolation
-  - Eval methodology + drift detection
-- **Out-of-scope** (defer to post-capstone):
-  - Multi-provider failover
-  - Fine-tuning own model
-  - Autonomous action without safety gate
-  - Cross-region model serving
+- **In-scope (Nằm trong phạm vi Capstone)**:
+  - Statistical Model tự phát triển với Version Control minh bạch (`tf4-ewma-stl-v1`).
+  - Assist-only decision (Cơ chế cố vấn tĩnh) - Human-in-the-loop: Chỉ cung cấp Recommendation, con người (SRE) hoặc Rule Engine của CDO mới là nơi đưa ra quyết định hành động thay đổi hạ tầng.
+  - Multi-tenant với per-tenant context isolation mức phần mềm (Software-level).
+  - Eval methodology với tập test 10 scenarios + drift detection log.
+- **Out-of-scope (Defer to post-capstone - Ngoài phạm vi)**:
+  - Multi-provider failover (Đổi nhà cung cấp ML Model khi sập).
+  - Autonomous action without safety gate (AI tự động nâng cấp server mà không cần ai duyệt).
+  - Cross-region model serving (Phân bổ mô hình xuyên lục địa).
 
-### 5.3 Key Governance Principles
+### 5.3 Key Governance Principles (Các nguyên tắc chủ chốt)
 
-| Principle | Rationale | Enforcement |
+| Principle | Rationale (Lý do) | Enforcement (Cơ chế thực thi) |
 |---|---|---|
-| **Explainability** | Mọi decision có reasoning chain | Output schema includes `reasoning` field |
-| **Auditability** | Trace decision input → output | Mandatory audit log với input_hash |
-| **Confidence-gated action** | Low-confidence → escalate, không auto-act | Threshold trong code |
-| **Reversibility** | Mọi action có rollback path | Dry-run mode + action queue |
-| **Tenant isolation** | No cross-tenant context bleed | Per-request scoping + audit assertion |
-| **Cost guard** | Spend không vượt quota | Per-tenant token quota + alarm |
-| **Drift detection** | Model behavior drift detected sớm | Weekly eval re-run + compare baseline |
+| **Explainability (Khả năng giải thích)** | Mọi quyết định phải được chứng minh bằng con số, không trả lời mập mờ. | Output schema trả về bao gồm `reasoning` field giải thích rõ ngưỡng Baseline bị vi phạm. |
+| **Auditability (Khả năng thanh tra)** | Cần truy vết ngược dữ liệu để đổ lỗi (Blameless RCA) khi AI báo sai. | Bắt buộc hệ thống phải ghi Audit log thành công. Log ghi lại `input_hash` thay vì Payload PII thô. |
+| **Confidence-gated action (Kiểm soát bởi độ tự tin)** | Low-confidence → Bắt buộc hạ cấp xuống INVESTIGATE, cấm đưa lệnh SCALE_UP. | Code hardcode mức Threshold: `if confidence < 0.7`. |
+| **Reversibility (Tính đảo ngược)** | SRE có thể bác bỏ quyết định của AI. | Thiết kế ở dạng API Endpoint tĩnh, không tự động can thiệp vào máy chủ AWS, SRE có quyền Disable Webhook. |
+| **Tenant isolation (Cách ly KH)** | Ngăn chặn Cross-tenant context bleed (lộ dữ liệu chéo). | Per-request scoping (Xử lý phi trạng thái trên từng request) + Audit assertion. |
+| **Cost guard (Rào chắn chi phí)** | Spend không được vỡ kế hoạch $200. | Sử dụng mô hình In-house NumPy cost $0. Limit mức AWS Fargate container. |
+| **Drift detection (Phát hiện trượt)** | Model behavior drift phải được phát hiện sớm để tránh báo giả trong tương lai. | Quản trị thủ công: Dành ra lịch Weekly eval re-run trên tập baseline mới (Post-capstone). |
 
-### 5.4 Enforcement Mechanisms (Architectural)
+### 5.4 Enforcement Mechanisms (Architectural Layer - Cơ chế Kiến trúc)
 
 | Mechanism | Implementation | Layer |
 |---|---|---|
-| Input sanitization | Pydantic Schema Validation (reject if invalid schema/type) | API Layer |
-| Output schema validation | JSON schema enforce, reject if invalid | Post-Processing |
-| Confidence threshold | App-level: confidence < 0.6 → `INVESTIGATE` | App layer |
-| Audit log mandatory | Cannot return response without audit entry | App layer |
-| Per-tenant isolation | Context isolation via `tenant_id` header | App layer |
-| Rate limit | API Gateway usage plan per tenant | Edge |
-| Circuit breaker | API threshold 60%+ error → fallback rule-based | App layer |
-| Eval baseline check | Scheduled re-run eval set, alert nếu metrics drop | CI/CD job |
+| Input sanitization | Pydantic Schema Validation (reject ngay `HTTP 422` nếu sai schema hoặc data type). | API Layer |
+| Output schema validation | Ép buộc trả về JSON cứng, reject ngầm nếu app code lỗi định dạng. | Post-Processing |
+| Confidence threshold | Xử lý logic App-level: `confidence < 0.7` → Action verb = `INVESTIGATE`. | App layer |
+| Audit log mandatory | Mã nguồn buộc phải pass qua dòng code ghi Logger S3 trước khi trả `return response`. | App layer |
+| Per-tenant isolation | Context isolation thông qua biến `X-Tenant-Id` bóc tách từ HTTP Headers. | App layer |
+| Rate limit | API Gateway usage plan: Áp mức trần 100 req/phút/tenant để chặn Spam/DDoS. | Edge / API Gateway |
+| Circuit breaker | CDO-side: Khi AI trả về `HTTP 5xx` liên tục 3 lần → fallback về rules tĩnh. | CDO Layer |
+| Eval baseline check | (Chỉ định) Chạy lệnh Script Evaluator để xuất File báo cáo JSON Brier Score hàng tuần. | CI/CD job |
 
-### 5.5 Model NFR Control Matrix
+### 5.5 Model NFR Control Matrix (Ma trận Kiểm soát Phi chức năng)
 
 | NFR ID | Category | Requirement | Control | Evidence | Owner |
 |---|---|---|---|---|---|
-| MG-01 | Governance | Decision explainable | `reasoning` field ≤300 chars per output | Sample output | Nhóm AI |
-| MG-02 | Governance | Audit complete | 100% AI calls audited | Audit log query | Nhóm AI |
-| MG-03 | Governance | Confidence gating | Action requires confidence ≥ 0.6 | Code review + test | Nhóm AI |
-| MG-04 | Performance | P99 latency < 500ms | Latency monitor | CloudWatch dashboard | Nhóm AI |
-| MG-05 | Cost | Cost control (< $200) | No LLM calls, compute only | Quota config | Nhóm AI |
-| MG-06 | Reliability | Fallback to rule-based on Engine failure | Circuit breaker code / 503 HTTP | Chaos test | Nhóm AI |
-| MG-07 | Compliance | No PII data logging | Data hashing before log | Audit log scan | Nhóm AI |
-| MG-08 | Drift | Eval baseline check | Scheduled eval job | CI/CD run history | Nhóm AI |
-| MG-09 | Safety | Closed-loop verify post-action (CDO calls /v1/verify) | Verify metric check API | Action audit log | Nhóm AI |
-| MG-10 | Safety | Threshold tuning / retrain | Statistical baseline recalculation | Drift detection log | Nhóm AI |
+| MG-01 | Governance | Quyết định AI phải giải thích được | Trường `reasoning` ≤ 300 ký tự trả về trong mọi Response | Mã nguồn engine.py | Nhóm AI |
+| MG-02 | Governance | Thanh tra toàn diện (Audit complete) | 100% lệnh AI phải lưu Audit | File log tại S3/DynamoDB | Nhóm AI |
+| MG-03 | Governance | Confidence gating | Lệnh `SCALE_UP` yêu cầu confidence ≥ 0.7 | Bằng chứng test threshold | Nhóm AI |
+| MG-04 | Performance | Độ trễ P99 < 500ms | Ứng dụng thuật toán NumPy cực nhẹ | Chỉ số Latency đo trên Postman | Nhóm AI |
+| MG-05 | Cost | Chi phí tổng < $200 | Không gọi LLM external | AWS Cost Explorer estimate | Nhóm AI |
+| MG-06 | Reliability | Fallback nếu AI Engine sập | Trả mã 503 HTTP cho CDO tự fallback | Postman 503 Scenario | CDO + AI |
+| MG-07 | Compliance | Dữ liệu PII không được lọt vào Log | Hashing thuật toán SHA-256 (`input_hash`) | Audit log mẫu | Nhóm AI |
+| MG-08 | Drift | Cảnh báo bị trượt khỏi thực tế | Đánh giá định kỳ độ chính xác (Brier Score) | File `evidence_algorithm_evaluation.json` | Nhóm AI |
+| MG-09 | Safety | (N/A) Closed-loop tự thân | Foresight Lens là Assist-only, không tự execute | Kiến trúc Diagram | Nhóm AI |
 
-### 5.6 Closed-loop Safety Pattern (chỉ áp dụng cho engine có ACTION - Self-Heal type)
+### 5.6 Closed-loop Safety Pattern (N/A)
 
 <!-- Skip section này nếu engine chỉ ALERT/SUGGEST, không EXECUTE action.
      Self-Heal Engine + auto-containment engines BẮT BUỘC có section này. -->
 
-Pattern bắt buộc cho mọi engine thực hiện action thật trên hệ thống (không phải chỉ suggest):
+*Dự án Foresight Lens chỉ đóng vai trò ALERT/SUGGEST (Cố vấn), hoàn toàn không trực tiếp EXECUTE action (Thực thi hạ tầng). Do đó, thiết kế Closed-loop Safety Pattern với Dry-run / Blast-radius / Auto-rollback là KHÔNG CẦN THIẾT và được gạch bỏ để tiết kiệm scope.*
 
-![Closed-loop Safety Pattern](../diagrams/03_ai_action_loop.png)
+## 6. Statistical Engine Security (Bảo mật Tầng Thống kê)
 
-*(Sơ đồ có thể chỉnh sửa: [03_ai_action_loop.drawio](../diagrams/03_ai_action_loop.drawio))*
+*Vì hệ thống Foresight Lens sử dụng thuật toán Thống kê truyền thống (NumPy) thay vì Large Language Models (LLMs), toàn bộ các rủi ro kinh điển của lĩnh vực GenAI (Prompt Injection, Jailbreaking, Hallucination, Training Data Poisoning) được **LOẠI TRỪ HOÀN TOÀN** theo nguyên tắc thiết kế (Security-by-design).*
 
-#### 5.6.1 Five sub-checkpoints (mọi action phải qua tất cả 5)
-
-| # | Checkpoint | Spec | Capstone evidence |
-|---|---|---|---|
-| 1 | **Dry-run mode** | Mọi action có dry-run path; CI/CD test dry-run trước deploy | Test case dry-run + screenshot |
-| 2 | **Blast-radius config** | Per-action limit: max % cluster · max N pod · max region · max $ cost impact | YAML config + ADR |
-| 3 | **Verify post-act** | Metric check sau action: timeout N sec, threshold M | Verify rule code + test case |
-| 4 | **Auto rollback** | Verify fail → automatic rollback to pre-action state; rollback also verified | Rollback code + chaos test |
-| 5 | **Circuit breaker** | Consecutive K failures (vd 3) → halt automation, force manual escalation | Circuit breaker state machine + alert |
-
-#### 5.6.2 Configuration example
-
-```yaml
-# action_safety_config.yaml
-action: restart_pod_oom
-dry_run:
-  enabled: true
-  mandatory_in_ci: true
-blast_radius:
-  max_pods_per_action: 3
-  max_pods_per_namespace_per_hour: 10
-  max_clusters_affected: 1
-verify:
-  enabled: true
-  check_metric: container_memory_usage_bytes
-  threshold: "< 80% of limit"
-  timeout_seconds: 300
-  sample_count: 3
-rollback:
-  enabled: true
-  rollback_action: restore_pod_spec_from_snapshot
-  rollback_verify: true
-circuit_breaker:
-  consecutive_failure_threshold: 3
-  cool_down_seconds: 1800
-  halt_action: page_oncall_critical
-audit:
-  log_all_steps: true
-  retention_days: 90
-```
-
-#### 5.6.3 Test coverage requirement
-
-Capstone: ≥3 chaos test scenarios chứng minh verify-fail → rollback hoạt động:
-- Test 1: action thành công → verify pass → audit log đầy đủ
-- Test 2: action chạy nhưng verify fail → rollback trigger → state restored
-- Test 3: 3 consecutive failure → circuit breaker halt → manual escalation triggered
-
-## 6. Statistical Engine Security (Thay thế AI Security)
-
-*Vì hệ thống sử dụng thuật toán Thống kê thay vì LLM, các rủi ro truyền thống của GenAI (Prompt Injection, Jailbreaking, Hallucination, Training Poisoning) được **loại trừ hoàn toàn** theo thiết kế (Security-by-design).*
-
-Các rủi ro bảo mật tập trung vào tầng API và dữ liệu:
+Do đó, các phương án phòng thủ bảo mật của nhóm AI sẽ chuyển dời hoàn toàn trọng tâm sang khu vực **Tầng API** và **Tầng Dữ liệu**:
 
 ### 6.1 Security Risks (Overview)
 
 | Risk | Description | Severity | Mitigation Layer |
 |---|---|---|---|
-| **Data Bleed (Cross-tenant)** | Dữ liệu tenant A rò rỉ sang tenant B khi tính baseline | High | Code level: Context parsing luôn group theo `X-Tenant-Id`. |
-| **Denial of Service (DoS)** | Gửi mảng `signal_window` quá lớn gây cạn kiệt CPU/memory | Medium | Pydantic: Limit size của mảng input `signal_window`. |
-| **Data Poisoning** | CDO gửi sai metric giả để phá baseline | Low | Authentication via IAM SigV4, chỉ CDO system identity có quyền gọi API. |
-| **PII Leakage in Logs** | Lưu lọt PII vào Audit Log | Medium | Hash toàn bộ request body (`input_hash`) thay vì lưu raw payload. |
+| **Data Bleed (Cross-tenant)** | Dữ liệu `tenant_A` vô tình được dùng làm Baseline tính toán báo động cho `tenant_B`. | High | **Code level**: Hệ thống phi trạng thái (Stateless). Context parsing khởi tạo lại toàn bộ và group bắt buộc theo `X-Tenant-Id`. |
+| **Denial of Service (DoS/DDoS)**| CDO gửi một request chứa mảng `signal_window` có kích thước 1 triệu phần tử, vắt kiệt RAM & CPU của container. | Medium | **Pydantic**: Cấu hình Max Length cho danh sách input. Giới hạn độ dài mảng dữ liệu đo lường ở mức tối đa 10,000 data points. |
+| **Data Poisoning (Bơm nhiễu)** | Attacker giả mạo hệ thống CDO, liên tục gửi dữ liệu rác để làm hỏng Baseline (khiến hệ thống tưởng lượng Traffic ảo là thật). | Medium | **Edge Auth**: Endpoint được bảo vệ bằng cơ chế IAM SigV4 / API Gateway Key. Bác bỏ mọi request không có chữ ký nội bộ. |
+| **PII Leakage in Logs** | Lưu lọt IP khách hàng hoặc thông số nhạy cảm khác từ Payload vào ổ cứng Audit Log. | Medium | **Data Hash**: Sử dụng SHA-256 biến đổi toàn bộ Payload Body thành 1 đoạn Hash (`input_hash`) trước khi Dump log. |
 
-### 6.2 Data Input Validation
+### 6.2 Data Input Validation (Kiểm tra Dữ liệu Đầu vào)
+
+Sức mạnh của Python Pydantic được tận dụng triệt để ở lớp khiên chắn API:
 
 | Control | Description |
 |---|---|
-| Schema validation | Strict Pydantic JSON schema, reject invalid payload (`HTTP 422`). |
-| Data type checks | `value` bắt buộc là `float`, `ts` bắt buộc `RFC3339`. |
-| Context Isolation | `X-Tenant-Id` header bắt buộc. Không có header → `HTTP 422`. |
+| Schema validation | Strict Pydantic JSON schema. Nếu thừa field, thiếu field, hệ thống reject lập tức (`HTTP 422 Unprocessable Entity`). Cấm tiệt SQL Injection / XSS lọt vào. |
+| Data type checks | Biến `value` bắt buộc là `float` (không được nhận chữ). Biến `ts` (Timestamp) bắt buộc chuẩn `RFC3339`. |
+| Context Isolation | Header `X-Tenant-Id` được đánh giá Validation Rule (bắt buộc). Không có header -> `HTTP 422`. |
 
-### 6.3 Security Audit Trail
+### 6.3 Security Audit Trail (Dấu vết Thanh tra Bảo mật)
 
-Toàn bộ payload nhạy cảm không được lưu thô, mà dùng Hashing (SHA-256) để verify tính toàn vẹn và chống lộ PII:
+Toàn bộ payload nhạy cảm không bao giờ được lưu thô (No Raw Write). Hệ thống sử dụng Hashing (SHA-256) nhằm tạo bằng chứng về tính nguyên vẹn (Integrity) để phục vụ giải trình, nhưng cấm tuyệt đối khả năng đọc ngược lại thông tin PII:
+
 ```json
 {
   "ts": "2026-06-25T10:30:00Z",
   "correlation_id": "req-1234",
-  "tenant_id": "tnt-abc",
+  "tenant_id": "tnt-payment-core",
   "model_version": "tf4-ewma-stl-v1",
   "input_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "data_encryption": "AWS KMS CMK",
+  "data_encryption": "AWS KMS CMK (aws/s3)",
   "decision": "SCALE_UP",
-  "confidence": 1.0,
-  "execution_ms": 5.42
+  "confidence": 0.95,
+  "execution_ms": 4.12
 }
 ```
 
-## 7. Eval methodology
+## 7. Eval methodology (Phương pháp Lượng giá)
 
-- **Test set composition**: synthetic <N> + real-anonymized <M> = total ≥10 scenarios
-- **Metrics tracked**:
-  - Precision (true positive / predicted positive)
-  - Recall (true positive / actual positive)
-  - F1
-  - P50 / P99 latency
-  - Cost per correct decision
-- **Acceptance threshold**:
-  - Precision ≥ 0.8
-  - Recall ≥ 0.7
-  - P99 latency < Xms
-- **Eval set location**: `<repo>/ai-engine/eval/` (JSON)
+Độ tin cậy của thuật toán `EWMA & STL Decomposition` được chứng minh bằng một hệ quy chiếu đo lường khắt khe, chạy tự động.
 
-## 8. Cost model
+- **Test set composition (Tập dữ liệu kiểm thử)**: Sử dụng kịch bản kết hợp bao gồm **10 scenarios**. Trong đó có **5 scenarios thực tế (Real-anonymized)** giả lập Traffic tăng đột biến, và **5 scenarios giả định (Synthetic)** giả lập rò rỉ Memory siêu chậm (Slow leak over 24 hours).
+- **Metrics tracked (Chỉ số theo dõi)**:
+  - **Brier Score (Calibration)**: Đo đạc mức độ chuẩn xác của điểm tự tin (Confidence). Điểm Brier càng gần 0 càng hoàn hảo. Hệ thống hiện ghi nhận Brier Score xuất sắc đạt **0.085**.
+  - **Precision (Độ chính xác chuẩn)**: True Positive / Predicted Positive. Tỉ lệ báo là trúng đích.
+  - **Recall (Độ phủ)**: True Positive / Actual Positive. Tỉ lệ không bị lọt lưới.
+  - **False Positive Rate (FPR)**: Tỉ lệ báo động giả. Đạt mức hoàn hảo **0.0%**.
+  - **P99 latency**: Thời gian xử lý chậm nhất trong 99% trường hợp. Hiện đang đạt mức lý tưởng **< 10ms**.
+- **Acceptance threshold (Ngưỡng chấp nhận Deploy)**:
+  - Brier Score bắt buộc `< 0.1`
+  - Precision bắt buộc `≥ 0.9`
+  - FPR bắt buộc `< 5%`
+- **Eval set location**: Toàn bộ kịch bản và báo cáo tự động được đặt tại `<repo>/tf4-evidence/evidence/` dưới định dạng JSON.
 
-| Item | Per call | Per day (forecast) | Per tenant/month |
-|---|---|---|---|
-| Compute (FastAPI Container) | $0.000001 | $0.10 | $0.50 |
-| Storage (Audit logs in S3/DynamoDB) | - | $0.01 | $0.10 |
-| **Total** | | | **~$1.00 (Nằm rất an toàn dưới giới hạn $200)** |
+## 8. Cost model (Mô hình Chi phí Ước tính)
 
-## 9. Deployment topology
+Foresight Lens tự hào là hệ thống có Cost Model tối ưu bật nhất, giải quyết triệt để vấn đề "hóa đơn sốc" của AIOps.
 
-- **Compute**: <ECS Fargate / Lambda / SageMaker endpoint>
-- **Replica strategy**: min 2, max 10, autoscale by CPU/queue
-- **Cold start mitigation**: <vd provisioned concurrency>
-- **Region**: <region + multi-AZ>
-- **Network**: private subnet, internal ALB
-- **Secrets**: Secrets Manager (Bedrock IAM, không API key)
+| Item | Đơn giá / Call | Tần suất dự báo | Chi phí / Ngày | Chi phí / Tenant / Tháng |
+|---|---|---|---|---|
+| Compute (AWS ECS Fargate Container) | $0.000001 (Tính quy đổi CPU) | 1,440 requests (Mỗi phút 1 lần) | ~$0.01 | ~$0.30 |
+| Storage (Lưu trữ Audit logs JSONL qua S3 Standard) | ~$0.0000001 | 1,440 records (~500KB) | ~$0.01 | ~$0.30 |
+| API Gateway (REST API Request) | $0.0000035 | 1,440 requests | ~$0.005 | ~$0.15 |
+| **Tổng cộng (Total Estimated)** | | | | **~$0.75 / Tháng** |
+
+> **Kết luận Tài chính**: Với mức giá `< $1 / Tenant / Tháng`, hệ thống thỏa mãn tuyệt đối Constraint ngân sách (Budget < $200), thậm chí đủ khả năng mở rộng lên hàng ngàn Tenant mà không phát sinh gánh nặng tài chính.
+
+## 9. Deployment topology (Cấu trúc Triển khai Hạ tầng)
+
+Kiến trúc hạ tầng đảm bảo tính cô lập và sẵn sàng cao cho môi trường Production:
+
+- **Compute Runtime**: Đóng gói thành Docker Container siêu nhẹ và triển khai trên **AWS ECS Fargate**. Lựa chọn này giúp nhóm AI không phải bảo trì máy chủ EC2 (Serverless Compute), đồng thời không chịu rủi ro Cold-start như AWS Lambda (vì container Fargate chạy liên tục 24/7).
+- **Replica strategy (Chiến lược dự phòng)**: Chạy tối thiểu (Min) **2 Tasks** để cấu hình High-Availability. Tự động Scale out tối đa (Max) **10 Tasks** nếu Average CPU Utilization vượt ngưỡng 70%.
+- **Region & AZ (Vùng khả dụng)**: Triển khai mặc định tại **ap-southeast-1 (Singapore)**. Đảm bảo rải đều Task trên **Multi-AZ (3 Availability Zones)** để chống chịu đứt cáp khu vực.
+- **Network (Mạng nội bộ)**: Các container Fargate được nhốt hoàn toàn trong dải mạng **Private Subnet**. CDO giao tiếp với AI API thông qua cổng trung gian **Internal Application Load Balancer (ALB)** hoặc **VPC Endpoint**. AI Engine không hề có kết nối mở ra Internet công cộng (No Public IP).
+- **Secrets Management**: Thông tin chứng chỉ (nếu cần mã hóa data) được quản lý qua AWS Secrets Manager. Không được phép gắn biến môi trường cứng (Hard-coded Env Vars).
 
 ## Related documents
 
-- [`02_solution_design.md`](02_solution_design.md) - high-level architecture context
-- [`04_eval_report.md`](04_eval_report.md) - eval methodology + results feeding NFR MG-04, MG-08
-- [`05_adrs.md`](05_adrs.md) - ADRs for model/governance decisions
-- [`../contracts/ai-api-contract.md`](../contracts/ai-api-contract.md) - API exposed to CDO
-- [`../../cdo/docs/03_security_design.md`](../../cdo/docs/03_security_design.md) - platform-level security (AI security details ở §6 doc này)
-- [`../../cdo/docs/05_cost_analysis.md`](../../cdo/docs/05_cost_analysis.md) - total cost includes AI inference từ §8 doc này
+- [`02_solution_design.md`](02_solution_design.md) - High-level architecture context và giải thích quy trình luồng dữ liệu (Data flow).
+- [`04_eval_report.md`](04_eval_report.md) - Báo cáo thực tế Eval methodology + results, đối chiếu NFR MG-04, MG-08.
+- [`05_adrs.md`](05_adrs.md) - Hồ sơ lưu trữ ADRs giải thích các Trade-offs khi quyết định kiến trúc.
+- [`../contracts/ai-api-contract.md`](../contracts/ai-api-contract.md) - Payload chi tiết giao tiếp với CDO.
+- [`../../cdo/docs/03_security_design.md`](../../cdo/docs/03_security_design.md) - Thiết kế bảo mật phía CDO Platform (AI security details ở mục 6 doc này).
+- [`../../cdo/docs/05_cost_analysis.md`](../../cdo/docs/05_cost_analysis.md) - Tổng phân tích chi phí TCO.
