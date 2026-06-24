@@ -7,19 +7,24 @@ class AnomalyDetector:
         # In a real scenario, baselines would be loaded from a DB per tenant/service.
         pass
 
-    def generate_recommendation(self, metric: str, tenant_id: str) -> Tuple[str, str, float]:
-        """Returns (suggested_action, reasoning, confidence)"""
+    def generate_recommendation(self, metric: str, tenant_id: str) -> Tuple[dict, str, float]:
+        """Returns (Recommendation dict, reasoning, confidence)"""
         confidence = 0.85
         if metric == "cpu_pct":
-            return "SCALE_UP", f"CPU drift detected. Scale RDS Instance for {tenant_id}.", confidence
+            rec = {"action_verb": "SCALE_UP", "target": f"{tenant_id} ECS Service", "from_to": "Current -> +2 Tasks", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/cpu"}
+            return rec, f"CPU drift detected. Scale ECS Service for {tenant_id}.", confidence
         elif metric == "queue_depth":
-            return "SCALE_UP", f"Queue backlog detected. Increase worker concurrency for {tenant_id}.", confidence
+            rec = {"action_verb": "SCALE_UP", "target": f"{tenant_id} SQS Workers", "from_to": "Current -> +5 Workers", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/queue"}
+            return rec, f"Queue backlog detected. Increase worker concurrency for {tenant_id}.", confidence
         elif metric == "mem_pct":
-            return "ROLLBACK", f"Memory leak detected for {tenant_id}. Consider rollback.", confidence
+            rec = {"action_verb": "ROLLBACK", "target": f"{tenant_id} Deployment", "from_to": "v_latest -> v_previous", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/mem"}
+            return rec, f"Memory leak detected for {tenant_id}. Consider rollback.", confidence
         elif metric == "latency_p99_ms" or metric == "api_latency_ms":
-            return "INVESTIGATE", f"Latency spike detected for {tenant_id}.", confidence
+            rec = {"action_verb": "INVESTIGATE", "target": f"{tenant_id} API Gateway", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}/latency"}
+            return rec, f"Latency spike detected for {tenant_id}.", confidence
         else:
-            return "INVESTIGATE", f"Anomalous metric {metric} detected for {tenant_id}.", confidence
+            rec = {"action_verb": "INVESTIGATE", "target": f"{tenant_id}", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}"}
+            return rec, f"Anomalous metric {metric} detected for {tenant_id}.", confidence
 
     def detect_drift(self, tenant_id: str, signals: List[SignalDatapoint]) -> Tuple[bool, float, str, str, float]:
         """
@@ -27,7 +32,7 @@ class AnomalyDetector:
         Returns: (anomaly_bool, severity, suggested_action, reasoning, confidence)
         """
         if not signals:
-            return False, 0.0, "ALERT_ONLY", "No signals provided", 1.0
+            return False, 0.0, None, "No signals provided", 1.0
 
         # Group by signal_name
         signal_dict = {}
@@ -56,9 +61,9 @@ class AnomalyDetector:
                 return True, round(float(severity), 2), action, reasoning, confidence
             elif last_val < mean_val - 3 * std_val:
                 severity = min((mean_val - last_val) / (10 * std_val), 1.0)
-                action = "INVESTIGATE"
+                action = {"action_verb": "INVESTIGATE", "target": f"{tenant_id}", "from_to": "N/A", "evidence_link": f"https://dashboard.internal/metrics/{tenant_id}"}
                 reasoning = f"Sudden drop in {metric} for {tenant_id}. Possible service degradation or outage."
                 confidence = 0.80
                 return True, round(float(severity), 2), action, reasoning, confidence
 
-        return False, 0.0, "ALERT_ONLY", "No anomaly detected within 3-sigma thresholds.", 0.95
+        return False, 0.0, None, "No anomaly detected within 3-sigma thresholds.", 0.95

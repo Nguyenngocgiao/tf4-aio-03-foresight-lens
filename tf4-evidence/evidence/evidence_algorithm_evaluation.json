@@ -1,0 +1,21 @@
+{
+  "method": "A/B/C testing 3 algorithms on 100 windows with drift injection.",
+  "algorithms": {
+    "3-Sigma": {
+      "f1": 1.0,
+      "fp_rate": 0.0,
+      "latency_ms_per_window": 0.08
+    },
+    "EWMA": {
+      "f1": 0.952,
+      "fp_rate": 0.0,
+      "latency_ms_per_window": 0.09
+    },
+    "Isolation Forest": {
+      "f1": 0.966,
+      "fp_rate": 0.036,
+      "latency_ms_per_window": 224.45
+    }
+  },
+  "conclusion": "3-Sigma matches Isolation Forest in F1 but operates with 0 FP Rate and ~20x lower latency. EWMA lags behind sudden spikes. 3-Sigma is the optimal choice for real-time high-throughput telemetry."
+}

@@ -599,19 +599,19 @@ h3 {
     <div class="reveal reveal-delay-3">
       <div class="grid-2" style="max-width:480px;margin:0 auto;gap:16px">
         <div class="card" style="text-align:center;border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.05)">
-          <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px"></div>
+          <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px;color:var(--accent)"><i data-lucide="cpu"></i></div>
           <div style="font-weight:800;font-size:1rem;color:#1e293b">AIO</div>
           <div style="font-size:0.82rem;color:var(--ink2);margin-top:4px">Build AI Engine</div>
         </div>
         <div class="card" style="text-align:center;border-color:rgba(59,130,246,0.2);background:rgba(59,130,246,0.05)">
-          <div class="icon-circle" style="background:rgba(59,130,246,0.12);margin:0 auto 10px">️</div>
+          <div class="icon-circle" style="background:rgba(59,130,246,0.12);margin:0 auto 10px;color:var(--blue)"><i data-lucide="users"></i></div>
           <div style="font-weight:800;font-size:1rem;color:#1e293b">3 CDO Teams</div>
           <div style="font-size:0.82rem;color:var(--ink2);margin-top:4px">3 nền tảng khác nhau</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>01 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>01 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -625,17 +625,17 @@ h3 {
     <div class="reveal reveal-delay-2">
       <div class="grid-2">
         <div class="card">
-          <h3> Client</h3>
+          <h3>Client</h3>
           <p>Head of SRE — Fintech mid-size, ~120 microservice.<br>ECS + RDS + DynamoDB + SQS.</p>
         </div>
         <div class="card card-danger">
-          <h3> Vấn đề</h3>
+          <h3>Vấn đề</h3>
           <p>Miss SLO <strong style="color:var(--red)">7 lần / 3 tháng</strong>. RDS CPU 100% trong 90ph, queue backlog 6x. Phát hiện qua user complain.</p>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>02 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>02 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -648,24 +648,24 @@ h3 {
     <div class="reveal reveal-delay-2">
       <div class="grid-3">
         <div class="card" style="text-align:center">
-          <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px"></div>
+          <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px;color:var(--accent)"><i data-lucide="trending-up"></i></div>
           <h3>Predict</h3>
           <p>Học baseline. Detect drift trước SLO breach.</p>
         </div>
         <div class="card" style="text-align:center">
-          <div class="icon-circle" style="background:rgba(59,130,246,0.12);margin:0 auto 10px"></div>
+          <div class="icon-circle" style="background:rgba(59,130,246,0.12);margin:0 auto 10px;color:var(--blue)"><i data-lucide="lightbulb"></i></div>
           <h3>Recommend</h3>
           <p>Đề xuất scale action cụ thể.</p>
         </div>
         <div class="card" style="text-align:center">
-          <div class="icon-circle" style="background:rgba(34,197,94,0.12);margin:0 auto 10px"></div>
+          <div class="icon-circle" style="background:rgba(34,197,94,0.12);margin:0 auto 10px;color:var(--green)"><i data-lucide="check-circle"></i></div>
           <h3>Approve</h3>
           <p>Manual approve. CDO quyết định.</p>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>03 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>03 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -679,16 +679,16 @@ h3 {
     <div class="reveal reveal-delay-2">
       <div class="grid-3">
         <div class="card card-accent-left">
-          <h3> Telemetry</h3>
+          <h3>Telemetry</h3>
           <p>CDO emit metric đúng format. AIO draft, CDO ký.</p>
         </div>
         <div class="card card-accent-left">
-          <h3> AI API</h3>
-          <p>POST /v1/predict → drift + recommend + confidence + audit.</p>
+          <h3>AI API</h3>
+          <p>POST /v1/detect → drift + recommend + confidence + audit.</p>
         </div>
         <div class="card card-accent-left">
-          <h3> Deployment</h3>
-          <p>Serving: Lambda + API GW. Training: design-only. ap-southeast-1.</p>
+          <h3>Deployment</h3>
+          <p>Serving: Lambda + API GW <span style="font-size:0.8em;color:var(--text-muted);">(Why Lambda? → Maximize Free Tier)</span>. Training: design-only. ap-southeast-1.</p>
         </div>
       </div>
     </div>
@@ -698,7 +698,7 @@ h3 {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>04 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>04 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -711,34 +711,70 @@ h3 {
     <div class="reveal reveal-delay-2">
       <div class="grid-2">
         <div class="card">
-          <h3> Pipeline</h3>
+          <h3>Pipeline</h3>
           <table class="tbl">
             <tr><td>1. Ingest</td><td>Nhận metric từ CDO, validate schema</td></tr>
-            <tr><td>2. Baseline</td><td>EWMA + Isolation Forest — per-service</td></tr>
+            <tr><td>2. Baseline</td><td>Đang đánh giá: 3-Sigma vs EWMA+IsoForest <span style="font-size:0.8em;color:var(--text-muted);">(Cần chốt)</span></td></tr>
             <tr><td>3. Drift Detect</td><td>Real-time vs baseline, lead time ≥15ph</td></tr>
             <tr><td>4. Recommend</td><td>5 phần: verb + target + from→to + confidence</td></tr>
           </table>
         </div>
         <div class="card">
-          <h3> Stack</h3>
+          <h3>Stack</h3>
           <p style="line-height:1.8">
-            Lambda 512MB + API Gateway<br>
-            DynamoDB audit<br>
+            Lambda 512MB + API Gateway <span style="font-size:0.8em;color:var(--text-muted);">(Why not ECS? → Maximize Free Tier, scale to 0)</span><br>
+            DynamoDB audit <span style="font-size:0.8em;color:var(--text-muted);">(Why not RDS? → Low-latency NoSQL for logs)</span><br>
             No LLM<br>
             FP ≤ 12% · Catch ≥ 80%<br>
-            <strong style="color:var(--green)">Budget $200</strong>
+            <strong style="color:var(--green)">Budget $200 → Actual ~$0/month</strong>
           </p>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>05 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>05 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 06 — Scope Trích Brief
+     SLIDE 07 — Architectural Evolution
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-6">
+<section class="slide" id="slide-7">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Vision & Scalability</div></div>
+    <div class="reveal reveal-delay-1"><h2>Architectural Evolution</h2></div>
+    <div class="reveal"><p class="lead">Tại sao chọn Lambda cho đồ án? Và kiến trúc sẽ thay đổi thế nào khi hệ thống thực sự scale?</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="grid-2">
+        <div class="card card-accent-left">
+          <h3>Phase 1: Validation (Hiện tại)</h3>
+          <p style="margin-bottom:12px; font-size:0.85rem; color:var(--ink3)">Mục tiêu: Chứng minh tính khả thi (PoC) với chi phí thấp nhất.</p>
+          <table class="tbl">
+            <tr><td><strong>Compute</strong></td><td>Lambda + API Gateway</td></tr>
+            <tr><td><strong>State</strong></td><td>DynamoDB</td></tr>
+            <tr><td><strong>Ưu điểm</strong></td><td><span class="tag tag-green">~$0 Cost</span> <span class="tag tag-green">Zero Ops</span> Scale to 0</td></tr>
+            <tr><td><strong>Hạn chế</strong></td><td>Cold start (~1-2s), giới hạn execution time (15ph). Không hợp streaming.</td></tr>
+          </table>
+        </div>
+        <div class="card card-warning" style="border-left: 3px solid #8b5cf6;">
+          <h3>Phase 2: Production Scale (Tương lai)</h3>
+          <p style="margin-bottom:12px; font-size:0.85rem; color:var(--ink3)">Mục tiêu: Xử lý High-Throughput (10k+ RPS), Real-time Streaming.</p>
+          <table class="tbl">
+            <tr><td><strong>Ingest</strong></td><td>Kafka / Kinesis Streams</td></tr>
+            <tr><td><strong>Compute</strong></td><td>ECS Fargate (Container 24/7)</td></tr>
+            <tr><td><strong>Ưu điểm</strong></td><td><span class="tag tag-blue">No Cold Start</span> <span class="tag tag-blue">Real-time</span> Xử lý spike traffic lớn.</td></tr>
+            <tr><td><strong>Hạn chế</strong></td><td>Fixed cost cao, đòi hỏi vận hành hạ tầng phức tạp hơn.</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>07 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 07 — Scope Trích Brief
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-7">
   <div class="content">
     <div class="reveal"><div class="eyebrow">Scope</div></div>
     <div class="reveal reveal-delay-1"><h2>Đã Chốt — Phân Tích Yêu Cầu Gốc</h2></div>
@@ -759,13 +795,13 @@ h3 {
       </table>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>06 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>07 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 07 — 29 Mục Phân Loại
+     SLIDE 08 — 29 Mục Phân Loại
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-7">
+<section class="slide" id="slide-8">
   <div class="content">
     <div class="reveal"><div class="eyebrow">Brief Validation (5W2H Framework)</div></div>
     <div class="reveal reveal-delay-1"><h2>14 Mục Cần Đào Sâu & Xác Nhận</h2></div>
@@ -802,7 +838,7 @@ h3 {
         <tr class="row-danger"><td>11</td><td><strong>Stack từng service?</strong></td><td><span class="tag tag-red">CẦN CONFIRM</span></td><td>"ECS+RDS+DynamoDB+SQS" chung chung. KHÔNG biết service nào dùng gì.</td></tr>
         <tr class="row-danger"><td>12</td><td><strong>FraudDetector?</strong></td><td><span class="tag tag-red">CẦN CONFIRM</span></td><td>Chỉ nhắc tên "fraud detection". Đây là ML hay rule engine?</td></tr>
         <tr class="row-danger"><td>13</td><td><strong>Incident history</strong></td><td><span class="tag tag-red">CẦN CONFIRM</span></td><td>"miss SLO 7 lần". Cần bản Post-mortem chi tiết để train model.</td></tr>
-        <tr class="row-danger"><td>14</td><td><strong>API non-functional</strong></td><td><span class="tag tag-red">CẦN CONFIRM</span></td><td>"POST /v1/predict" nhưng KHÔNG specify latency/auth/rate limit.</td></tr>
+        <tr class="row-danger"><td>14</td><td><strong>API non-functional</strong></td><td><span class="tag tag-red">CẦN CONFIRM</span></td><td>"POST /v1/detect" nhưng KHÔNG specify latency/auth/rate limit.</td></tr>
       </table>
     </div>
     <div class="reveal reveal-delay-4">
@@ -811,17 +847,17 @@ h3 {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>07 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>08 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 08 — Strategic Contract Boundaries
+     SLIDE 09 — Strategic Contract Boundaries
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-8">
+<section class="slide" id="slide-9">
   <div class="orb orb-1" style="background:radial-gradient(circle,rgba(239,68,68,0.15),transparent 70%)"></div>
   <div class="content">
     <div class="reveal"><div class="eyebrow">AI-CDO Interface Strategy</div></div>
-    <div class="reveal reveal-delay-1"><h2> 5 Contract Boundaries (Contract Boundaries)</h2></div>
+    <div class="reveal reveal-delay-1"><h2>5 Contract Boundaries</h2></div>
     <div class="reveal" style="margin-bottom:12px"><p class="lead">Dữ liệu chứng minh (evidence) đã PASS 100%. Nhiệm vụ chiều T4 và T5 là đàm phán 5 ranh giới này <strong>với 3 team CDO</strong> để bảo vệ AI Engine.</p></div>
     <div class="reveal reveal-delay-2">
       <table class="tbl">
@@ -839,241 +875,13 @@ h3 {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>08 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>09 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 09 — 3 Service Demo
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-9">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Demo Scope</div></div>
-    <div class="reveal reveal-delay-1"><h2>3 Service — Per-Service Baseline</h2></div>
-    <div class="reveal"><p class="lead">Chọn 3/5. KYC + Reporting bị loại (xem slide sau).</p></div>
-    <div class="reveal reveal-delay-2">
-      <div class="grid-3">
-        <div class="card" style="text-align:center">
-          <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px"></div>
-          <h3>PaymentGW</h3>
-          <p style="font-size:0.82rem">Pattern chưa rõ<br>Bottleneck: CPU?</p>
-        </div>
-        <div class="card" style="text-align:center">
-          <div class="icon-circle" style="background:rgba(139,92,246,0.12);margin:0 auto 10px">️</div>
-          <h3>FraudDetector</h3>
-          <p style="font-size:0.82rem">Pattern chưa rõ<br>Bottleneck: Memory?</p>
-        </div>
-        <div class="card" style="text-align:center">
-          <div class="icon-circle" style="background:rgba(34,197,94,0.12);margin:0 auto 10px"></div>
-          <h3>Ledger</h3>
-          <p style="font-size:0.82rem">Pattern chưa rõ<br>Bottleneck: Queue?</p>
-        </div>
-      </div>
-    </div>
-    <div class="reveal reveal-delay-3">
-      <div class="card" style="margin-top:16px">
-        <h3> CPU Comparison</h3>
-        <div class="img-frame" style="margin-top:10px">
-          <img src="tf4-evidence/evidence/service_comparison_cpu.png" alt="CPU comparison across 3 services">
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>09 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 10 — PaymentGW Profile
+     SLIDE 10 — Design Rationale
      ═══════════════════════════════════════════════════════ -->
 <section class="slide" id="slide-10">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Payment Gateway (1/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> 24h Metric Profile</h2></div>
-    <div class="reveal"><p class="lead">Cổng thanh toán — route giao dịch đến ngân hàng.</p></div>
-    <div class="reveal reveal-delay-2">
-      <div class="img-frame">
-        <img src="tf4-evidence/evidence/service_payment-gw_profile.png" alt="PaymentGW 24h metric profile">
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>10 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 11 — PaymentGW Evidence
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-11">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Payment Gateway (2/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Evidence</h2></div>
-    <div class="reveal"><p class="lead"><strong style="color:var(--accent)">[BRIEF]</strong> RDS CPU 100% trong 90ph. <strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> Peak giờ hành chính, đêm idle. Cần confirm.</p></div>
-    <div class="reveal reveal-delay-2">
-      <table class="tbl">
-        <tr><td>Bottleneck</td><td>"RDS CPU 100% trong 90ph"</td></tr>
-        <tr><td>Pattern</td><td>Peak 9h-11h + 14h-16h (peak/trough=1.9x)</td></tr>
-        <tr><td>Scenario</td><td>Gradual drift — CPU 50→95% trong 2h</td></tr>
-        <tr><td>Scale</td><td>RDS db.r6g.large → db.r6g.xlarge (~7ph)</td></tr>
-      </table>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>11 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 12 — FraudDetector Profile
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-12">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Fraud Detector (1/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2>️ 24h Metric Profile</h2></div>
-    <div class="reveal"><p class="lead">Engine phát hiện gian lận. Mỗi giao dịch đều qua đây.</p></div>
-    <div class="reveal reveal-delay-2">
-      <div class="img-frame">
-        <img src="tf4-evidence/evidence/service_fraud-detector_profile.png" alt="FraudDetector 24h metric profile">
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>12 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 13 — FraudDetector Evidence
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-13">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Fraud Detector (2/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2>️ Evidence</h2></div>
-    <div class="reveal"><p class="lead"><strong style="color:var(--accent)">[BRIEF]</strong> Connection pool exhaust. <strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> ML model 24/7, steady pattern.</p></div>
-    <div class="reveal reveal-delay-2">
-      <table class="tbl">
-        <tr><td>Bottleneck</td><td>"Connection pool exhaust" — memory leak</td></tr>
-        <tr><td>Pattern</td><td>Gần như phẳng (peak/trough=1.0x)</td></tr>
-        <tr><td>Scenario</td><td>Slow leak + noisy baseline → test FP rate</td></tr>
-        <tr><td>Khó nhất</td><td>Phân biệt noise vs real leak</td></tr>
-      </table>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>13 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 14 — Ledger Profile
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-14">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Ledger (1/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> 24h Metric Profile</h2></div>
-    <div class="reveal"><p class="lead">Sổ cái kế toán — đối soát giao dịch cuối ngày.</p></div>
-    <div class="reveal reveal-delay-2">
-      <div class="img-frame">
-        <img src="tf4-evidence/evidence/service_ledger_profile.png" alt="Ledger 24h metric profile">
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>14 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 15 — Ledger Evidence
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-15">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Ledger (2/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Evidence</h2></div>
-    <div class="reveal"><p class="lead"><strong style="color:var(--accent)">[BRIEF]</strong> Queue backlog 6x. <strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> Burst 23h-1h, idle ban ngày.</p></div>
-    <div class="reveal reveal-delay-2">
-      <table class="tbl">
-        <tr><td>Bottleneck</td><td>"Queue backlog 6x" — SQS explode</td></tr>
-        <tr><td>Pattern</td><td>CPU ~5% cả ngày, burst ~90% 23h-1h (15.5x!)</td></tr>
-        <tr><td>Scenario</td><td>Sudden spike — queue tăng đột ngột</td></tr>
-        <tr><td>Đặc biệt</td><td>Pattern cực đoan nhất — stress test</td></tr>
-      </table>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>15 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 16 — KYC Profile
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-16">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">KYC (1/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Metric Profile</h2></div>
-    <div class="reveal"><p class="lead">Xác minh danh tính khách hàng.</p></div>
-    <div class="reveal reveal-delay-2">
-      <div class="img-frame">
-        <img src="tf4-evidence/evidence/service_kyc_profile.png" alt="KYC metric profile">
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>16 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 17 — KYC Loại
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-17">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">KYC (2/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Tại Sao Bị Loại?</h2></div>
-    <div class="reveal"><p class="lead"><strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> Batch async. <strong style="color:var(--accent)"> CẦN CONFIRM:</strong> Fintech hiện đại làm real-time.</p></div>
-    <div class="reveal reveal-delay-2">
-      <table class="tbl">
-        <tr><td>1</td><td>Không real-time — batch job, không capacity pressure.</td></tr>
-        <tr><td>2</td><td>Không map bottleneck brief.</td></tr>
-        <tr><td>3</td><td>Pattern không khác biệt — batch đã được Ledger cover.</td></tr>
-      </table>
-      <div style="margin-top:16px;text-align:center;font-size:0.88rem;color:var(--ink3)">
-        Rớt 3/3. Nhưng nếu real-time → phải xét lại.
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>17 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 18 — Reporting Profile
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-18">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Reporting (1/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Metric Profile</h2></div>
-    <div class="reveal"><p class="lead">Báo cáo định kỳ (doanh thu, giao dịch).</p></div>
-    <div class="reveal reveal-delay-2">
-      <div class="img-frame">
-        <img src="tf4-evidence/evidence/service_reporting_profile.png" alt="Reporting metric profile">
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>18 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 19 — Reporting Loại
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-19">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Reporting (2/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Tại Sao Bị Loại?</h2></div>
-    <div class="reveal"><p class="lead"><strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> 1-2 lần/tuần. <strong style="color:var(--accent)"> CẦN CONFIRM:</strong> Tần suất thật?</p></div>
-    <div class="reveal reveal-delay-2">
-      <table class="tbl">
-        <tr><td>1</td><td>Không đủ data point — 7 điểm/tuần.</td></tr>
-        <tr><td>2</td><td>Không ảnh hưởng user — không SLO capacity.</td></tr>
-        <tr><td>3</td><td>Pattern quá thưa — không đủ rolling window.</td></tr>
-      </table>
-      <div style="margin-top:16px;text-align:center;font-size:0.88rem;color:var(--ink3)">
-        Rớt 3/3. Batch định kỳ không phù hợp.
-      </div>
-    </div>
-  </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>19 / 27</span></div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 20 — Design Rationale
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-20">
   <div class="content">
     <div class="reveal"><div class="eyebrow">Design Rationale</div></div>
     <div class="reveal reveal-delay-1"><h2>Tại Sao Chọn 3/5?</h2></div>
@@ -1094,36 +902,277 @@ h3 {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>20 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>010 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 21 — 7 Giả Định Có Evidence
+     SLIDE 11 — KYC Profile
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-21">
+<section class="slide" id="slide-11">
   <div class="content">
-    <div class="reveal"><div class="eyebrow">Đã Chứng Minh</div></div>
-    <div class="reveal reveal-delay-1"><h2>7 Giả Định Có Evidence</h2></div>
+    <div class="reveal"><div class="eyebrow">KYC (1/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>Metric Profile</h2></div>
+    <div class="reveal"><p class="lead">Xác minh danh tính khách hàng.</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="img-frame">
+        <img src="evidence/service_kyc_profile.png" alt="KYC metric profile">
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>10 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 12 — KYC Loại
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-12">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">KYC (2/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>Tại Sao Bị Loại?</h2></div>
+    <div class="reveal"><p class="lead"><strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> Batch async. <strong style="color:var(--accent)"> CẦN CONFIRM:</strong> Fintech hiện đại làm real-time.</p></div>
     <div class="reveal reveal-delay-2">
       <table class="tbl">
-        <tr><th>#</th><th>Giả định</th><th>Evidence</th></tr>
-        <tr><td>1</td><td>3 pattern khác nhau</td><td><span class="tag tag-green">6/6 tests</span></td></tr>
-        <tr><td>2</td><td>Metric priority</td><td><span class="tag tag-green">4 root cause</span></td></tr>
-        <tr><td>3</td><td>Lead time ≥15ph đủ</td><td><span class="tag tag-green">AWS Docs</span></td></tr>
-        <tr><td>4</td><td>Seasonality</td><td><span class="tag tag-green">STL decomposition</span></td></tr>
-        <tr><td>5</td><td>Confidence (100% Precision)</td><td><span class="tag tag-green">Brier=0.032 (3-sigma)</span></td></tr>
-        <tr><td>6</td><td>Onboarding 30ph</td><td><span class="tag tag-green">Pipeline timing</span></td></tr>
-        <tr><td>7</td><td>Cost $0-3</td><td><span class="tag tag-green">Free tier audit</span></td></tr>
+        <tr><td>1</td><td>Không real-time — batch job, không capacity pressure.</td></tr>
+        <tr><td>2</td><td>Không map bottleneck brief.</td></tr>
+        <tr><td>3</td><td>Pattern không khác biệt — batch đã được Ledger cover.</td></tr>
+      </table>
+      <div style="margin-top:16px;text-align:center;font-size:0.88rem;color:var(--ink3)">
+        Rớt 3/3. Nhưng nếu real-time → phải xét lại.
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>11 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 13 — Reporting Profile
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-13">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Reporting (1/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>Metric Profile</h2></div>
+    <div class="reveal"><p class="lead">Báo cáo định kỳ (doanh thu, giao dịch).</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="img-frame">
+        <img src="evidence/service_reporting_profile.png" alt="Reporting metric profile">
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>12 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 14 — Reporting Loại
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-14">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Reporting (2/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>Tại Sao Bị Loại?</h2></div>
+    <div class="reveal"><p class="lead"><strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> 1-2 lần/tuần. <strong style="color:var(--accent)"> CẦN CONFIRM:</strong> Tần suất thật?</p></div>
+    <div class="reveal reveal-delay-2">
+      <table class="tbl">
+        <tr><td>1</td><td>Không đủ data point — 7 điểm/tuần.</td></tr>
+        <tr><td>2</td><td>Không ảnh hưởng user — không SLO capacity.</td></tr>
+        <tr><td>3</td><td>Pattern quá thưa — không đủ rolling window.</td></tr>
+      </table>
+      <div style="margin-top:16px;text-align:center;font-size:0.88rem;color:var(--ink3)">
+        Rớt 3/3. Batch định kỳ không phù hợp.
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>13 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 15 — 3 Service Demo
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-15">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Demo Scope</div></div>
+    <div class="reveal reveal-delay-1"><h2>3 Service — Per-Service Baseline</h2></div>
+    <div class="reveal"><p class="lead">Chọn 3/5. KYC + Reporting bị loại (xem slide sau).</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="grid-3">
+        <div class="card" style="text-align:center">
+          <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px;color:var(--accent)"><i data-lucide="credit-card"></i></div>
+          <h3>PaymentGW</h3>
+          <p style="font-size:0.82rem">Pattern chưa rõ<br>Bottleneck: CPU?</p>
+        </div>
+        <div class="card" style="text-align:center">
+          <div class="icon-circle" style="background:rgba(139,92,246,0.12);margin:0 auto 10px;color:var(--purple)"><i data-lucide="shield-alert"></i></div>
+          <h3>FraudDetector</h3>
+          <p style="font-size:0.82rem">Pattern chưa rõ<br>Bottleneck: Memory?</p>
+        </div>
+        <div class="card" style="text-align:center">
+          <div class="icon-circle" style="background:rgba(34,197,94,0.12);margin:0 auto 10px;color:var(--green)"><i data-lucide="database"></i></div>
+          <h3>Ledger</h3>
+          <p style="font-size:0.82rem">Pattern chưa rõ<br>Bottleneck: Queue?</p>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-3">
+      <div class="card" style="margin-top:16px">
+        <h3>CPU Comparison</h3>
+        <div class="img-frame" style="margin-top:10px">
+          <img src="evidence/service_comparison_cpu.png" alt="CPU comparison across 3 services">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>14 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 16 — PaymentGW Profile
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-16">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Payment Gateway (1/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>24h Metric Profile</h2></div>
+    <div class="reveal"><p class="lead">Cổng thanh toán — route giao dịch đến ngân hàng.</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="img-frame">
+        <img src="evidence/service_payment-gw_profile.png" alt="PaymentGW 24h metric profile">
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>15 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 17 — PaymentGW Evidence
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-17">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Payment Gateway (2/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>Evidence</h2></div>
+    <div class="reveal"><p class="lead"><strong style="color:var(--accent)">[BRIEF]</strong> RDS CPU 100% trong 90ph. <strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> Peak giờ hành chính, đêm idle. Cần confirm.</p></div>
+    <div class="reveal reveal-delay-2">
+      <table class="tbl">
+        <tr><td>Bottleneck</td><td>"RDS CPU 100% trong 90ph"</td></tr>
+        <tr><td>Pattern</td><td>Peak 9h-11h + 14h-16h (peak/trough=1.9x)</td></tr>
+        <tr><td>Scenario</td><td>Gradual drift — CPU 50→95% trong 2h</td></tr>
+        <tr><td>Scale</td><td>RDS db.r6g.large → db.r6g.xlarge (~7ph)</td></tr>
       </table>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>21 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>17 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 22 — Statistical Proof
+     SLIDE 18 — FraudDetector Profile
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-18">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Fraud Detector (1/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>24h Metric Profile</h2></div>
+    <div class="reveal"><p class="lead">Engine phát hiện gian lận. Mỗi giao dịch đều qua đây.</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="img-frame">
+        <img src="evidence/service_fraud-detector_profile.png" alt="FraudDetector 24h metric profile">
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>18 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 19 — FraudDetector Evidence
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-19">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Fraud Detector (2/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>Evidence</h2></div>
+    <div class="reveal"><p class="lead"><strong style="color:var(--accent)">[BRIEF]</strong> Connection pool exhaust. <strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> ML model 24/7, steady pattern.</p></div>
+    <div class="reveal reveal-delay-2">
+      <table class="tbl">
+        <tr><td>Bottleneck</td><td>"Connection pool exhaust" — memory leak</td></tr>
+        <tr><td>Pattern</td><td>Gần như phẳng (peak/trough=1.0x)</td></tr>
+        <tr><td>Scenario</td><td>Slow leak + noisy baseline → test FP rate</td></tr>
+        <tr><td>Khó nhất</td><td>Phân biệt noise vs real leak</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>19 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 20 — Ledger Profile
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-20">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Ledger (1/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>24h Metric Profile</h2></div>
+    <div class="reveal"><p class="lead">Sổ cái kế toán — đối soát giao dịch cuối ngày.</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="img-frame">
+        <img src="evidence/service_ledger_profile.png" alt="Ledger 24h metric profile">
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>110 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 21 — Ledger Evidence
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-21">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Ledger (2/2)</div></div>
+    <div class="reveal reveal-delay-1"><h2>Evidence</h2></div>
+    <div class="reveal"><p class="lead"><strong style="color:var(--accent)">[BRIEF]</strong> Queue backlog 6x. <strong style="color:var(--red)">[GIẢ ĐỊNH]</strong> Burst 23h-1h, idle ban ngày.</p></div>
+    <div class="reveal reveal-delay-2">
+      <table class="tbl">
+        <tr><td>Bottleneck</td><td>"Queue backlog 6x" — SQS explode</td></tr>
+        <tr><td>Pattern</td><td>CPU ~5% cả ngày, burst ~90% 23h-1h (15.5x!)</td></tr>
+        <tr><td>Scenario</td><td>Sudden spike — queue tăng đột ngột</td></tr>
+        <tr><td>Đặc biệt</td><td>Pattern cực đoan nhất — stress test</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>20 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 22 — Algorithm Evaluation
      ═══════════════════════════════════════════════════════ -->
 <section class="slide" id="slide-22">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Data-Driven Decision</div></div>
+    <div class="reveal reveal-delay-1"><h2>Algorithm Evaluation: Tìm kiếm thuật toán tối ưu</h2></div>
+    <div class="reveal"><p class="lead">Đánh giá đối chứng 3 thuật toán trên 100 sample windows có nhiễu (Noise) và đột biến (Drift)</p></div>
+    <div class="reveal reveal-delay-2" style="text-align:center; margin-top:20px;">
+      <img src="evidence/algorithm_comparison.png" alt="Algorithm Evaluation" style="max-height:220px; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+    </div>
+    <div class="reveal reveal-delay-3">
+      <div class="grid-3" style="margin-top:20px;">
+        <div class="card card-accent-left">
+          <h3>F1 Score (Chính xác)</h3>
+          <p><strong>3-Sigma</strong> và <strong>Isolation Forest</strong> đều đạt F1 ~ 1.0. Bắt dính drift cực tốt.</p>
+        </div>
+        <div class="card card-accent-left">
+          <h3>FP Rate (Báo động giả)</h3>
+          <p><strong>Isolation Forest</strong> bị nhiễu do nhạy cảm với spike tự nhiên (FP &gt; 0). <strong>3-Sigma</strong> FP = 0%.</p>
+        </div>
+        <div class="card card-accent-left">
+          <h3>Latency (Compute)</h3>
+          <p><strong>3-Sigma</strong> siêu nhẹ (&lt;1ms). Isolation Forest nặng gấp 20 lần vì phải dựng tree liên tục.</p>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-4">
+      <div class="card card-success" style="margin-top:14px;text-align:center">
+        <p><strong>Đề xuất (Proposed):</strong> <code>3-Sigma</code> có ưu thế tuyệt đối về FP=0 và Latency, phù hợp bài toán Resource-constrained. Cần CDO xác nhận sự đánh đổi này trước khi chốt kiến trúc.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>21 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 23 — Statistical Proof
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-23">
   <div class="content">
     <div class="reveal"><div class="eyebrow">Statistical Proof</div></div>
     <div class="reveal reveal-delay-1"><h2>6 Tests — 3 Service Khác Nhau</h2></div>
@@ -1145,16 +1194,16 @@ h3 {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>22 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>22 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 23 — Metric Priority Chart
+     SLIDE 24 — Metric Priority Chart
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-23">
+<section class="slide" id="slide-24">
   <div class="content">
     <div class="reveal"><div class="eyebrow">Metric Priority (1/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Phương Pháp & Biểu Đồ</h2></div>
+    <div class="reveal reveal-delay-1"><h2>Phương Pháp & Biểu Đồ</h2></div>
     <div class="reveal"><p class="lead">4 root cause → metric nào là early indicator?</p></div>
     <div class="reveal reveal-delay-2">
       <div class="grid-2">
@@ -1170,22 +1219,22 @@ h3 {
         </div>
         <div class="card">
           <div class="img-frame">
-            <img src="tf4-evidence/evidence/metric_priority_multi_root.png" alt="Metric priority multi root analysis">
+            <img src="evidence/metric_priority_multi_root.png" alt="Metric priority multi root analysis">
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>23 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>23 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 24 — Metric Priority Results (Animated bars)
+     SLIDE 25 — Metric Priority Results (Animated bars)
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-24">
+<section class="slide" id="slide-25">
   <div class="content">
     <div class="reveal"><div class="eyebrow">Metric Priority (2/2)</div></div>
-    <div class="reveal reveal-delay-1"><h2> Kết Quả</h2></div>
+    <div class="reveal reveal-delay-1"><h2>Kết Quả</h2></div>
     <div class="reveal"><p class="lead">Aggregate rank qua 4 root cause</p></div>
     <div class="reveal reveal-delay-2">
       <div class="grid-2">
@@ -1226,86 +1275,107 @@ h3 {
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>24 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>24 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 25 — Timeline
+     SLIDE 26 — 7 Giả Định Có Evidence
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-25">
+<section class="slide" id="slide-26">
   <div class="content">
-    <div class="reveal"><div class="eyebrow">Timeline</div></div>
-    <div class="reveal reveal-delay-1"><h2>W11-W12 — 2 Tuần</h2></div>
+    <div class="reveal"><div class="eyebrow">Đã Chứng Minh</div></div>
+    <div class="reveal reveal-delay-1"><h2>7 Giả Định Có Evidence</h2></div>
+    <div class="reveal reveal-delay-2">
+      <table class="tbl" style="font-size:0.8rem">
+        <tr><th style="width:5%">#</th><th style="width:25%">Giả định</th><th style="width:20%">Evidence (Click)</th><th style="width:50%">Giải thích ngắn gọn</th></tr>
+        <tr><td>1</td><td>3 pattern khác nhau</td><td><a href="evidence/evidence_pattern_diversity.json" target="_blank" class="tag tag-green">6/6 tests</a></td><td>Payment (Spiky), Fraud (Bursty), Ledger (Batch) độc lập thống kê hoàn toàn, p-value &lt; 0.05.</td></tr>
+        <tr><td>2</td><td>Metric priority</td><td><a href="evidence/evidence_metric_priority.json" target="_blank" class="tag tag-green">4 root cause</a></td><td>CPU luôn bão hòa trước Memory/Network trong các sự cố quá tải. Chọn CPU là metric dẫn đường (Leading Indicator).</td></tr>
+        <tr><td>3</td><td>Lead time ≥15ph đủ</td><td><a href="evidence/evidence_lead_time.json" target="_blank" class="tag tag-green">AWS Docs</a></td><td>Quy trình Scale ECS task hay Scale RDS IOPS thường mất 5-10 phút. Lead time 15 phút là an toàn.</td></tr>
+        <tr><td>4</td><td>Seasonality</td><td><a href="evidence/evidence_seasonality.json" target="_blank" class="tag tag-green">STL decomposition</a></td><td>Metric có tính chu kỳ ngày/tuần. Engine phải học baseline theo khung giờ (Time-of-Day).</td></tr>
+        <tr><td>5</td><td>Confidence (100% Precision)</td><td><a href="evidence/evidence_confidence_threshold.json" target="_blank" class="tag tag-green">Brier=0.032</a></td><td>Với ngưỡng 3-Sigma, tỉ lệ False Positive = 0 (báo động nào cũng đúng), đánh đổi là bỏ lọt ~15% dị thường nhỏ.</td></tr>
+        <tr><td>6</td><td>Onboarding 30ph</td><td><a href="evidence/evidence_onboarding.json" target="_blank" class="tag tag-green">Pipeline timing</a></td><td>Cấu trúc không xâm lấn. Client chỉ cần emit log, AIO cần 30p để update DynamoDB config.</td></tr>
+        <tr><td>7</td><td>Cost $0-3</td><td><a href="evidence/evidence_cost.json" target="_blank" class="tag tag-green">Free tier audit</a></td><td>Tận dụng tối đa AWS Free Tier (Lambda, API GW, DynamoDB). Ngân sách $200 hoàn toàn dư dả.</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>25 / 29</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 27 — Timeline
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-27">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Progress Tracker</div></div>
+    <div class="reveal reveal-delay-1"><h2>Đã Hoàn Thành (tính đến T3 W11)</h2></div>
     <div class="reveal reveal-delay-2">
       <div class="grid-2">
-        <div class="card">
-          <h3> AIO</h3>
+        <div class="card card-success">
+          <h3><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-2px;color:var(--green)"></i> DONE</h3>
           <table class="tbl">
-            <tr><td>T2</td><td>Kickoff + Debrief</td></tr>
-            <tr><td>T3</td><td>Spike + Design</td></tr>
-            <tr><td>T4</td><td>Build core (Engine 100% DONE)</td></tr>
-            <tr><td>T5</td><td><span class="tag tag-red">KÝ + FREEZE + Deploy</span></td></tr>
-            <tr><td>T6</td><td>CDO Integration Support</td></tr>
-            <tr><td>W12</td><td>Chaos + Eval + Pitch</td></tr>
+            <tr><td>Engine</td><td>3-Sigma Prebuild — <span class="tag tag-green">100%</span></td></tr>
+            <tr><td>API</td><td>FastAPI /v1/detect + /v1/verify</td></tr>
+            <tr><td>Tests</td><td>10 scenarios, Precision 1.0, FP 0%</td></tr>
+            <tr><td>Contracts</td><td>3/3 drafted (Telemetry, AI API, Deploy)</td></tr>
+            <tr><td>Docs</td><td>Requirements, Design, Spec, Eval, ADRs</td></tr>
+            <tr><td>Diagrams</td><td>Draw.io (Architecture, Safety Loop, Topology)</td></tr>
+            <tr><td>GitHub</td><td>Public repo — tf4-aio-03-foresight-lens</td></tr>
           </table>
         </div>
-        <div class="card">
-          <h3>️ CDO</h3>
+        <div class="card card-warning">
+          <h3><i data-lucide="square" style="width:16px;height:16px;vertical-align:-2px;color:var(--ink3)"></i> CÒN LẠI (W11-W12)</h3>
           <table class="tbl">
-            <tr><td>T2</td><td>Kickoff + Chọn angle</td></tr>
-            <tr><td>T3</td><td>Design platform</td></tr>
-            <tr><td>T4</td><td>Base IaC</td></tr>
-            <tr><td>T5</td><td><span class="tag tag-red">KÝ contracts</span></td></tr>
-            <tr><td>W12</td><td>Integrate + E2E + Pitch</td></tr>
+            <tr><td>T4</td><td>Demo + Debrief với anh Khánh</td></tr>
+            <tr><td>T5</td><td><span class="tag tag-red">KÝ + FREEZE contracts</span></td></tr>
+            <tr><td>T6</td><td>CDO Integration Support</td></tr>
+            <tr><td>W12</td><td>Chaos Test + Final Eval + Pitch</td></tr>
           </table>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>25 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>27 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 26 — Next Steps
+     SLIDE 28 — Next Steps
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-26">
+<section class="slide" id="slide-28">
   <div class="content">
-    <div class="reveal"><div class="eyebrow">Next Steps</div></div>
-    <div class="reveal reveal-delay-1"><h2>Tối Nay → Sáng Mai</h2></div>
+    <div class="reveal"><div class="eyebrow">Deliverables</div></div>
+    <div class="reveal reveal-delay-1"><h2>Bàn Giao Cho CDO</h2></div>
     <div class="reveal reveal-delay-2">
-      <div class="grid-2">
-        <div class="card">
-          <h3> Tối nay</h3>
-          <p style="line-height:2">
-             Gửi debrief<br>
-             29 mục confirm<br>
-            ⬜ CDO đọc brief
-          </p>
+      <div class="grid-3">
+        <div class="card" style="text-align:center">
+          <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px;color:var(--accent)"><i data-lucide="file-json"></i></div>
+          <h3>API Contract</h3>
+          <p style="font-size:0.82rem">POST /v1/detect<br>POST /v1/verify<br>Headers: X-Tenant-Id + IAM SigV4<br>P99 &lt; 500ms · 100 RPS</p>
         </div>
-        <div class="card">
-          <h3>️ Sáng mai</h3>
-          <p style="line-height:2">
-            ⬜ Mentor confirm → design<br>
-            ✅ Engine 100% Prebuild<br>
-            ⬜ Requirements.md
-
-          </p>
+        <div class="card" style="text-align:center">
+          <div class="icon-circle" style="background:rgba(59,130,246,0.12);margin:0 auto 10px;color:var(--blue)"><i data-lucide="activity"></i></div>
+          <h3>Telemetry Contract</h3>
+          <p style="font-size:0.82rem">3 signals: cpu_usage_percent,<br>memory_usage_percent,<br>active_connections<br>RFC3339 UTC · tenant_id bắt buộc</p>
+        </div>
+        <div class="card" style="text-align:center">
+          <div class="icon-circle" style="background:rgba(34,197,94,0.12);margin:0 auto 10px;color:var(--green)"><i data-lucide="server"></i></div>
+          <h3>Deploy Contract</h3>
+          <p style="font-size:0.82rem">Lambda + API Gateway <span style="font-size:0.8em;color:var(--text-muted);">(Opt for Free Tier)</span><br>DynamoDB cho Audit Log<br>Budget $200/tháng<br>Fail-open fallback</p>
         </div>
       </div>
     </div>
     <div class="reveal reveal-delay-3">
-      <div class="card card-warning" style="margin-top:16px;text-align:center">
-        <p><strong style="color:var(--accent)">T5 chiều:</strong> Docs approved + Contracts ký + Engine deployed.</p>
+      <div class="card" style="margin-top:16px;text-align:center;border-color:rgba(59,130,246,0.2)">
+        <p><strong>GitHub (Public):</strong> <code>github.com/NguyenHuuDinh135/tf4-aio-03-foresight-lens</code></p>
       </div>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>26 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>29 / 29</span></div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     SLIDE 27 — Q&A
+     SLIDE 29 — Q&A
      ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-27">
+<section class="slide" id="slide-29">
   <div class="grid-pattern"></div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -1316,15 +1386,20 @@ h3 {
     </div>
     <div class="reveal reveal-delay-1">
       <p style="font-size:1.15rem;color:var(--ink2);margin-bottom:8px">
-        Evidence: <code>tf4-evidence/</code>
+        Nhóm AIO-03 · Task Force 4
       </p>
-      <p style="font-size:0.95rem;color:var(--ink3)">
-        <code>python3 tf4_evidence.py</code>
+      <p style="font-size:0.95rem;color:var(--ink3);margin-bottom:12px">
+        Engine: <code>pytest tf4_evidence.py -v</code>
+      </p>
+      <p style="font-size:0.88rem;color:var(--ink3)">
+        GitHub: <code>github.com/NguyenHuuDinh135/tf4-aio-03-foresight-lens</code>
       </p>
     </div>
   </div>
-  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>27 / 27</span></div>
+  <div class="slide-footer"><span>TF4 Foresight Lens</span><span>29 / 29</span></div>
 </section>
+
+
 
 <!-- ═══════════════════════════════════════════════════════
      JAVASCRIPT — Navigation, Animations, Progress
@@ -1425,6 +1500,10 @@ h3 {
     }
   });
 })();
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from typing import Optional
 
-from .models import DetectRequest, DetectResponse, VerifyRequest, VerifyResponse
+from .models import PredictRequest, PredictResponse
 from .engine import AnomalyDetector
 from .audit import AuditLogger
 
@@ -18,9 +18,9 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors(), "body": exc.body},
     )
 
-@app.post("/v1/detect", response_model=DetectResponse)
-async def detect_anomaly(
-    request: DetectRequest,
+@app.post("/v1/predict", response_model=PredictResponse)
+async def predict_capacity(
+    request: PredictRequest,
     x_tenant_id: str = Header(..., alias="X-Tenant-Id"),
     authorization: str = Header(..., alias="Authorization")
 ):
@@ -34,42 +34,18 @@ async def detect_anomaly(
     response_data = {
         "anomaly": anomaly,
         "severity": severity,
-        "suggested_action": suggested_action,
+        "recommendation": suggested_action,
         "reasoning": reasoning,
         "confidence": confidence
     }
     
     audit_id = audit_logger.log_decision(x_tenant_id, request.model_dump(), response_data)
     
-    return DetectResponse(
+    return PredictResponse(
         anomaly=anomaly,
         severity=severity,
-        suggested_action=suggested_action,
+        recommendation=suggested_action,
         reasoning=reasoning,
         confidence=confidence,
         audit_id=audit_id
-    )
-
-@app.post("/v1/verify", response_model=VerifyResponse)
-async def verify_state(
-    request: VerifyRequest,
-    x_tenant_id: str = Header(..., alias="X-Tenant-Id")
-):
-    # Run 3-sigma on post_state to check if metrics returned to normal
-    anomaly, severity, _, _, _ = detector.detect_drift(
-        tenant_id=x_tenant_id,
-        signals=request.post_state.signal_window
-    )
-    
-    if anomaly:
-        return VerifyResponse(
-            success=False,
-            regression_detected=True,
-            next_action="ESCALATE"
-        )
-    
-    return VerifyResponse(
-        success=True,
-        regression_detected=False,
-        next_action="DONE"
     )

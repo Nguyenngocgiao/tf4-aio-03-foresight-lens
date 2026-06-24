@@ -26,7 +26,7 @@
 - **Run procedure**:
   1. Load dữ liệu giả lập có nhồi nhiễu (noise) và chu kỳ (seasonality).
   2. Bơm 4 Root Causes (CPU, Memory, Queue, Connection) vào data.
-  3. Kích hoạt thuật toán 3-sigma để tìm thời điểm phát hiện.
+  3. Chạy A/B/C testing đối chứng 3 thuật toán (3-Sigma, EWMA, Isolation Forest).
   4. Record metric.
 - **Metrics measured**: precision · recall · F1 · P50/P99 latency · cost/call
 
@@ -52,7 +52,21 @@ Dựa trên kết quả chạy mô phỏng tự động từ script `tf4-evidenc
 ![Metric Priority](../xbrain-learner/tf4-evidence/evidence/metric_priority_multi_root.png)
 *(Biểu đồ trên: Phân tích Metric Priority. Chứng minh rạch ròi rằng bất kể là lỗi gì (Root cause nào), thì `latency` và `queue_depth` luôn là 2 chỉ số báo hiệu sớm nhất, trước cả khi CPU/Memory chết).*
 
-### 3.1 Confusion matrix
+### 3.1 Algorithm Evaluation (Đang tiến hành)
+
+Thiết kế ban đầu của team là sử dụng `EWMA + Isolation Forest`. Tuy nhiên, kết quả test thực tế (A/B/C testing trên 100 windows) đã dẫn đến đề xuất "quay xe":
+
+| Thuật toán | F1 Score | FP Rate (Báo động giả) | Compute Latency |
+|---|---|---|---|
+| **3-Sigma** | ~ 1.0 | **0%** | **< 1 ms** |
+| **Isolation Forest** | ~ 1.0 | > 0% (nhạy cảm nhiễu) | ~ 20 ms (nặng nhất) |
+| **EWMA** | Thấp hơn | > 0% | < 1 ms |
+
+**Đề xuất**: Kết quả sơ bộ cho thấy 3-Sigma có ưu thế về độ trễ và tỷ lệ báo động giả (FP=0%), phù hợp làm baseline. Tuy nhiên Isolation Forest có thể mạnh hơn ở các pattern phức tạp. Chưa đưa ra quyết định cuối cùng, chờ thảo luận cùng CDO.
+
+![Algorithm Evaluation](../xbrain-learner/tf4-evidence/evidence/algorithm_comparison.png)
+
+### 3.2 Confusion matrix
 
 ```
                 Predicted

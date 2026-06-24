@@ -29,7 +29,7 @@
 
 ---
 
-## Endpoint 1: `POST /v1/detect`
+## Endpoint 1: `POST /v1/predict`
 
 **Mục đích**: detect anomaly + suggest action từ telemetry signals.
 
@@ -78,7 +78,10 @@
 |---|---|---|
 | `anomaly` | bool | True nếu detect anomaly |
 | `severity` | float 0.0-1.0 | Severity score |
-| `suggested_action` | enum | `SCALE_UP` / `ROLLBACK` / `ALERT_ONLY` / `INVESTIGATE` |
+| `recommendation.action_verb` | enum | `SCALE_UP` / `ROLLBACK` / `RESTART` / `INVESTIGATE` |
+| `recommendation.target` | string | Target resource (e.g., "payment-gw ECS Service") |
+| `recommendation.from_to` | string | State transition (e.g., "3 tasks -> 5 tasks") |
+| `recommendation.evidence_link` | string | URL tới dashboard/log query chứng minh |
 | `reasoning` | string (≤300 chars) | Human-readable rationale |
 | `confidence` | float 0.0-1.0 | Model confidence - CDO dùng cho gating |
 | `audit_id` | UUID | Reference cho audit trail lookup |
@@ -89,8 +92,13 @@
 {
   "anomaly": true,
   "severity": 0.78,
-  "suggested_action": "SCALE_UP",
-  "reasoning": "Latency tăng 50% trong 1 phút sau deploy v2.3.1 - likely correlated.",
+  "recommendation": {
+    "action_verb": "SCALE_UP",
+    "target": "payment-gw ECS Service",
+    "from_to": "Current -> +2 Tasks",
+    "evidence_link": "https://dashboard.internal/metrics/payment-gw/cpu"
+  },
+  "reasoning": "CPU drift detected. Scale ECS Service cho payment-gw.",
   "confidence": 0.82,
   "audit_id": "audit-xyz789"
 }
@@ -113,34 +121,7 @@
 | `429` | Rate-limited | Exponential backoff (1s → 2s → 4s ...) |
 | `503` | AI engine unavailable | Fallback to rule-based alert (CDO **bắt buộc** có fallback path) |
 
----
 
-## Endpoint 2: `POST /v1/verify`
-
-**Mục đích**: verify state sau khi CDO execute 1 action (chỉ dùng cho engine type Self-Heal có action).
-
-### Request body
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `action_taken.type` | enum | ✓ | Action type đã execute |
-| `action_taken.params` | object | ✓ | Params dùng cho action |
-| `action_taken.ts` | RFC3339 | ✓ | Khi action execute |
-| `post_state.signal_window` | array | ✓ | Signals sau action (verify window) |
-
-### Response body
-
-| Field | Type | Description |
-|---|---|---|
-| `success` | bool | Action có thành công không |
-| `regression_detected` | bool | Có regression nào không (vd metric khác bị tệ đi) |
-| `next_action` | enum | `DONE` / `RETRY` / `ESCALATE` |
-
-### SLA
-
-- P99 latency < 800 ms
-
----
 
 ## Open questions
 

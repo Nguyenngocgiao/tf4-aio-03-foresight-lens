@@ -55,6 +55,42 @@
 | **Emit point** | ALB / Nginx metrics |
 | **Used for** | Correlate giữa traffic spike và resource exhaustion |
 
+### Signal 4: `db_connection_pool_pct`
+
+| Attribute | Value |
+|---|---|
+| **Type** | gauge |
+| **Labels** | service, db_type (e.g. postgres, mysql), region, tenant_id |
+| **Unit** | percentage (0-100) |
+| **Frequency** | 1 phút |
+| **Emit point** | RDS CloudWatch Metrics → CDO Ingestion → AI API |
+| **Retention** | 7 ngày hot |
+| **Used for** | Phát hiện cạn kiệt Connection Pool của Database do slow queries hoặc Cache Stampede |
+
+### Signal 5: `queue_depth`
+
+| Attribute | Value |
+|---|---|
+| **Type** | gauge |
+| **Labels** | service, queue_name, region, tenant_id |
+| **Unit** | count |
+| **Frequency** | 1 phút |
+| **Emit point** | SQS CloudWatch Metrics → CDO Ingestion → AI API |
+| **Retention** | 7 ngày hot |
+| **Used for** | Đo lường mức độ nghẽn cổ chai (backlog) của worker consuming message (ví dụ Ledger worker) |
+
+### Signal 6: `cache_hit_rate_pct`
+
+| Attribute | Value |
+|---|---|
+| **Type** | gauge |
+| **Labels** | service, cache_type (e.g. redis), region, tenant_id |
+| **Unit** | percentage (0-100) |
+| **Frequency** | 1 phút |
+| **Emit point** | ElastiCache CloudWatch Metrics → CDO Ingestion → AI API |
+| **Retention** | 7 ngày hot |
+| **Used for** | Phát hiện Cache Miss Spike dẫn đến quá tải trực tiếp xuống RDS |
+
 ---
 
 ## Cross-cutting requirements
