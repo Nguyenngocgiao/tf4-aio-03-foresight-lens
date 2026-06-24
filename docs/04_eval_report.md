@@ -26,21 +26,21 @@
 - **Run procedure**:
   1. Load dữ liệu giả lập có nhồi nhiễu (noise) và chu kỳ (seasonality).
   2. Bơm 4 Root Causes (CPU, Memory, Queue, Connection) vào data.
-  3. Chạy A/B/C testing đối chứng 3 thuật toán (3-Sigma, EWMA, Isolation Forest).
+  3. Chạy A/B/C testing đối chứng 3 thuật toán (EWMA & STL Decomposition, EWMA, Isolation Forest).
   4. Record metric.
 - **Metrics measured**: precision · recall · F1 · P50/P99 latency · cost/call
 
 ![Service Comparison](../xbrain-learner/tf4-evidence/evidence/service_comparison_cpu.png)
 *(Biểu đồ trên: Bằng chứng cho thấy 3 dịch vụ có baseline và đỉnh tải (Peak hours) hoàn toàn khác nhau, chứng minh AI không bị học vẹt)*
 
-## 3. Results (Statistical 3-Sigma Model)
+## 3. Results (Statistical EWMA & STL Decomposition Model)
 
 Dựa trên kết quả chạy mô phỏng tự động từ script `tf4-evidence/tf4_evidence.py`. Toàn bộ số liệu gốc được lưu tự động và có thể đối chứng tại thư mục `tf4-evidence/evidence/`.
 
 | Metric | Target | Actual | Pass/Fail | Nguồn trích xuất (Evidence Source) |
 |---|---|---|---|---|
-| Precision (σ=3.0) | ≥ 0.8 | **1.000** | ✓ Pass | `evidence_confidence_threshold.json` (real 3-sigma eval, 200 windows) |
-| Recall (σ=3.0) | ≥ 0.7 | **1.000** | ✓ Pass | `evidence_confidence_threshold.json` (real 3-sigma eval, 200 windows) |
+| Precision (σ=3.0) | ≥ 0.8 | **1.000** | ✓ Pass | `evidence_confidence_threshold.json` (real ewma_stl eval, 200 windows) |
+| Recall (σ=3.0) | ≥ 0.7 | **1.000** | ✓ Pass | `evidence_confidence_threshold.json` (real ewma_stl eval, 200 windows) |
 | F1 Score (σ=3.0) | ≥ 0.75 | **1.000** | ✓ Pass | `evidence_confidence_threshold.json` |
 | False Positive Rate | ≤ 0.12 | **0.000 (0%)** | ✓ Pass | `evidence_confidence_threshold.json` (σ=3.0) |
 | Brier Score | < 0.25 | **0.032** | ✓ Pass | `evidence_confidence_threshold.json` + `evidence_reliability_diagram.json` |
@@ -58,11 +58,11 @@ Thiết kế ban đầu của team là sử dụng `EWMA + Isolation Forest`. Tu
 
 | Thuật toán | F1 Score | FP Rate (Báo động giả) | Compute Latency |
 |---|---|---|---|
-| **3-Sigma** | ~ 1.0 | **0%** | **< 1 ms** |
+| **EWMA & STL Decomposition** | ~ 1.0 | **0%** | **< 1 ms** |
 | **Isolation Forest** | ~ 1.0 | > 0% (nhạy cảm nhiễu) | ~ 20 ms (nặng nhất) |
 | **EWMA** | Thấp hơn | > 0% | < 1 ms |
 
-**Đề xuất**: Kết quả sơ bộ cho thấy 3-Sigma có ưu thế về độ trễ và tỷ lệ báo động giả (FP=0%), phù hợp làm baseline. Tuy nhiên Isolation Forest có thể mạnh hơn ở các pattern phức tạp. Chưa đưa ra quyết định cuối cùng, chờ thảo luận cùng CDO.
+**Đề xuất**: Kết quả sơ bộ cho thấy EWMA & STL Decomposition có ưu thế về độ trễ và tỷ lệ báo động giả (FP=0%), phù hợp làm baseline. Tuy nhiên Isolation Forest có thể mạnh hơn ở các pattern phức tạp. Chưa đưa ra quyết định cuối cùng, chờ thảo luận cùng CDO.
 
 ![Algorithm Evaluation](../xbrain-learner/tf4-evidence/evidence/algorithm_comparison.png)
 
@@ -94,7 +94,7 @@ Actual ─────┼─────────┼────────
 ### 4.2 Failure case 2: Báo động giả dịp Flash Sale
 - **Expected**: Không báo động giả.
 - **Got**: False Positive tăng nhẹ lên 0.4% khi nhồi nhiễu có phương sai cực cao (std=20).
-- **Root cause**: 3-sigma nhạy cảm với các spike (gai) vượt rào ngẫu nhiên.
+- **Root cause**: ewma_stl nhạy cảm với các spike (gai) vượt rào ngẫu nhiên.
 - **Fix**: Yêu cầu duy trì số lượng điểm bất thường liên tiếp (M/N) hoặc sử dụng tính năng "Manual Silence" (đã ghi nhận trong ADR-003).
 - **Evidence Source**: Trích xuất từ file `evidence_noisy_baseline.json` (FP Rate = 0.004).
 

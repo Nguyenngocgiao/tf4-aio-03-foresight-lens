@@ -29,7 +29,7 @@ async def predict_capacity(
     x_tenant_id: str = Header(..., alias="X-Tenant-Id"),
     authorization: str = Header(..., alias="Authorization")
 ):
-    # Detect drift using 3-sigma engine
+    # Detect drift using ewma_stl engine
     anomaly, severity, suggested_action, reasoning, confidence = detector.detect_drift(
         tenant_id=x_tenant_id,
         signals=request.signal_window

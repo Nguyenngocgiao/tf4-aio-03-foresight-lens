@@ -19,7 +19,7 @@
 
 ## 1. Model architecture
 
-- **Pattern chọn**: Statistical Analysis Engine (3-Sigma Rolling Window) thay vì LLM.
+- **Pattern chọn**: Statistical Analysis Engine (EWMA & STL Decomposition Rolling Window) thay vì LLM.
 - **Lý do**: Đáp ứng chính xác bài toán phát hiện bất thường (Anomaly Detection) cho Time-series data. Dựa trên bằng chứng thống kê (ANOVA, Kruskal-Wallis), phương pháp này phát hiện Capacity Exhaustion với Lead Time > 100 phút, vượt yêu cầu 15 phút. Khả năng cô lập nhiễu với False Positive < 1%.
 - **Alternatives rejected**: LLM / Agentic. Bị reject vì latency cao, tốn kém (Cost), và không phù hợp với bản chất dữ liệu chuỗi thời gian (cần tính toán số học chính xác thay vì sinh text).
 
@@ -28,7 +28,7 @@
 | Field | Value |
 |---|---|
 | Provider | Python / NumPy (In-house) |
-| Model ID | `tf4-3sigma-rolling-v1` |
+| Model ID | `tf4-ewma-stl-v1` |
 | Region | All regions (Deploy as container) |
 | Context window | 1000 data points (Rolling Window) |
 | Cost/1k input tokens | $0 (Local execution) |
@@ -202,7 +202,7 @@ Toàn bộ payload nhạy cảm không được lưu thô, mà dùng Hashing (SH
   "ts": "2026-06-25T10:30:00Z",
   "correlation_id": "req-1234",
   "tenant_id": "tnt-abc",
-  "model_version": "tf4-3sigma-rolling-v1",
+  "model_version": "tf4-ewma-stl-v1",
   "input_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "data_encryption": "AWS KMS CMK",
   "decision": "SCALE_UP",

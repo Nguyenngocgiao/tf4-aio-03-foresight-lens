@@ -10,14 +10,14 @@
 
 *(Sơ đồ có thể chỉnh sửa: [02_solution_design.drawio](../diagrams/02_solution_design.drawio))*
 
-*Diagram caption: Luồng xử lý một chiều, Engine nhận dữ liệu chuỗi thời gian, áp dụng thuật toán Rolling 3-Sigma để tìm bất thường và log lại mọi quyết định.*
+*Diagram caption: Luồng xử lý một chiều, Engine nhận dữ liệu chuỗi thời gian, áp dụng thuật toán Rolling EWMA & STL Decomposition để tìm bất thường và log lại mọi quyết định.*
 
 ## 2. Component breakdown
 
 | Component | Responsibility | Tech choice | Why |
 |---|---|---|---|
 | **API Layer** | Nhận tín hiệu, validate schema và tenant | FastAPI + Pydantic | Nhanh, type-safe, built-in data validation. |
-| **Detection Engine** | Phân tích chuỗi thời gian, phát hiện cạn kiệt | Python / NumPy (3-Sigma) | Latency < 10ms, cost $0, toán học chính xác 100%. |
+| **Detection Engine** | Phân tích chuỗi thời gian, phát hiện cạn kiệt | Python / NumPy (EWMA & STL Decomposition) | Latency < 10ms, cost $0, toán học chính xác 100%. |
 | **Audit Logger** | Ghi lại lịch sử quyết định + Input Hash | JSONL Logger | Auditable, dễ integrate với AWS CloudWatch/S3. |
 | **Decision Router** | Phân loại hành động (Scale / Investigate) | Static Thresholding | Dễ hiểu (Explainable), chặn cảnh báo nhiễu. |
 
@@ -25,19 +25,19 @@
 
 1. **Step 1 (Ingestion)**: Team CDO gửi payload chứa mảng `signal_window` (vd: CPU/Memory trong 60 phút) qua `POST /v1/detect`.
 2. **Step 2 (Validation)**: FastAPI validate `X-Tenant-Id` và JSON schema. Nếu thiếu hoặc sai kiểu dữ liệu -> Reject `HTTP 422`.
-3. **Step 3 (Processing)**: Engine tính toán Baseline (Mean) và Độ lệch chuẩn (StdDev) của dữ liệu. Nếu điểm dữ liệu cuối vượt qua `Mean + 3*StdDev`, kích hoạt Anomaly.
+3. **Step 3 (Processing)**: Engine tính toán Baseline (Mean) và Độ lệch chuẩn (StdDev) của dữ liệu. Nếu điểm dữ liệu cuối vượt qua `EWMA Drift + STL Residual Threshold`, kích hoạt Anomaly.
 4. **Step 4 (Scoring)**: Tính toán mức độ tự tin (Confidence). Nếu `Confidence < 0.7`, hạ mức ưu tiên xuống `ALERT_ONLY`.
 5. **Step 5 (Audit)**: Toàn bộ quá trình được hash (`input_hash`) và ghi vào Audit log.
 6. **Step 6 (Response)**: Trả về JSON cho CDO với `suggested_action` và `reasoning`.
 
 ## 4. Alternatives considered (KEY)
 
-### 4.1 AI Pattern: Single-shot LLM vs Statistical Model (3-Sigma)
+### 4.1 AI Pattern: Single-shot LLM vs Statistical Model (EWMA & STL Decomposition)
 
 - **Option A (LLM)**: Đưa chuỗi dữ liệu vào prompt cho Claude 3 Sonnet phân tích. 
   - Pros: Có thể sinh ra nguyên nhân (RCA) bằng tiếng Anh trôi chảy. 
   - Cons: Cost siêu đắt (vượt xa $200), độ trễ cao (hàng giây), dễ bị ảo giác (hallucination) nhận diện sai con số.
-- **Option B (Statistical 3-Sigma)**: Tính toán rolling window bằng toán học thuần túy.
+- **Option B (Statistical EWMA & STL Decomposition)**: Tính toán rolling window bằng toán học thuần túy.
   - Pros: Nhanh (< 500ms), giải thích được bằng công thức, cost siêu rẻ (~$0).
   - Cons: Không tạo ra được các phân tích RCA dài bằng ngôn ngữ tự nhiên.
 - ✅ **Chosen**: **Option B**. Reason: Phù hợp hoàn hảo với Constraint (Budget < $200) và bài toán Time-series Data. Sự chính xác toán học quan trọng hơn văn bản.

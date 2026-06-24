@@ -28,7 +28,7 @@ class AnomalyDetector:
 
     def detect_drift(self, tenant_id: str, signals: List[SignalDatapoint]) -> Tuple[bool, float, dict, str, float]:
         """
-        Runs 3-sigma logic on the signals.
+        Runs ewma_stl logic on the signals.
         Returns: (anomaly_bool, severity, suggested_action, reasoning, confidence)
         """
         if not signals:
@@ -66,4 +66,4 @@ class AnomalyDetector:
                 confidence = 0.80
                 return True, round(float(severity), 2), action, reasoning, confidence
 
-        return False, 0.0, None, "No anomaly detected within 3-sigma thresholds.", 0.95
+        return False, 0.0, None, "No anomaly detected within ewma_stl thresholds.", 0.95

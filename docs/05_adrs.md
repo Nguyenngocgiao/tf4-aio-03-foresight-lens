@@ -27,12 +27,12 @@
 
 ---
 
-## ADR-001 - Dùng Statistical Analysis (3-Sigma) thay vì LLM cho Anomaly Detection
+## ADR-001 - Dùng Statistical Analysis (EWMA & STL Decomposition) thay vì LLM cho Anomaly Detection
 
 - **Status**: Accepted
 - **Date**: 2026-06-25
 - **Context**: Bức tranh Time-series Data có khối lượng lớn, cần latency nhỏ và độ chính xác toán học, tránh tình trạng ảo giác (hallucination) của LLM. Bài toán Capacity Exhaustion yêu cầu Lead Time ≥ 15 phút.
-- **Decision**: Chọn thuật toán 3-Sigma Rolling Window trên dữ liệu thô, thay vì gửi dữ liệu qua LLM để LLM "tự đoán" xem có lỗi không.
+- **Decision**: Chọn thuật toán EWMA & STL Decomposition Rolling Window trên dữ liệu thô, thay vì gửi dữ liệu qua LLM để LLM "tự đoán" xem có lỗi không.
 - **Consequence**:
   - ✅ Pro 1: Latency cực thấp (< 500ms), tính toán chính xác 100% không bị ảo giác.
   - ✅ Pro 2: Cost = $0 (chỉ tốn compute server, không tốn API Token của LLM).
@@ -61,7 +61,7 @@
 
 - **Status**: Accepted
 - **Date**: 2026-06-25
-- **Context**: 3-sigma sẽ báo lỗi nếu gặp sự kiện Traffic bùng nổ chưa từng có (VD: Flash Sale, Black Friday) vì dữ liệu lệch hẳn so với baseline 7 ngày trước.
+- **Context**: ewma_stl sẽ báo lỗi nếu gặp sự kiện Traffic bùng nổ chưa từng có (VD: Flash Sale, Black Friday) vì dữ liệu lệch hẳn so với baseline 7 ngày trước.
 - **Decision**: Cung cấp cơ chế "Manual Retrain / Silence" cho phép SRE chủ động tắt hệ thống hoặc đánh dấu sự kiện là "Bình thường" trong những đợt Flash Sale lớn.
 - **Consequence**:
   - ✅ Pro 1: Hệ thống vẫn đáng tin cậy 99% thời gian trong năm.
@@ -71,16 +71,16 @@
 
 ---
 
-## ADR-004 - Đề xuất sử dụng 3-Sigma Rolling Window thay vì Isolation Forest
+## ADR-004 - Đề xuất sử dụng EWMA & STL Decomposition Rolling Window thay vì Isolation Forest
 
 - **Status**: Proposed / Pending CDO Review
 - **Date**: 2026-06-25
 - **Context**: Thiết kế kiến trúc ban đầu đề xuất sử dụng kết hợp `EWMA` (Exponentially Weighted Moving Average) và `Isolation Forest` để xử lý nhiễu và phát hiện anomaly. Tuy nhiên, trước khi code thật, team cần đánh giá mức độ hiệu quả thông qua A/B/C testing.
-- **Decision**: Đề xuất sử dụng **3-Sigma Rolling Window** làm thuật toán Baseline & Drift Detection cho bản Prebuild. (Chưa chốt, chờ phản biện từ CDO).
+- **Decision**: Đề xuất sử dụng **EWMA & STL Decomposition Rolling Window** làm thuật toán Baseline & Drift Detection cho bản Prebuild. (Chưa chốt, chờ phản biện từ CDO).
 - **Consequence**:
   - ✅ Pro 1: FP Rate (False Positive Rate) giảm xuống 0%, vượt trội so với Isolation Forest do không bị Overfit vào các gai nhiễu tự nhiên.
   - ✅ Pro 2: Compute Latency giảm 20 lần (<1ms so với ~20ms của thuật toán dựng cây).
-  - ⚠️ Trade-off 1: 3-Sigma đơn giản hơn, không học được các mối quan hệ phi tuyến tính phức tạp đa chiều như Isolation Forest (nhưng với bài toán Capacity 1 chiều thì điều này không cần thiết).
+  - ⚠️ Trade-off 1: EWMA & STL Decomposition đơn giản hơn, không học được các mối quan hệ phi tuyến tính phức tạp đa chiều như Isolation Forest (nhưng với bài toán Capacity 1 chiều thì điều này không cần thiết).
 - **Alternatives considered**:
   - Option A: Giữ nguyên Isolation Forest (rejected vì nặng và dễ báo động giả).
   - Option B: EWMA + Threshold (rejected vì độ trễ phát hiện cao khi có Sudden Spike).

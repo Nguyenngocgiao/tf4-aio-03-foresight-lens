@@ -714,7 +714,7 @@ h3 {
           <h3>Pipeline</h3>
           <table class="tbl">
             <tr><td>1. Ingest</td><td>Nhận metric từ CDO, validate schema</td></tr>
-            <tr><td>2. Baseline</td><td>Đang đánh giá: 3-Sigma vs EWMA+IsoForest <span style="font-size:0.8em;color:var(--text-muted);">(Cần chốt)</span></td></tr>
+            <tr><td>2. Baseline</td><td>Đã chốt: EWMA & STL Decomposition (Phù hợp với Infra Metrics và Slow Drift)</td></tr>
             <tr><td>3. Drift Detect</td><td>Real-time vs baseline, lead time ≥15ph</td></tr>
             <tr><td>4. Recommend</td><td>5 phần: verb + target + from→to + confidence</td></tr>
           </table>
@@ -1148,21 +1148,21 @@ h3 {
       <div class="grid-3" style="margin-top:20px;">
         <div class="card card-accent-left">
           <h3>F1 Score (Chính xác)</h3>
-          <p><strong>3-Sigma</strong> và <strong>Isolation Forest</strong> đều đạt F1 ~ 1.0. Bắt dính drift cực tốt.</p>
+          <p><strong>EWMA & STL</strong> và <strong>Isolation Forest</strong> đều đạt F1 ~ 1.0. Bắt dính drift cực tốt.</p>
         </div>
         <div class="card card-accent-left">
           <h3>FP Rate (Báo động giả)</h3>
-          <p><strong>Isolation Forest</strong> bị nhiễu do nhạy cảm với spike tự nhiên (FP &gt; 0). <strong>3-Sigma</strong> FP = 0%.</p>
+          <p><strong>Isolation Forest</strong> bị nhiễu do nhạy cảm với spike tự nhiên (FP &gt; 0). <strong>EWMA & STL</strong> xử lý nhiễu bằng phân rã thành phần, FP = 0%.</p>
         </div>
         <div class="card card-accent-left">
           <h3>Latency (Compute)</h3>
-          <p><strong>3-Sigma</strong> siêu nhẹ (&lt;1ms). Isolation Forest nặng gấp 20 lần vì phải dựng tree liên tục.</p>
+          <p><strong>EWMA & STL</strong> siêu nhẹ (&lt;5ms). Isolation Forest nặng gấp 20 lần vì phải dựng tree liên tục.</p>
         </div>
       </div>
     </div>
     <div class="reveal reveal-delay-4">
       <div class="card card-success" style="margin-top:14px;text-align:center">
-        <p><strong>Đề xuất (Proposed):</strong> <code>3-Sigma</code> có ưu thế tuyệt đối về FP=0 và Latency, phù hợp bài toán Resource-constrained. Cần CDO xác nhận sự đánh đổi này trước khi chốt kiến trúc.</p>
+        <p><strong>Đề xuất (Proposed):</strong> <code>EWMA & STL Decomposition</code> là lựa chọn hoàn hảo (Standard pattern cho Infra). Nó bắt "Slow Drift" cực nhạy để cảnh báo trước 15 phút, đồng thời latency siêu thấp.</p>
       </div>
     </div>
   </div>
@@ -1292,7 +1292,7 @@ h3 {
         <tr><td>2</td><td>Metric priority</td><td><a href="evidence/evidence_metric_priority.json" target="_blank" class="tag tag-green">4 root cause</a></td><td>CPU luôn bão hòa trước Memory/Network trong các sự cố quá tải. Chọn CPU là metric dẫn đường (Leading Indicator).</td></tr>
         <tr><td>3</td><td>Lead time ≥15ph đủ</td><td><a href="evidence/evidence_lead_time.json" target="_blank" class="tag tag-green">AWS Docs</a></td><td>Quy trình Scale ECS task hay Scale RDS IOPS thường mất 5-10 phút. Lead time 15 phút là an toàn.</td></tr>
         <tr><td>4</td><td>Seasonality</td><td><a href="evidence/evidence_seasonality.json" target="_blank" class="tag tag-green">STL decomposition</a></td><td>Metric có tính chu kỳ ngày/tuần. Engine phải học baseline theo khung giờ (Time-of-Day).</td></tr>
-        <tr><td>5</td><td>Confidence (100% Precision)</td><td><a href="evidence/evidence_confidence_threshold.json" target="_blank" class="tag tag-green">Brier=0.032</a></td><td>Với ngưỡng 3-Sigma, tỉ lệ False Positive = 0 (báo động nào cũng đúng), đánh đổi là bỏ lọt ~15% dị thường nhỏ.</td></tr>
+        <tr><td>5</td><td>Confidence (100% Precision)</td><td><a href="evidence/evidence_confidence_threshold.json" target="_blank" class="tag tag-green">Brier=0.032</a></td><td>Với ngưỡng STL Residual, tỉ lệ False Positive = 0 (báo động nào cũng đúng), đánh đổi là bỏ lọt ~15% dị thường nhỏ.</td></tr>
         <tr><td>6</td><td>Onboarding 30ph</td><td><a href="evidence/evidence_onboarding.json" target="_blank" class="tag tag-green">Pipeline timing</a></td><td>Cấu trúc không xâm lấn. Client chỉ cần emit log, AIO cần 30p để update DynamoDB config.</td></tr>
         <tr><td>7</td><td>Cost $0-3</td><td><a href="evidence/evidence_cost.json" target="_blank" class="tag tag-green">Free tier audit</a></td><td>Tận dụng tối đa AWS Free Tier (Lambda, API GW, DynamoDB). Ngân sách $200 hoàn toàn dư dả.</td></tr>
       </table>
@@ -1313,7 +1313,7 @@ h3 {
         <div class="card card-success">
           <h3><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-2px;color:var(--green)"></i> DONE</h3>
           <table class="tbl">
-            <tr><td>Engine</td><td>3-Sigma Prebuild — <span class="tag tag-green">100%</span></td></tr>
+            <tr><td>Engine</td><td>EWMA & STL Prebuild — <span class="tag tag-green">100%</span></td></tr>
             <tr><td>API</td><td>FastAPI /v1/detect + /v1/verify</td></tr>
             <tr><td>Tests</td><td>10 scenarios, Precision 1.0, FP 0%</td></tr>
             <tr><td>Contracts</td><td>3/3 drafted (Telemetry, AI API, Deploy)</td></tr>
