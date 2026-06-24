@@ -38,8 +38,9 @@
 |---|---|
 | **Replicas** | min 2, max 4 |
 | **Autoscale trigger 1** | Target CPU 70% |
-| **Autoscale trigger 2** | Target request count 1000 per task |
+| **Autoscale trigger 2** | Target request count 80 RPS per task |
 | **Scale-up cooldown** | 60 giây |
+| **Scale-down cooldown** | 300 giây |
 
 ## Secrets
 
@@ -49,6 +50,14 @@
 |---|---|
 | `AWS_REGION` | env var |
 
+## Storage & State (TF4 Requirement)
+
+| Aspect | Configuration |
+|---|---|
+| **Baseline Storage** | Amazon S3 (bucket được mã hóa KMS) |
+| **State** | Stateless engine. Mỗi request tự fetch baseline của service từ S3 (hoặc cache in-memory 5 phút). Nếu task restart, baseline không bị mất. |
+| **Baseline Refresh** | Manual upload file baseline mới vào S3 (1 lần/tuần). |
+
 ## Networking
 
 | Aspect | Configuration |
@@ -57,14 +66,18 @@
 | **ALB** | internal only (không public-facing) |
 | **Security group** | `tf-4-ai-engine-sg` |
 | **Ingress rules** | chỉ allow từ CDO platforms trong cùng task force (SG-to-SG reference) |
-| **Egress rules** | Không cần egress external (Engine chạy thuần toán học local) |
+| **Egress rules** | Cần egress tới AWS Services (CloudWatch ghi log, S3 đọc baseline) thông qua VPC Endpoint hoặc NAT Gateway. Không cần egress ra Internet public. |
 | **DNS** | resolve được trong VPC (route 53 private hosted zone) |
 
 ## Deployment topology diagram
 
-![Deployment Topology](../diagrams/deployment_topology.png)
-
-*(Sơ đồ có thể chỉnh sửa: [deployment_topology.drawio](../diagrams/deployment_topology.drawio))*
+```mermaid
+graph TD
+    Client["CDO Platforms (Payment, Fraud, Ledger)"] --> ALB["Internal ALB"]
+    ALB --> ECS["ECS Fargate Task (Foresight Lens API)"]
+    ECS --> S3["Amazon S3 (Baseline Storage)"]
+    ECS --> CW["CloudWatch (Audit Logs & Metrics)"]
+```
 
 ## Model Training Topology (Design-only)
 

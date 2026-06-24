@@ -23,8 +23,8 @@
 
 ## Rate limiting
 
-- **Per tenant**: N requests/minute (config trong API Gateway usage plan)
-- **Global**: M requests/minute (circuit breaker nếu vượt)
+- **Per tenant**: 600 requests/minute (config trong API Gateway usage plan)
+- **Global**: 6000 requests/minute (circuit breaker nếu vượt)
 - **Response on hit**: `429` với header `Retry-After: <seconds>`
 
 ---
@@ -47,9 +47,10 @@
 |---|---|---|---|
 | `signal_window` | array | ✓ | Time-series datapoints (BẮT BUỘC chứa dữ liệu của ≥ 120 phút gần nhất để AI có đủ context dự báo (Test window ≥ 2h). Thiếu -> 400 Bad Request) |
 | `signal_window[].ts` | RFC3339 | ✓ | Event timestamp UTC |
-| `signal_window[].signal_name` | string | ✓ | Tên signal (khớp với Telemetry Contract) |
+| `signal_window[].service_id` | string | ✓ | Service identifier (Bắt buộc để mapping với per-service baseline) |
+| `signal_window[].signal_name` | string | ✓ | Tên signal (Tương đương với `metric_type` trong Learner doc) |
 | `signal_window[].value` | float | ✓ | Measurement value |
-| `signal_window[].labels` | object | optional | Additional context labels |
+| `signal_window[].labels` | object | optional | Additional context labels. *Lưu ý: Engine sẽ validate sự đồng nhất giữa `labels.tenant_id` và header `X-Tenant-Id` để đảm bảo multi-tenant isolation.* |
 | `context.deployment_version` | string | ✓ | Current deploy SHA hoặc version tag |
 | `context.time_range.start_ts` | RFC3339 | ✓ | Analysis window start |
 | `context.time_range.end_ts` | RFC3339 | ✓ | Analysis window end |
@@ -59,8 +60,8 @@
 ```json
 {
   "signal_window": [
-    {"ts": "2026-06-25T10:00:00Z", "signal_name": "api_latency_ms", "value": 1200},
-    {"ts": "2026-06-25T10:01:00Z", "signal_name": "api_latency_ms", "value": 1800}
+    {"ts": "2026-06-25T10:00:00Z", "service_id": "payment-gw", "signal_name": "api_latency_ms", "value": 1200},
+    {"ts": "2026-06-25T10:01:00Z", "service_id": "payment-gw", "signal_name": "api_latency_ms", "value": 1800}
   ],
   "context": {
     "deployment_version": "v2.3.1",
