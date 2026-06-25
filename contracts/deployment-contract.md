@@ -110,7 +110,7 @@ Quá trình **Model Training** (Học baseline cho từng service) sẽ được
 
 | Aspect | Value |
 |---|---|
-| **Primary method** | ArgoCD rollback to previous git SHA |
+| **Primary method** | AWS CodeDeploy rollback to previous Task Definition |
 | **Secondary method** | ECS service revert (manual) |
 | **Target RTO** | < 60 giây |
 | **Auto-trigger** | Yes (khi abort criteria met trong canary rollout) |
@@ -130,7 +130,8 @@ Quá trình **Model Training** (Học baseline cho từng service) sẽ được
 | Aspect | Configuration |
 |---|---|
 | **OTel endpoint** | collector URL per CDO platform (config qua env var) |
-| **Log destination** | CloudWatch Logs (retention 14 ngày) |
+| **App Log destination** | CloudWatch Logs (retention 14 ngày) cho debug/info |
+| **Audit Log destination** | CloudWatch Logs (retention 3 năm, mã hóa KMS) cho Audit prediction calls |
 | **Metrics** | Đẩy qua CloudWatch |
 | **Traces** | OpenTelemetry → AWS X-Ray |
 
