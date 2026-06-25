@@ -2,722 +2,842 @@
   "signal_window": [
     {
       "ts": "2026-07-08T09:00:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.77
     },
     {
       "ts": "2026-07-08T09:01:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.28
     },
     {
       "ts": "2026-07-08T09:02:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.11
     },
     {
       "ts": "2026-07-08T09:03:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.72
     },
     {
       "ts": "2026-07-08T09:04:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.42
     },
     {
       "ts": "2026-07-08T09:05:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.07
     },
     {
       "ts": "2026-07-08T09:06:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.95
     },
     {
       "ts": "2026-07-08T09:07:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.85
     },
     {
       "ts": "2026-07-08T09:08:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.68
     },
     {
       "ts": "2026-07-08T09:09:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.18
     },
     {
       "ts": "2026-07-08T09:10:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.43
     },
     {
       "ts": "2026-07-08T09:11:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.07
     },
     {
       "ts": "2026-07-08T09:12:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.33
     },
     {
       "ts": "2026-07-08T09:13:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.74
     },
     {
       "ts": "2026-07-08T09:14:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.28
     },
     {
       "ts": "2026-07-08T09:15:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.98
     },
     {
       "ts": "2026-07-08T09:16:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.72
     },
     {
       "ts": "2026-07-08T09:17:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.05
     },
     {
       "ts": "2026-07-08T09:18:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.54
     },
     {
       "ts": "2026-07-08T09:19:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.0
     },
     {
       "ts": "2026-07-08T09:20:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.82
     },
     {
       "ts": "2026-07-08T09:21:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.04
     },
     {
       "ts": "2026-07-08T09:22:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.24
     },
     {
       "ts": "2026-07-08T09:23:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.63
     },
     {
       "ts": "2026-07-08T09:24:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.27
     },
     {
       "ts": "2026-07-08T09:25:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.69
     },
     {
       "ts": "2026-07-08T09:26:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.19
     },
     {
       "ts": "2026-07-08T09:27:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.98
     },
     {
       "ts": "2026-07-08T09:28:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.84
     },
     {
       "ts": "2026-07-08T09:29:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.82
     },
     {
       "ts": "2026-07-08T09:30:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.93
     },
     {
       "ts": "2026-07-08T09:31:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.3
     },
     {
       "ts": "2026-07-08T09:32:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.59
     },
     {
       "ts": "2026-07-08T09:33:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.86
     },
     {
       "ts": "2026-07-08T09:34:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.21
     },
     {
       "ts": "2026-07-08T09:35:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.21
     },
     {
       "ts": "2026-07-08T09:36:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.0
     },
     {
       "ts": "2026-07-08T09:37:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.21
     },
     {
       "ts": "2026-07-08T09:38:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 66.69
     },
     {
       "ts": "2026-07-08T09:39:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.51
     },
     {
       "ts": "2026-07-08T09:40:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.64
     },
     {
       "ts": "2026-07-08T09:41:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.38
     },
     {
       "ts": "2026-07-08T09:42:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.35
     },
     {
       "ts": "2026-07-08T09:43:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.57
     },
     {
       "ts": "2026-07-08T09:44:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.34
     },
     {
       "ts": "2026-07-08T09:45:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.06
     },
     {
       "ts": "2026-07-08T09:46:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.0
     },
     {
       "ts": "2026-07-08T09:47:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.82
     },
     {
       "ts": "2026-07-08T09:48:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.82
     },
     {
       "ts": "2026-07-08T09:49:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.13
     },
     {
       "ts": "2026-07-08T09:50:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 73.27
     },
     {
       "ts": "2026-07-08T09:51:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.1
     },
     {
       "ts": "2026-07-08T09:52:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.6
     },
     {
       "ts": "2026-07-08T09:53:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.47
     },
     {
       "ts": "2026-07-08T09:54:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.0
     },
     {
       "ts": "2026-07-08T09:55:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.86
     },
     {
       "ts": "2026-07-08T09:56:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.16
     },
     {
       "ts": "2026-07-08T09:57:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.28
     },
     {
       "ts": "2026-07-08T09:58:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.14
     },
     {
       "ts": "2026-07-08T09:59:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.94
     },
     {
       "ts": "2026-07-08T10:00:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.95
     },
     {
       "ts": "2026-07-08T10:01:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.0
     },
     {
       "ts": "2026-07-08T10:02:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.78
     },
     {
       "ts": "2026-07-08T10:03:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.4
     },
     {
       "ts": "2026-07-08T10:04:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.3
     },
     {
       "ts": "2026-07-08T10:05:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.53
     },
     {
       "ts": "2026-07-08T10:06:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.37
     },
     {
       "ts": "2026-07-08T10:07:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.2
     },
     {
       "ts": "2026-07-08T10:08:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.97
     },
     {
       "ts": "2026-07-08T10:09:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.55
     },
     {
       "ts": "2026-07-08T10:10:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.35
     },
     {
       "ts": "2026-07-08T10:11:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.99
     },
     {
       "ts": "2026-07-08T10:12:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.94
     },
     {
       "ts": "2026-07-08T10:13:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.75
     },
     {
       "ts": "2026-07-08T10:14:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.91
     },
     {
       "ts": "2026-07-08T10:15:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.03
     },
     {
       "ts": "2026-07-08T10:16:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.8
     },
     {
       "ts": "2026-07-08T10:17:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.57
     },
     {
       "ts": "2026-07-08T10:18:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.06
     },
     {
       "ts": "2026-07-08T10:19:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.93
     },
     {
       "ts": "2026-07-08T10:20:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.65
     },
     {
       "ts": "2026-07-08T10:21:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.93
     },
     {
       "ts": "2026-07-08T10:22:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.55
     },
     {
       "ts": "2026-07-08T10:23:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.95
     },
     {
       "ts": "2026-07-08T10:24:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.41
     },
     {
       "ts": "2026-07-08T10:25:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.6
     },
     {
       "ts": "2026-07-08T10:26:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.07
     },
     {
       "ts": "2026-07-08T10:27:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.66
     },
     {
       "ts": "2026-07-08T10:28:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.78
     },
     {
       "ts": "2026-07-08T10:29:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.57
     },
     {
       "ts": "2026-07-08T10:30:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.12
     },
     {
       "ts": "2026-07-08T10:31:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.48
     },
     {
       "ts": "2026-07-08T10:32:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.2
     },
     {
       "ts": "2026-07-08T10:33:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.74
     },
     {
       "ts": "2026-07-08T10:34:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.56
     },
     {
       "ts": "2026-07-08T10:35:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 72.56
     },
     {
       "ts": "2026-07-08T10:36:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 66.04
     },
     {
       "ts": "2026-07-08T10:37:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.61
     },
     {
       "ts": "2026-07-08T10:38:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.35
     },
     {
       "ts": "2026-07-08T10:39:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 65.65
     },
     {
       "ts": "2026-07-08T10:40:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.91
     },
     {
       "ts": "2026-07-08T10:41:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.19
     },
     {
       "ts": "2026-07-08T10:42:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.77
     },
     {
       "ts": "2026-07-08T10:43:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 73.07
     },
     {
       "ts": "2026-07-08T10:44:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 66.82
     },
     {
       "ts": "2026-07-08T10:45:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.33
     },
     {
       "ts": "2026-07-08T10:46:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.45
     },
     {
       "ts": "2026-07-08T10:47:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.07
     },
     {
       "ts": "2026-07-08T10:48:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 73.75
     },
     {
       "ts": "2026-07-08T10:49:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.7
     },
     {
       "ts": "2026-07-08T10:50:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.71
     },
     {
       "ts": "2026-07-08T10:51:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 71.24
     },
     {
       "ts": "2026-07-08T10:52:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 73.27
     },
     {
       "ts": "2026-07-08T10:53:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.45
     },
     {
       "ts": "2026-07-08T10:54:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 68.16
     },
     {
       "ts": "2026-07-08T10:55:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.98
     },
     {
       "ts": "2026-07-08T10:56:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 69.84
     },
     {
       "ts": "2026-07-08T10:57:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 73.64
     },
     {
       "ts": "2026-07-08T10:58:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 67.61
     },
     {
       "ts": "2026-07-08T10:59:00Z",
+      "tenant_id": "tenant-cdo-demo",
       "service_id": "payment-gw",
-      "signal_name": "cpu_usage_percent",
+      "metric_type": "cpu_usage_percent",
       "value": 70.34
     }
   ],

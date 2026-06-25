@@ -1,7 +1,5 @@
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError
 from typing import Optional
 import uuid
 import time
@@ -15,15 +13,15 @@ app = FastAPI(title="Foresight Lens AI Engine", version="v1.0")
 detector = AnomalyDetector()
 audit_logger = AuditLogger()
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    # Contract (ai-api-contract.md) maps invalid input -> 400 Bad Request (no retry).
-    return JSONResponse(
-        status_code=400,
-        content={"detail": jsonable_encoder(exc.errors()), "body": jsonable_encoder(exc.body)},
-    )
+# Error model (ai-api-contract.md):
+#   422 - schema/type validation failure (missing field, wrong type, signal_window < 120).
+#         Handled natively by FastAPI/Pydantic; we deliberately do NOT downgrade it to 400.
+#   400 - well-formed but invalid input (tenant_id mismatch, data gap).
+#   401 - missing X-Tenant-Id. 429 - rate limit. 503 - engine unavailable.
 
+RATE_LIMIT_PER_MIN = 600  # ai-api-contract.md: 600 requests/minute/tenant
 request_counts = defaultdict(list)
+
 
 @app.middleware("http")
 async def rate_limit_middleware(request: Request, call_next):
@@ -31,23 +29,25 @@ async def rate_limit_middleware(request: Request, call_next):
     if tenant_id:
         now = time.time()
         request_counts[tenant_id] = [t for t in request_counts[tenant_id] if now - t < 60]
-        if len(request_counts[tenant_id]) >= 100:
-            return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"}, headers={"Retry-After": "60"})
+        if len(request_counts[tenant_id]) >= RATE_LIMIT_PER_MIN:
+            return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"},
+                                headers={"Retry-After": "60"})
         request_counts[tenant_id].append(now)
-    
-    response = await call_next(request)
-    return response
+
+    return await call_next(request)
+
 
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "version": "v1.0"}
+
 
 @app.post("/v1/predict", response_model=PredictResponse)
 async def predict_capacity(
     request: PredictRequest,
     x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-Id"),
     authorization: Optional[str] = Header(None, alias="Authorization"),
-    x_correlation_id: Optional[str] = Header(None, alias="X-Correlation-Id")
+    x_correlation_id: Optional[str] = Header(None, alias="X-Correlation-Id"),
 ):
     if not x_tenant_id:
         raise HTTPException(status_code=401, detail="X-Tenant-Id header is required")
@@ -55,54 +55,50 @@ async def predict_capacity(
     if not x_correlation_id:
         x_correlation_id = str(uuid.uuid4())
 
-    # Validate tenant isolation and minimum data requirements
-    if len(request.signal_window) < 120:
-        raise HTTPException(status_code=400, detail="signal_window must contain data for at least 120 minutes")
-
+    # Business validation (schema/type already enforced by Pydantic -> 422)
     prev_ts = None
     for dp in request.signal_window:
         # Multi-tenant isolation: every datapoint's tenant_id must match the header.
         if dp.tenant_id != x_tenant_id:
-            raise HTTPException(status_code=400, detail="tenant_id in signal datapoint does not match X-Tenant-Id header")
-
-        # Check for gaps (missing data) - Assuming 1 minute interval
+            raise HTTPException(status_code=400,
+                                detail="tenant_id in signal datapoint does not match X-Tenant-Id header")
+        # Continuity check (assumes 1-minute interval, 5s tolerance).
         current_ts = dp.ts.timestamp()
-        if prev_ts is not None:
-            if current_ts - prev_ts > 65:  # Tolerance of 5 seconds over 60s
-                raise HTTPException(status_code=400, detail="Missing data detected (gap > 1 minute). Data must be continuous.")
+        if prev_ts is not None and current_ts - prev_ts > 65:
+            raise HTTPException(status_code=400,
+                                detail="Missing data detected (gap > 1 minute). Data must be continuous.")
         prev_ts = current_ts
 
     # Detect drift using STL-baseline + EWMA control chart
-
     anomaly, severity, suggested_action, reasoning, confidence = detector.detect_drift(
         tenant_id=x_tenant_id,
-        signals=request.signal_window
+        signals=request.signal_window,
     )
-    
-    # Confidence gating MG-03
+
+    # Confidence gating MG-03: low-confidence recommendations are downgraded to INVESTIGATE.
     if suggested_action and confidence < 0.7:
         suggested_action["action_verb"] = "INVESTIGATE"
 
-    # Audit log
     response_data = {
         "anomaly": anomaly,
         "severity": severity,
         "recommendation": suggested_action,
         "reasoning": reasoning,
     }
-    
-    # Extract principal_id from authorization header (mocked for now, assumes role ARN or similar is passed)
-    principal_id = authorization.split("Credential=")[-1].split("/")[0] if authorization and "Credential=" in authorization else "mock-principal-id"
-    
+
+    # Extract principal_id from the SigV4 Authorization header (mocked if absent).
+    principal_id = (authorization.split("Credential=")[-1].split("/")[0]
+                    if authorization and "Credential=" in authorization else "mock-principal-id")
+
     request_data = request.model_dump()
     request_data["principal_id"] = principal_id
-    
+
     audit_id = audit_logger.log_decision(x_tenant_id, request_data, response_data)
-    
+
     return PredictResponse(
         anomaly=anomaly,
         severity=severity,
         recommendation=suggested_action,
         reasoning=reasoning,
-        audit_id=audit_id
+        audit_id=audit_id,
     )

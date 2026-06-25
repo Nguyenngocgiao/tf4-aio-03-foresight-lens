@@ -70,8 +70,9 @@ so CDO can build + unit-test their integration and fallback code path against fi
 |---|---|---|
 | `success_normal` | 200 | `anomaly:false`, `recommendation:null` → no action |
 | `success_anomaly_scale_up` | 200 | parse `recommendation` (action_verb/target/from_to/confidence/evidence_link) |
-| `error_400_bad_input` | 400 | fix payload, **no retry** |
+| `error_400_bad_input` | 400 | well-formed but invalid (tenant mismatch / data gap) — fix data, **no retry** |
 | `error_401_missing_tenant` | 401 | refresh header, retry once |
+| `error_422_schema_invalid` | 422 | schema/type fail (missing field / <120 pts) — fix client, **no retry** |
 | `error_429_rate_limited` | 429 | exponential backoff (honor `Retry-After`) |
 | `error_503_engine_down` | 503 | **MANDATORY**: fall back to rule-based alert (hard threshold) |
 

@@ -1,6 +1,6 @@
 """Foresight Lens detection engine: STL seasonal baseline + EWMA control chart.
 
-Design (matches docs/ADRs):
+Design (matches docs/ADRs + 03_ai_engine_spec.md):
   - STL decomposition is done OFFLINE in scripts/train_baseline.py and stored as a
     per-service seasonal profile + residual sigma (cannot be learned in a 120-min window).
   - At inference, for each (service, metric) we:
@@ -24,15 +24,15 @@ EWMA_ALPHA = 0.3        # responsiveness of the EWMA (tuned: see ADR-006)
 SIGMA_K = 4.0           # control-limit width (K-sigma); tuned for FP 7.1% on holdout
 MIN_POINTS = 3          # need a few points before judging
 
-# Recommendation templates keyed by metric_type. action_verb is limited to the
-# model enum {SCALE_UP, INVESTIGATE} (predict + recommend; no remediation verbs).
+# Up-direction (capacity-exhaustion) recommendation templates keyed by metric_type.
+# Verbs are drawn from the contract enum {SCALE_UP, SCALE_DOWN, RETIRE, ROLLBACK, INVESTIGATE}.
 _RECS = {
     "cpu_usage_percent": ("SCALE_UP", "ECS Service", "Current -> +2 Tasks", "cpu",
                           "CPU drift detected. Scale out ECS service."),
     "queue_depth": ("SCALE_UP", "SQS Workers", "Current -> +5 Workers", "queue",
                     "Queue backlog building. Increase worker concurrency."),
-    "memory_usage_percent": ("SCALE_UP", "Task Memory", "1024MB -> 2048MB", "mem",
-                             "Memory drift toward OOM. Scale task memory / investigate leak."),
+    "memory_usage_percent": ("ROLLBACK", "Deployment", "v_latest -> v_previous", "mem",
+                             "Memory drift toward OOM (suspected leak). Roll back recent deploy."),
 }
 _DEFAULT_REC = ("INVESTIGATE", "Resource", "N/A", "metric", "Anomalous drift detected.")
 
@@ -53,14 +53,32 @@ class AnomalyDetector:
             return True, abs(z) / limit, -1
         return False, abs(z) / limit if limit else 0.0, 0
 
-    def _recommend(self, metric: str, service_id: str, direction: int, ratio: float):
-        confidence = round(float(min(0.99, 0.6 + 0.15 * (ratio - 1.0))), 2) if ratio >= 1 else 0.6
+    def _recommend(self, metric: str, service_id: str, direction: int, ratio: float,
+                   below_frac: float = 0.0):
         if direction < 0:
+            # Sustained under-utilisation vs the trained baseline -> right-size down, or
+            # retire an idle resource (TF4 brief line 33: "retire queue Z không còn dùng").
+            # A short, sharp drop (low below_frac) is a possible outage -> INVESTIGATE.
+            if below_frac >= 0.5:
+                if metric in ("queue_depth", "active_connections", "db_connection_pool_pct"):
+                    verb, suffix, from_to, slug, reason = (
+                        "RETIRE", "idle queue/pool", "active -> retired", metric,
+                        "Sustained near-idle resource; retire to reclaim capacity.")
+                else:
+                    verb, suffix, from_to, slug, reason = (
+                        "SCALE_DOWN", "ECS Service", "Current -> -1 Task", metric,
+                        "Sustained under-utilisation; scale down to right-size cost.")
+                conf = 0.75
+                rec = {"action_verb": verb, "target": f"{service_id} {suffix}", "from_to": from_to,
+                       "evidence_link": f"https://dashboard.internal/metrics/{service_id}/{slug}",
+                       "confidence": conf}
+                return rec, f"{reason} (service={service_id}, EWMA={ratio:.2f}x control limit)", conf
             return ({"action_verb": "INVESTIGATE", "target": f"{service_id}",
                      "from_to": "N/A",
                      "evidence_link": f"https://dashboard.internal/metrics/{service_id}/{metric}",
                      "confidence": 0.8},
                     f"Sudden drop in {metric} for {service_id}. Possible degradation/outage.", 0.8)
+        confidence = round(float(min(0.99, 0.6 + 0.15 * (ratio - 1.0))), 2) if ratio >= 1 else 0.6
         verb, suffix, from_to, slug, reason = _RECS.get(metric, _DEFAULT_REC)
         rec = {"action_verb": verb, "target": f"{service_id} {suffix}", "from_to": from_to,
                "evidence_link": f"https://dashboard.internal/metrics/{service_id}/{slug}",
@@ -100,7 +118,8 @@ class AnomalyDetector:
             breached, ratio, direction = self._ewma_breach(residuals, sigma)
             if breached:
                 severity = round(float(min(ratio / 3.0, 1.0)), 2)
-                rec, reasoning, confidence = self._recommend(metric, service_id, direction, ratio)
+                below_frac = float(np.mean(residuals < -sigma)) if direction < 0 else 0.0
+                rec, reasoning, confidence = self._recommend(metric, service_id, direction, ratio, below_frac)
                 return True, severity, rec, reasoning, confidence
 
         return False, 0.0, None, "No anomaly detected (EWMA within control limits).", 0.95

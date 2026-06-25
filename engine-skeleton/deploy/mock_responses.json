@@ -26,12 +26,21 @@
       "audit_id": "a8c0e102-680e-4dbe-bd7b-016c99e0b681"
     }
   },
+  "error_422_schema_invalid": {
+    "http": 422,
+    "body": {
+      "detail": [
+        {"loc": ["body", "signal_window"], "msg": "signal_window must contain >= 120 datapoints (>= 120 minutes of context).", "type": "value_error"}
+      ]
+    },
+    "cdo_action": "Fix client schema (missing field / <120 pts). KHÔNG retry."
+  },
   "error_400_bad_input": {
     "http": 400,
     "body": {
-      "detail": "signal_window must contain data for at least 120 minutes"
+      "detail": "tenant_id in signal datapoint does not match X-Tenant-Id header"
     },
-    "cdo_action": "Fix client payload. KHÔNG retry."
+    "cdo_action": "Fix client data (tenant mismatch / data gap). KHÔNG retry."
   },
   "error_401_missing_tenant": {
     "http": 401,

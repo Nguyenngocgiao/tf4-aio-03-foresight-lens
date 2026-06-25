@@ -106,7 +106,7 @@ Việc đưa AI vào chuỗi quyết định vận hành IT (AIOps) đòi hỏi 
 | Confidence threshold | Xử lý logic App-level: `confidence < 0.7` → Action verb = `INVESTIGATE`. | App layer |
 | Audit log mandatory | Mã nguồn buộc phải pass qua dòng code ghi Logger S3 trước khi trả `return response`. | App layer |
 | Per-tenant isolation | Context isolation thông qua biến `X-Tenant-Id` bóc tách từ HTTP Headers. | App layer |
-| Rate limit | FastAPI Middleware: Áp mức trần 100 req/phút/tenant để chặn Spam/DDoS. | Edge / API Gateway |
+| Rate limit | FastAPI Middleware: Áp mức trần 600 req/phút/tenant (đúng SLA contract) để chặn Spam/DDoS. | Edge / API Gateway |
 | Circuit breaker | CDO-side: Khi AI trả về `HTTP 5xx` liên tục 3 lần → fallback về rules tĩnh. | CDO Layer |
 | Eval baseline check | (Chỉ định) Chạy lệnh Script Evaluator để xuất File báo cáo JSON Brier Score hàng tuần. | CI/CD job |
 
@@ -154,25 +154,26 @@ Sức mạnh của Python Pydantic được tận dụng triệt để ở lớp
 |---|---|
 | Schema validation | Strict Pydantic JSON schema. Nếu thừa field, thiếu field, hệ thống reject lập tức (`HTTP 422 Unprocessable Entity`). Cấm tiệt SQL Injection / XSS lọt vào. |
 | Data type checks | Biến `value` bắt buộc là `float` (không được nhận chữ). Biến `ts` (Timestamp) bắt buộc chuẩn `RFC3339`. |
-| Context Isolation | Header `X-Tenant-Id` được đánh giá Validation Rule (bắt buộc). Không có header -> `HTTP 422`. |
+| Context Isolation | Header `X-Tenant-Id` được đánh giá Validation Rule (bắt buộc). Không có header -> `HTTP 401`; `tenant_id` trong datapoint ≠ header -> `HTTP 400`. |
 
 ### 6.3 Security Audit Trail (Dấu vết Thanh tra Bảo mật)
 
 Toàn bộ payload nhạy cảm không bao giờ được lưu thô (No Raw Write). Hệ thống sử dụng Hashing (SHA-256) nhằm tạo bằng chứng về tính nguyên vẹn (Integrity) để phục vụ giải trình, nhưng cấm tuyệt đối khả năng đọc ngược lại thông tin PII:
 
+Audit record sử dụng **đúng 6 trường bắt buộc** của contract (`ai-api-contract.md` §Audit Log Schema), khớp 1-1 với code `app/audit.py`:
+
 ```json
 {
-  "ts": "2026-06-25T10:30:00Z",
-  "correlation_id": "req-1234",
+  "audit_id": "f3b9c2a1-7d4e-4b8a-9c2e-1a2b3c4d5e6f",
+  "timestamp": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-payment-core",
-  "model_version": "tf4-ewma-stl-v1",
-  "input_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "data_encryption": "AWS KMS CMK (aws/s3)",
-  "decision": "SCALE_UP",
-  "confidence": 0.95,
-  "execution_ms": 4.12
+  "principal_id": "arn:aws:iam::123456789012:role/cdo-platform",
+  "input_hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "recommendation_snapshot": {"action_verb": "SCALE_UP", "from_to": "Current -> +2 Tasks"}
 }
 ```
+
+> Lưu trữ **Encrypted at Rest** (KMS) với retention 365 ngày. Payload thô KHÔNG bao giờ ghi — chỉ lưu `input_hash` (SHA-256) để verify integrity mà không lộ PII.
 
 ## 7. Eval methodology (Phương pháp Lượng giá)
 
@@ -210,7 +211,7 @@ Foresight Lens tự hào là hệ thống có Cost Model tối ưu bật nhất,
 Kiến trúc hạ tầng đảm bảo tính cô lập và sẵn sàng cao cho môi trường Production:
 
 - **Compute Runtime**: Đóng gói thành Docker Container siêu nhẹ và triển khai trên **AWS ECS Fargate**. Lựa chọn này giúp nhóm AI không phải bảo trì máy chủ EC2 (Serverless Compute), đồng thời không chịu rủi ro Cold-start như AWS Lambda (vì container Fargate chạy liên tục 24/7).
-- **Replica strategy (Chiến lược dự phòng)**: Chạy tối thiểu (Min) **2 Tasks** để cấu hình High-Availability. Tự động Scale out tối đa (Max) **10 Tasks** nếu Average CPU Utilization vượt ngưỡng 70%.
+- **Replica strategy (Chiến lược dự phòng)**: Chạy tối thiểu (Min) **2 Tasks** để cấu hình High-Availability. Tự động Scale out tối đa (Max) **10 Tasks** nếu Average CPU Utilization vượt ngưỡng 70%. *(Lưu ý: đây là autoscale của **bản thân AI Engine** ở tầng hạ tầng — KHÔNG liên quan tới `action_verb`/`from_to` mà AI khuyến nghị cho service của CDO. Hai khái niệm "scale" này tách biệt hoàn toàn.)*
 - **Region & AZ (Vùng khả dụng)**: Triển khai mặc định tại **ap-southeast-1 (Singapore)**. Đảm bảo rải đều Task trên **Multi-AZ (3 Availability Zones)** để chống chịu đứt cáp khu vực.
 - **Network (Mạng nội bộ)**: Các container Fargate được nhốt hoàn toàn trong dải mạng **Private Subnet**. CDO giao tiếp với AI API thông qua cổng trung gian **Internal Application Load Balancer (ALB)** hoặc **VPC Endpoint**. AI Engine không hề có kết nối mở ra Internet công cộng (No Public IP).
 - **Secrets Management**: Thông tin chứng chỉ (nếu cần mã hóa data) được quản lý qua AWS Secrets Manager. Không được phép gắn biến môi trường cứng (Hard-coded Env Vars).
