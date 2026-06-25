@@ -38,7 +38,7 @@ Toàn bộ quá trình từ khi nhận tín hiệu đến khi phản hồi kéo 
 4. **Step 4 (Confidence Scoring)**: Điểm số tự tin (Confidence) được tính bằng hàm Sigmoid hoặc Brier Scoring (từ 0.0 đến 1.0).
  - Nếu `Confidence < 0.7`: Action được hạ cấp xuống mức Cảnh báo quan sát (`INVESTIGATE`).
  - Nếu `Confidence >= 0.7`: Action được kích hoạt cảnh báo cực độ (`SCALE_UP`).
-5. **Step 5 (Audit Trail Generation)**: Trước khi trả về kết quả, payload đầu vào được băm SHA-256 tạo thành `input_hash`. Hệ thống kết hợp hash này cùng thông tin `tenant_id`, `decision`, `confidence`, `execution_ms` để ghi ra log bảo mật (Audit log). Điều này là bắt buộc và không thể skip.
+5. **Step 5 (Audit Trail Generation)**: Trước khi trả về kết quả, `signal_window` được băm SHA-256 tạo thành `input_hash`. Hệ thống ghi audit record gồm **đúng 6 trường contract** (`audit_id`, `timestamp`, `tenant_id`, `principal_id`, `input_hash`, `recommendation_snapshot`) ra log bảo mật. Điều này là bắt buộc và không thể skip.
 6. **Step 6 (Response Return)**: Trả về cục JSON cuối cùng cho CDO, cung cấp chính xác `action_verb`, đối tượng `target`, và đường dẫn bằng chứng `evidence_link`.
 
 ## 4. Alternatives considered (Kiến trúc thay thế)
@@ -70,7 +70,7 @@ Kiến trúc được lựa chọn dựa trên những sự đánh đổi (Trade
 | **Alert Fatigue (Cảnh báo giả quá nhiều)** | Medium | High | Sự mệt mỏi vì cảnh báo sai có thể khiến SRE phớt lờ cảnh báo thật. Giải pháp: Sử dụng **Confidence Threshold > 0.7** để chặn spike nhỏ, khử seasonal bằng STL + EWMA control chart (K=4.0). FPR đo thật trên holdout là 7.1% (gate ≤12%). |
 | **Data Bleed (Lẫn lộn dữ liệu Tenant)** | Low | High | Tenant A nhận cảnh báo do dữ liệu của Tenant B. Giải pháp: Ép buộc validate `X-Tenant-Id` ở tầng API. Context xử lý nội bộ của hàm tính toán khởi tạo lại (Stateless) ở mỗi HTTP request. |
 | **Flash Sale / Expected Traffic Burst** | High | Medium | Hệ thống sẽ báo động OOM vì traffic tăng gấp 10 lần vào dịp Flash Sale. Giải pháp: Khuyến nghị CDO bổ sung cơ chế **Silence Alert (Tắt cảnh báo thủ công)** trong khung giờ diễn ra sự kiện. |
-| **DDoS on AI Engine** | Medium | High | AI Engine sập do CDO gửi quá nhiều request. Giải pháp: Bật Rate Limit ở Middleware FastAPI (100 req/min/tenant). Trả HTTP 429 Too Many Requests nếu vi phạm. |
+| **DDoS on AI Engine** | Medium | High | AI Engine sập do CDO gửi quá nhiều request. Giải pháp: Bật Rate Limit ở Middleware FastAPI (600 req/min/tenant, đúng SLA contract). Trả HTTP 429 Too Many Requests nếu vi phạm. |
 
 ## 6. Open design questions & Technical Debt
 

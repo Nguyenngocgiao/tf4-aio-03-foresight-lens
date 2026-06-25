@@ -62,7 +62,7 @@ def test_detect_slow_leak():
     r = client.post("/v1/predict", json=_payload(window), headers=HEADERS)
     assert r.status_code == 200
     assert r.json()["anomaly"] is True
-    assert r.json()["recommendation"]["action_verb"] == "SCALE_UP"
+    assert r.json()["recommendation"]["action_verb"] == "ROLLBACK"
 
 
 def test_detect_sudden_drop():
@@ -83,13 +83,13 @@ def test_missing_tenant_id():
 def test_less_than_120_points_fails():
     r = client.post("/v1/predict", json=_payload(generate_baseline("cpu_usage_percent", 50, 119)),
                     headers=HEADERS)
-    assert r.status_code == 400
+    assert r.status_code == 422  # contract: schema validation failure -> 422
 
 
 def test_tenant_id_mismatch_rejected():
     window = generate_baseline("cpu_usage_percent", 50, tenant_id="tnt-OTHER")  # != header tnt-1
     r = client.post("/v1/predict", json=_payload(window), headers=HEADERS)
-    assert r.status_code == 400
+    assert r.status_code == 400  # well-formed but cross-tenant input -> 400
 
 
 def test_stl_baseline_path_detects_drift():

@@ -16,7 +16,10 @@
         { "name": "AWS_REGION", "value": "ap-southeast-1" },
         { "name": "BASELINE_BACKEND", "value": "s3" },
         { "name": "BASELINE_S3_BUCKET", "value": "tf4-foresight-baselines" },
-        { "name": "BASELINE_S3_PREFIX", "value": "baselines/" }
+        { "name": "BASELINE_S3_PREFIX", "value": "baselines/" },
+        { "name": "AUDIT_BACKEND", "value": "s3" },
+        { "name": "AUDIT_S3_BUCKET", "value": "tf4-foresight-audit" },
+        { "name": "AUDIT_S3_PREFIX", "value": "audit/" }
       ],
       "healthCheck": {
         "command": ["CMD-SHELL", "python -c \"import urllib.request;urllib.request.urlopen('http://localhost:8080/health')\" || exit 1"],

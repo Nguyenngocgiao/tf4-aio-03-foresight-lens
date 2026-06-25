@@ -32,7 +32,7 @@ BASELINE_DIR.mkdir(parents=True, exist_ok=True)
 EVID_DIR.mkdir(parents=True, exist_ok=True)
 
 SERVICES = ["payment-gw", "fraud-detector", "ledger"]
-# Baseline keys use the exact AI-API / Telemetry contract signal_name values.
+# Baseline keys use the exact AI-API / Telemetry contract metric_type values.
 METRICS = ["cpu_usage_percent", "memory_usage_percent", "api_latency_ms", "queue_depth"]
 
 DAYS = 7

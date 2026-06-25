@@ -1,1 +1,0 @@
-https://tf4-cdo-mock-test-1782359769.s3.us-east-1.amazonaws.com/engine-skeleton.tar.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA3B5MDX6KYKFTOYWA%2F20260625%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260625T035622Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=12ac008be3251c0aeb9be192e0837c72543ebbcd522bae0850ae1d221490e27e

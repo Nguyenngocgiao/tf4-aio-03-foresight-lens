@@ -17,7 +17,8 @@
 | 5 | Noisy Baseline (queue variance, no mean shift) | FP trap | anomaly=False (no FP) |
 | 6 | Sudden Drop (throughput collapse) | Edge | INVESTIGATE (two-tailed) |
 | 7 | Multi-tenant / multi-service isolation | Edge | per-service baseline, no bleed |
-| 8 | Missing X-Tenant-Id | Adversarial | HTTP 422 |
+| 8 | Missing X-Tenant-Id | Adversarial | HTTP 401 |
+| 9 | Malformed schema (thiếu field / < 120 điểm) | Adversarial | HTTP 422 |
 
 ## 2. Methodology
 

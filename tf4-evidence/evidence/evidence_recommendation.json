@@ -8,7 +8,7 @@
     },
     {
       "metric": "queue_depth",
-      "recommendation": "INCREASE (Action) SQS Worker Concurrency (Target) from 10 to 25 (From->To). Confidence: 0.85. Evidence: https://obs.internal/tnt-1?metric=queue_depth"
+      "recommendation": "SCALE_UP (Action) SQS Worker Concurrency (Target) from 10 to 25 (From->To). Confidence: 0.85. Evidence: https://obs.internal/tnt-1?metric=queue_depth"
     }
   ]
 }
