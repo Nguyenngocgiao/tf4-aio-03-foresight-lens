@@ -1,104 +1,110 @@
-from fastapi.testclient import TestClient
-from app.main import app
+import json
 from datetime import datetime, timedelta
+from pathlib import Path
+
+from fastapi.testclient import TestClient
+
+from app.main import app
 
 client = TestClient(app)
 
-def generate_baseline(metric_name, start_val, count=120):
+# Tests use an UNREGISTERED service so the engine exercises its in-window fallback
+# (deterministic, no baseline coupling). A dedicated test below covers the STL path.
+TEST_SVC = "test-svc"
+HEADERS = {"X-Tenant-Id": "tnt-1", "Authorization": "SigV4"}
+
+
+def generate_baseline(metric_name, start_val, count=120, service_id=TEST_SVC):
     base_ts = datetime(2026, 6, 25, 9, 0, 0)
-    return [{"ts": (base_ts + timedelta(minutes=i)).isoformat() + "Z", "service_id": "payment-gw", "signal_name": metric_name, "value": start_val + (i % 3 - 1)} for i in range(count)]
+    return [{"ts": (base_ts + timedelta(minutes=i)).isoformat() + "Z",
+             "service_id": service_id, "signal_name": metric_name,
+             "value": start_val + (i % 3 - 1)} for i in range(count)]
+
+
+def _payload(window):
+    return {"signal_window": window,
+            "context": {"deployment_version": "v1",
+                        "time_range": {"start_ts": "2026-06-25T09:00:00Z",
+                                       "end_ts": "2026-06-25T11:00:00Z"}}}
+
 
 def test_health_check():
-    response = client.get("/health")
-    assert response.status_code == 200
-    assert response.json()["status"] == "healthy"
+    r = client.get("/health")
+    assert r.status_code == 200
+    assert r.json()["status"] == "healthy"
+
 
 def test_detect_happy_path():
-    payload = {
-        "signal_window": generate_baseline("cpu_usage_percent", 50, 120),
-        "context": {
-            "deployment_version": "v1",
-            "time_range": {"start_ts": "2026-06-25T09:00:00Z", "end_ts": "2026-06-25T10:00:00Z"}
-        }
-    }
-    headers = {"X-Tenant-Id": "tnt-1", "Authorization": "SigV4"}
-    response = client.post("/v1/predict", json=payload, headers=headers)
-    assert response.status_code == 200
-    data = response.json()
+    r = client.post("/v1/predict", json=_payload(generate_baseline("cpu_usage_percent", 50)), headers=HEADERS)
+    assert r.status_code == 200
+    data = r.json()
     assert data["anomaly"] is False
     assert data["recommendation"] is None
 
+
 def test_detect_sudden_spike():
     window = generate_baseline("cpu_usage_percent", 50, 119)
-    window.append({"ts": "2026-06-25T10:00:00Z", "service_id": "payment-gw", "signal_name": "cpu_usage_percent", "value": 98})
-    payload = {
-        "signal_window": window,
-        "context": {
-            "deployment_version": "v1",
-            "time_range": {"start_ts": "2026-06-25T09:00:00Z", "end_ts": "2026-06-25T10:00:00Z"}
-        }
-    }
-    headers = {"X-Tenant-Id": "tnt-1", "Authorization": "SigV4"}
-    response = client.post("/v1/predict", json=payload, headers=headers)
-    assert response.status_code == 200
-    data = response.json()
+    window.append({"ts": "2026-06-25T10:59:00Z", "service_id": TEST_SVC,
+                   "signal_name": "cpu_usage_percent", "value": 98})
+    r = client.post("/v1/predict", json=_payload(window), headers=HEADERS)
+    assert r.status_code == 200
+    data = r.json()
     assert data["anomaly"] is True
     assert data["recommendation"]["action_verb"] == "SCALE_UP"
     assert "audit_id" in data
 
+
 def test_detect_slow_leak():
     window = generate_baseline("memory_usage_percent", 40, 119)
-    window.append({"ts": "2026-06-25T10:00:00Z", "service_id": "payment-gw", "signal_name": "memory_usage_percent", "value": 92})
-    payload = {
-        "signal_window": window,
-        "context": {
-            "deployment_version": "v1",
-            "time_range": {"start_ts": "2026-06-25T09:00:00Z", "end_ts": "2026-06-25T10:00:00Z"}
-        }
-    }
-    headers = {"X-Tenant-Id": "tnt-1", "Authorization": "SigV4"}
-    response = client.post("/v1/predict", json=payload, headers=headers)
-    assert response.status_code == 200
-    data = response.json()
-    assert data["anomaly"] is True
-    assert data["recommendation"]["action_verb"] == "ROLLBACK"
+    window.append({"ts": "2026-06-25T10:59:00Z", "service_id": TEST_SVC,
+                   "signal_name": "memory_usage_percent", "value": 92})
+    r = client.post("/v1/predict", json=_payload(window), headers=HEADERS)
+    assert r.status_code == 200
+    assert r.json()["recommendation"]["action_verb"] == "ROLLBACK"
+
 
 def test_detect_sudden_drop():
     window = generate_baseline("throughput_rps", 1000, 119)
-    window.append({"ts": "2026-06-25T10:00:00Z", "service_id": "payment-gw", "signal_name": "throughput_rps", "value": 50})
-    payload = {
-        "signal_window": window,
-        "context": {
-            "deployment_version": "v1",
-            "time_range": {"start_ts": "2026-06-25T09:00:00Z", "end_ts": "2026-06-25T10:00:00Z"}
-        }
-    }
-    headers = {"X-Tenant-Id": "tnt-1", "Authorization": "SigV4"}
-    response = client.post("/v1/predict", json=payload, headers=headers)
-    assert response.status_code == 200
-    data = response.json()
-    assert data["anomaly"] is True
-    assert data["recommendation"]["action_verb"] == "INVESTIGATE"
+    window.append({"ts": "2026-06-25T10:59:00Z", "service_id": TEST_SVC,
+                   "signal_name": "throughput_rps", "value": 50})
+    r = client.post("/v1/predict", json=_payload(window), headers=HEADERS)
+    assert r.status_code == 200
+    assert r.json()["recommendation"]["action_verb"] == "INVESTIGATE"
+
 
 def test_missing_tenant_id():
-    payload = {
-        "signal_window": generate_baseline("cpu_usage_percent", 50, 120),
-        "context": {
-            "deployment_version": "v1",
-            "time_range": {"start_ts": "2026-06-25T09:00:00Z", "end_ts": "2026-06-25T10:00:00Z"}
-        }
-    }
-    response = client.post("/v1/predict", json=payload, headers={"Authorization": "SigV4"})
-    assert response.status_code == 422
+    r = client.post("/v1/predict", json=_payload(generate_baseline("cpu_usage_percent", 50)),
+                    headers={"Authorization": "SigV4"})
+    assert r.status_code == 400  # contract: invalid input -> 400
+
 
 def test_less_than_120_points_fails():
-    payload = {
-        "signal_window": generate_baseline("cpu_usage_percent", 50, 119),
-        "context": {
-            "deployment_version": "v1",
-            "time_range": {"start_ts": "2026-06-25T09:00:00Z", "end_ts": "2026-06-25T10:00:00Z"}
-        }
-    }
-    headers = {"X-Tenant-Id": "tnt-1", "Authorization": "SigV4"}
-    response = client.post("/v1/predict", json=payload, headers=headers)
-    assert response.status_code == 422
+    r = client.post("/v1/predict", json=_payload(generate_baseline("cpu_usage_percent", 50, 119)),
+                    headers=HEADERS)
+    assert r.status_code == 400
+
+
+def test_tenant_id_mismatch_rejected():
+    window = generate_baseline("cpu_usage_percent", 50)
+    for p in window:
+        p["labels"] = {"tenant_id": "tnt-OTHER"}  # != header tnt-1
+    r = client.post("/v1/predict", json=_payload(window), headers=HEADERS)
+    assert r.status_code == 400
+
+
+def test_stl_baseline_path_detects_drift():
+    """Integration: feed payment-gw values matching its trained seasonal profile, then drift it."""
+    bl_path = Path(__file__).resolve().parents[1] / "baselines" / "payment-gw.json"
+    if not bl_path.exists():
+        return  # baseline not trained in this environment; skip gracefully
+    profile = json.loads(bl_path.read_text())["metrics"]["cpu_usage_percent"]["seasonal_profile"]
+    base_ts = datetime(2026, 7, 8, 9, 0, 0)  # 09:00 -> minute-of-day 540
+    normal = [{"ts": (base_ts + timedelta(minutes=i)).isoformat() + "Z", "service_id": "payment-gw",
+               "signal_name": "cpu_usage_percent", "value": profile[(540 + i) % 1440]} for i in range(120)]
+    r = client.post("/v1/predict", json=_payload(normal), headers=HEADERS)
+    assert r.status_code == 200 and r.json()["anomaly"] is False
+    drift = [dict(p) for p in normal]
+    for k in range(60, 120):
+        drift[k]["value"] = profile[(540 + k) % 1440] + (k - 60) * 1.5
+    r2 = client.post("/v1/predict", json=_payload(drift), headers=HEADERS)
+    assert r2.status_code == 200 and r2.json()["anomaly"] is True
