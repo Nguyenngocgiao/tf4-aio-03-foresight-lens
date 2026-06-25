@@ -37,10 +37,10 @@ Dữ liệu thử nghiệm: 604.800 dòng Telemetry sinh bằng mô hình Vasice
 | **EWMA + STL** | **$32** | **59%** | **7%** | **<1ms** |
 
 ### 2.3 Sự đánh đổi (Trade-off) của EWMA
-Nhìn vào bảng trên, EWMA có Tỷ lệ bắt lỗi (Recall) là **59%**, có vẻ thấp hơn mức 80% kỳ vọng. Tuy nhiên, tỷ lệ báo động giả (FP Rate) cực kỳ ấn tượng ở mức **7%** (vượt xa chỉ tiêu $\le 12\%$). 
+Nhìn vào bảng trên, EWMA có Tỷ lệ bắt lỗi (Recall) là **59%**, có vẻ thấp hơn mức 80% kỳ vọng. Tuy nhiên, tỷ lệ báo động giả (FP Rate) cực kỳ ấn tượng ở mức **7%** (vượt xa chỉ tiêu $\le 12\%$).
 
 **Tại sao chúng ta chọn Trade-off này?**
-1. **Tránh Alert Fatigue:** Nếu dùng Isolation Forest để đạt Recall 79%, cái giá phải trả là 67% cảnh báo là RÁC. SRE sẽ bị trầm cảm và phớt lờ cảnh báo (Boy who cried wolf). 
+1. **Tránh Alert Fatigue:** Nếu dùng Isolation Forest để đạt Recall 79%, cái giá phải trả là 67% cảnh báo là RÁC. SRE sẽ bị trầm cảm và phớt lờ cảnh báo (Boy who cried wolf).
 2. **Chi phí:** Chạy ML tốn $150/tháng và đòi batch training. EWMA là thuật toán $O(N)$ chạy thời gian thực không tốn RAM, chi phí cực nhỏ ($32/tháng).
 3. **An toàn hệ thống:** Catch 59% nghĩa là bỏ qua các biến động nhỏ giọt, nhưng hệ thống vẫn bắt dính 100% các biến động lớn (Spike, OOM). Chúng ta ưu tiên độ tin cậy của mỗi cảnh báo phát ra.
 

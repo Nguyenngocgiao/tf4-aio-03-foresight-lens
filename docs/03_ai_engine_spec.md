@@ -1,11 +1,11 @@
 # AI Engine Spec - Foresight Lens
 
 <!-- Doc owner: AIO-03 Lead
-     Status: Final (W11 T6 Pack #1)
-     Word target: 2500-4000 từ (Heavy tier)
-     Reference: TCB DAB Framework - AI Model Governance + AI Security (adapted for capstone) -->
+ Status: Final (W11 T6 Pack #1)
+ Word target: 2500-4000 từ (Heavy tier)
+ Reference: TCB DAB Framework - AI Model Governance + AI Security (adapted for capstone) -->
 
-> **📌 Capstone scope guide** - 9 sections không phải tất cả "must-deploy", một số "design-only":
+> ** Capstone scope guide** - 9 sections không phải tất cả "must-deploy", một số "design-only":
 >
 > **Pack #1 / W11 (Mock Integration Phase)**: AI Team deploy 1 Endpoint Skeleton.
 > - Yêu cầu: Dummy logic (hardcoded JSON), IAM SigV4 optional để CDO dễ test.
@@ -14,10 +14,10 @@
 > **Pack #2 / W12 (Final Build Phase)**: AI Team bàn giao Artifact + Thuật toán thật.
 > - Yêu cầu: Real engine logic, IAM SigV4 enforced. Schema API không đổi.
 > - Full Docs: TẤT CẢ sections refined với:
->   - 5.5 Model NFR Control Matrix có MG-01..MG-08 evidence
->   - 6 AI Security với Bedrock Guardrails configured (NOT just spec)
->   - 7 Eval với real measured numbers
->   - 8 Cost với actual measured
+> - 5.5 Model NFR Control Matrix có MG-01..MG-08 evidence
+> - 6 AI Security với Bedrock Guardrails configured (NOT just spec)
+> - 7 Eval với real measured numbers
+> - 8 Cost với actual measured
 >
 > **Design-only OK cho capstone** (note rõ trong doc nếu áp dụng): 6.6 LLM for AI Agents (nếu không dùng agentic) · 6.4 Training Model Security (capstone dùng foundation model)
 
@@ -26,10 +26,10 @@
 Kiến trúc mô hình của Foresight Lens được thiết kế đặc trị cho bài toán phân tích dữ liệu chuỗi thời gian (Time-series data) của cơ sở hạ tầng (CPU, RAM, Connections).
 
 - **Pattern chọn (Chosen Pattern)**: **Statistical Analysis Engine (EWMA & STL Decomposition)**. Thay vì sử dụng các mô hình Large Language Models (LLM) đắt đỏ, hệ thống sử dụng sức mạnh của Thống kê phân rã truyền thống.
-- **Lý do lựa chọn (Rationale)**: 
-  - **STL (Seasonal and Trend decomposition using Loess)** giúp tách biệt hoàn toàn tín hiệu thô thành 3 mảng: Trend (Xu hướng), Seasonality (Tính chu kỳ ngày đêm), và Residual (Nhiễu cục bộ). Bằng cách khử seasonal trước (train offline ≥2 ngày/service), hệ thống đạt False Positive Rate đo thật **7.1%** (gate ≤12%).
-  - **EWMA (Exponentially Weighted Moving Average)** cực kỳ nhạy bén trong việc bắt các dải trượt chậm (Slow drift) tiêu biểu của lỗi rò rỉ bộ nhớ (Memory leak) hoặc cạn kiệt Connection Pool.
-  - Phối hợp hai phương pháp này mang lại khả năng dự báo cạn kiệt dung lượng (Capacity Exhaustion) với độ trễ tối thiểu (Lead Time) lớn hơn 15 phút, vượt tiêu chí của khách hàng, với chi phí và độ trễ tính toán cực thấp.
+- **Lý do lựa chọn (Rationale)**:
+ - **STL (Seasonal and Trend decomposition using Loess)** giúp tách biệt hoàn toàn tín hiệu thô thành 3 mảng: Trend (Xu hướng), Seasonality (Tính chu kỳ ngày đêm), và Residual (Nhiễu cục bộ). Bằng cách khử seasonal trước (train offline ≥2 ngày/service), hệ thống đạt False Positive Rate đo thật **7.1%** (gate ≤12%).
+ - **EWMA (Exponentially Weighted Moving Average)** cực kỳ nhạy bén trong việc bắt các dải trượt chậm (Slow drift) tiêu biểu của lỗi rò rỉ bộ nhớ (Memory leak) hoặc cạn kiệt Connection Pool.
+ - Phối hợp hai phương pháp này mang lại khả năng dự báo cạn kiệt dung lượng (Capacity Exhaustion) với độ trễ tối thiểu (Lead Time) lớn hơn 15 phút, vượt tiêu chí của khách hàng, với chi phí và độ trễ tính toán cực thấp.
 - **Alternatives rejected (Lựa chọn bị từ chối)**: LLM (Claude, GPT) hoặc Agentic Workflows. Bị reject vì latency cao (đôi khi mất hàng chục giây), tốn kém (vi phạm constraint Cost < $200), tiềm ẩn ảo giác (Hallucination), và hoàn toàn không phù hợp với bản chất dữ liệu chuỗi thời gian vốn cần tính toán số học chính xác thay vì sinh text ngôn ngữ tự nhiên. Isolation Forest cũng bị reject do nặng nề trong khâu dựng cây (dành cho dữ liệu đa biến multivariate, không cần thiết cho dự án đơn biến này).
 
 ## 2. Model selection (Lựa chọn Phiên bản Mô hình)
@@ -76,14 +76,14 @@ Việc đưa AI vào chuỗi quyết định vận hành IT (AIOps) đòi hỏi 
 ### 5.2 Scope (Capstone Year-1 equivalent)
 
 - **In-scope (Nằm trong phạm vi Capstone)**:
-  - Statistical Model tự phát triển với Version Control minh bạch (`tf4-ewma-stl-v1`).
-  - Assist-only decision (Cơ chế cố vấn tĩnh) - Human-in-the-loop: Chỉ cung cấp Recommendation, con người (SRE) hoặc Rule Engine của CDO mới là nơi đưa ra quyết định hành động thay đổi hạ tầng.
-  - Multi-tenant với per-tenant context isolation mức phần mềm (Software-level).
-  - Eval methodology: holdout sliding-window (4 scenario + FP trap) trên 3 service + drift log.
+ - Statistical Model tự phát triển với Version Control minh bạch (`tf4-ewma-stl-v1`).
+ - Assist-only decision (Cơ chế cố vấn tĩnh) - Human-in-the-loop: Chỉ cung cấp Recommendation, con người (SRE) hoặc Rule Engine của CDO mới là nơi đưa ra quyết định hành động thay đổi hạ tầng.
+ - Multi-tenant với per-tenant context isolation mức phần mềm (Software-level).
+ - Eval methodology: holdout sliding-window (4 scenario + FP trap) trên 3 service + drift log.
 - **Out-of-scope (Defer to post-capstone - Ngoài phạm vi)**:
-  - Multi-provider failover (Đổi nhà cung cấp ML Model khi sập).
-  - Autonomous action without safety gate (AI tự động nâng cấp server mà không cần ai duyệt).
-  - Cross-region model serving (Phân bổ mô hình xuyên lục địa).
+ - Multi-provider failover (Đổi nhà cung cấp ML Model khi sập).
+ - Autonomous action without safety gate (AI tự động nâng cấp server mà không cần ai duyệt).
+ - Cross-region model serving (Phân bổ mô hình xuyên lục địa).
 
 ### 5.3 Key Governance Principles (Các nguyên tắc chủ chốt)
 
@@ -127,7 +127,7 @@ Việc đưa AI vào chuỗi quyết định vận hành IT (AIOps) đòi hỏi 
 ### 5.6 Closed-loop Safety Pattern (N/A)
 
 <!-- Skip section này nếu engine chỉ ALERT/SUGGEST, không EXECUTE action.
-     Self-Heal Engine + auto-containment engines BẮT BUỘC có section này. -->
+ Self-Heal Engine + auto-containment engines BẮT BUỘC có section này. -->
 
 *Dự án Foresight Lens chỉ đóng vai trò ALERT/SUGGEST (Cố vấn), hoàn toàn không trực tiếp EXECUTE action (Thực thi hạ tầng). Do đó, thiết kế Closed-loop Safety Pattern với Dry-run / Blast-radius / Auto-rollback là KHÔNG CẦN THIẾT và được gạch bỏ để tiết kiệm scope.*
 
@@ -180,16 +180,16 @@ Toàn bộ payload nhạy cảm không bao giờ được lưu thô (No Raw Writ
 
 - **Test set composition (Tập dữ liệu kiểm thử)**: Holdout 1 ngày/service (3 tier-1 service), 4 scenario inject (gradual drift / sudden spike / slow leak) + 1 FP trap (noisy baseline). Trượt window 120 phút, step 5 → ~790 window scored.
 - **Metrics tracked (đo thật, `evidence_algorithm_evaluation.json`)**:
-  - **Brier Score (Calibration)**: đo độ hiệu chuẩn của confidence. Đo được **0.049** (< 0.1, tốt).
-  - **Precision**: TP/(TP+FP) = **0.793**.
-  - **Recall (catch rate)**: TP/(TP+FN) = **0.971**.
-  - **False Positive Rate (FPR)**: **7.1%** (gate ≤ 12%).
-  - **Lead time (median)**: **110 phút** (gate ≥ 15 phút).
-  - **P99 latency**: **< 10ms** (NumPy in-memory).
+ - **Brier Score (Calibration)**: đo độ hiệu chuẩn của confidence. Đo được **0.049** (< 0.1, tốt).
+ - **Precision**: TP/(TP+FP) = **0.793**.
+ - **Recall (catch rate)**: TP/(TP+FN) = **0.971**.
+ - **False Positive Rate (FPR)**: **7.1%** (gate ≤ 12%).
+ - **Lead time (median)**: **110 phút** (gate ≥ 15 phút).
+ - **P99 latency**: **< 10ms** (NumPy in-memory).
 - **Acceptance threshold (theo gate Client)**:
-  - FPR bắt buộc `≤ 12%`
-  - Catch rate (recall) bắt buộc `≥ 80%`
-  - Lead time bắt buộc `≥ 15 phút`; Brier `< 0.1`
+ - FPR bắt buộc `≤ 12%`
+ - Catch rate (recall) bắt buộc `≥ 80%`
+ - Lead time bắt buộc `≥ 15 phút`; Brier `< 0.1`
 - **Eval set location**: Toàn bộ kịch bản và báo cáo tự động được đặt tại `<repo>/tf4-evidence/evidence/` dưới định dạng JSON.
 
 ## 8. Cost model (Mô hình Chi phí Ước tính)

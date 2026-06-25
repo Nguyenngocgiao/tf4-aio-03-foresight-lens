@@ -1,10 +1,10 @@
 # Eval Report - Foresight Lens
 
 <!-- Doc owner: AIO-03
-     Status: Measured (W11 build) → refined W12 with curveball results
-     Word target: 1000-1800 từ
-     All numbers below are produced by tf4-evidence/eval_engine.py against held-out
-     labelled telemetry. NO hardcoded metrics. Re-run: python tf4-evidence/tf4_evidence.py -->
+ Status: Measured (W11 build) → refined W12 with curveball results
+ Word target: 1000-1800 từ
+ All numbers below are produced by tf4-evidence/eval_engine.py against held-out
+ labelled telemetry. NO hardcoded metrics. Re-run: python tf4-evidence/tf4_evidence.py -->
 
 ## 1. Test scenarios
 
@@ -22,13 +22,13 @@
 ## 2. Methodology
 
 - **Engine under test**: the real serving engine (`engine-skeleton/app/engine.py`) =
-  STL seasonal baseline (trained offline) + **EWMA control chart** at inference.
+ STL seasonal baseline (trained offline) + **EWMA control chart** at inference.
 - **Baseline training**: `scripts/train_baseline.py` runs STL (period=1440, robust) on
-  6 clean days per service and stores a per-minute seasonal profile + residual σ.
+ 6 clean days per service and stores a per-minute seasonal profile + residual σ.
 - **Eval data**: a held-out 7th day per service (`tf4-evidence/evidence/holdout_*.csv`)
-  with 4 injected scenarios + 1 false-positive trap, labelled in `holdout_*_labels.json`.
+ with 4 injected scenarios + 1 false-positive trap, labelled in `holdout_*_labels.json`.
 - **Procedure**: slide a 120-min window (step 5 min) across the holdout for the 3 tier-1
-  services (payment-gw, fraud-detector, ledger); score every window vs ground truth.
+ services (payment-gw, fraud-detector, ledger); score every window vs ground truth.
 - **A/B baseline**: Isolation Forest on the same windows for an honest comparison.
 
 ## 3. Results (measured)
@@ -37,15 +37,15 @@ Source: `tf4-evidence/evidence/evidence_algorithm_evaluation.json`.
 
 | Metric | Target | Actual | Pass/Fail |
 |---|---|---|---|
-| Precision | ≥ 0.80 | **0.793** | ⚠️ ~target (see note) |
-| Recall (catch rate) | ≥ 0.80 | **0.971** | ✓ Pass |
-| F1 Score | ≥ 0.75 | **0.873** | ✓ Pass |
-| False Positive Rate | ≤ 0.12 | **0.071 (7.1%)** | ✓ Pass |
-| Brier Score | < 0.10 | **0.049** | ✓ Pass |
-| Lead Time (median) | ≥ 15 min | **110 min** | ✓ Pass |
-| P99 latency | < 500 ms | **< 10 ms** (in-memory NumPy) | ✓ Pass |
-| Cost / month | < $200 | **~$36 (Fargate 2-task)** | ✓ Pass |
-| Pytest scenarios | — | **8/8 passed** | ✓ Pass |
+| Precision | ≥ 0.80 | **0.793** | ~target (see note) |
+| Recall (catch rate) | ≥ 0.80 | **0.971** | Pass |
+| F1 Score | ≥ 0.75 | **0.873** | Pass |
+| False Positive Rate | ≤ 0.12 | **0.071 (7.1%)** | Pass |
+| Brier Score | < 0.10 | **0.049** | Pass |
+| Lead Time (median) | ≥ 15 min | **110 min** | Pass |
+| P99 latency | < 500 ms | **< 10 ms** (in-memory NumPy) | Pass |
+| Cost / month | < $200 | **~$36 (Fargate 2-task)** | Pass |
+| Pytest scenarios | — | **8/8 passed** | Pass |
 
 > **Note on precision (0.793):** windows on the *boundary* of an anomaly region (EWMA still
 > elevated just after a fault clears) count as FP in this strict per-window scoring. It does
@@ -58,8 +58,8 @@ Source: `tf4-evidence/evidence/evidence_algorithm_comparison.json`.
 
 | Algorithm | Recall | FP Rate | Meets FP ≤ 12% ? |
 |---|---|---|---|
-| **STL + EWMA control chart** | **0.971** | **0.071** | ✓ Yes |
-| Isolation Forest (contamination=0.02) | 0.638 | 0.214 | ✗ No |
+| **STL + EWMA control chart** | **0.971** | **0.071** | Yes |
+| Isolation Forest (contamination=0.02) | 0.638 | 0.214 | No |
 
 EWMA+STL dominates: higher catch rate AND lower false alarms, because de-seasonalising
 first removes the daily load curve that makes Isolation Forest fire on normal peaks.
@@ -83,8 +83,8 @@ first removes the daily load curve that makes Isolation Forest fire on normal pe
 ### 4.2 Noisy baseline (false-positive trap)
 - **Scenario 5** injects high queue-depth variance with no mean shift.
 - **Behaviour**: EWMA smoothing (α=0.3) averages zero-mean noise toward 0, so the K=4σ
-  control limit is not breached → no alert. This is why FP stays at 7.1% rather than the
-  17.5% seen at K=3 (see ADR-006 tuning sweep).
+ control limit is not breached → no alert. This is why FP stays at 7.1% rather than the
+ 17.5% seen at K=3 (see ADR-006 tuning sweep).
 
 ## 5. Curveball impact
 
