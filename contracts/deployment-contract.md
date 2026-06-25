@@ -44,7 +44,7 @@
 
 ## Secrets
 
-> Hệ thống sử dụng thuật toán Time-series Anomaly Detection (Statistical/ML thuần), KHÔNG dùng Bedrock LLM. Do đó, KHÔNG yêu cầu API Key của Bedrock. Việc chọn thuật toán cụ thể sẽ được ghi nhận trong ADR (Architecture Decision Record) sau khi audit dữ liệu từ CDO.
+> Hệ thống sử dụng thuật toán Time-series Anomaly Detection (Thuần Thống kê học), KHÔNG dùng Bedrock LLM. Do đó, KHÔNG yêu cầu API Key của Bedrock. Việc chọn thuật toán cụ thể sẽ được ghi nhận trong ADR (Architecture Decision Record) sau khi audit dữ liệu từ CDO.
 
 | Secret name | Source |
 |---|---|
@@ -131,7 +131,7 @@ Quá trình **Model Training** (Học baseline cho từng service) sẽ được
 |---|---|
 | **OTel endpoint** | collector URL per CDO platform (config qua env var) |
 | **Log destination** | CloudWatch Logs (retention 14 ngày) |
-| **Metrics** | Prometheus / CloudWatch |
+| **Metrics** | Đẩy qua CloudWatch |
 | **Traces** | OpenTelemetry → AWS X-Ray |
 
 ## Failure modes & response
@@ -140,5 +140,5 @@ Quá trình **Model Training** (Học baseline cho từng service) sẽ được
 |---|---|---|
 | Task crash | ECS health check | Auto-restart |
 | Region outage | CloudWatch alarm | Failover secondary region (Design-only, không setup thật) |
-| Throttling | ALB 5xx / 429 | CDO fallback về Rule-based Alert |
+| Throttling | Mã lỗi HTTP 5xx hoặc 429 | CDO fallback về Rule-based Alert |
 | Memory leak | Memory > 90% | Rolling restart ECS task |

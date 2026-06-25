@@ -79,11 +79,11 @@
 |---|---|---|
 | `anomaly` | bool | True nếu detect anomaly |
 | `severity` | float 0.0-1.0 | Severity score |
-| `recommendation.action_verb` | enum | `SCALE_UP` / `ROLLBACK` / `RESTART` / `INVESTIGATE` |
+| `recommendation.action_verb` | enum | `["SCALE_UP", "ROLLBACK", "RESTART", "INVESTIGATE"]` |
 | `recommendation.target` | string | Target resource (e.g., "payment-gw ECS Service") |
 | `recommendation.from_to` | string | State transition (e.g., "3 tasks -> 5 tasks") |
 | `recommendation.confidence` | float 0.0-1.0 | Model confidence - CDO dùng cho gating |
-| `recommendation.evidence_link` | string | URL tới dashboard/log query chứng minh |
+| `recommendation.evidence_link` | string | URL tới dashboard hoặc log query chứng minh |
 | `reasoning` | string (≤300 chars) | Human-readable rationale |
 | `audit_id` | UUID | Reference cho audit trail lookup |
 

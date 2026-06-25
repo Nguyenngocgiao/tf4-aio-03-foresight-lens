@@ -32,7 +32,7 @@
 
 ## Signals required
 
-> List signals AI engine cần để analyze. Hệ thống Foresight Lens sử dụng mảng dữ liệu (Rolling Window) để phát hiện bất thường dựa trên 3-Sigma.
+> List signals AI engine cần để analyze. Hệ thống Foresight Lens sử dụng mảng dữ liệu (Rolling Window) để phát hiện bất thường dựa trên thuật toán thống kê (EWMA & STL Decomposition).
 
 ### Signal 1: `cpu_usage_percent`
 
@@ -42,7 +42,7 @@
 | **Labels** | service_id, region, tenant_id (mandatory) |
 | **Unit** | percentage (0-100) |
 | **Frequency** | 1 phút |
-| **Emit point** | CloudWatch Metrics / Prometheus → CDO Ingestion → AI API |
+| **Emit point** | CloudWatch Metrics → CDO Ingestion → AI API |
 | **Retention** | 7 ngày hot + 83 ngày cold (tổng 90 ngày minimum) |
 | **Used for** | Phát hiện xu hướng tăng đột biến CPU |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
@@ -70,7 +70,7 @@
 | **Labels** | service_id, region, tenant_id (mandatory) |
 | **Unit** | percentage (0-100) |
 | **Frequency** | 1 phút |
-| **Emit point** | CloudWatch Metrics / Prometheus → CDO Ingestion → AI API |
+| **Emit point** | CloudWatch Metrics → CDO Ingestion → AI API |
 | **Retention** | 7 ngày hot + 83 ngày cold (tổng 90 ngày minimum) |
 | **Used for** | Dự đoán Memory Leak dẫn tới OOM (Out Of Memory) |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
@@ -98,7 +98,7 @@
 | **Labels** | service_id, region, tenant_id (mandatory) |
 | **Unit** | count |
 | **Frequency** | 1 phút |
-| **Emit point** | ALB / Nginx metrics |
+| **Emit point** | ALB (Application Load Balancer) metrics |
 | **Used for** | Correlate giữa traffic spike và resource exhaustion |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
@@ -212,7 +212,7 @@
 | **Labels** | service_id, region, tenant_id (mandatory) |
 | **Unit** | milliseconds |
 | **Frequency** | 1 phút |
-| **Emit point** | ALB / API Gateway metrics |
+| **Emit point** | ALB (Application Load Balancer) metrics |
 | **Retention** | 7 ngày hot + 83 ngày cold (tổng 90 ngày minimum) |
 | **Used for** | Leading indicator cho connection pool exhaustion hoặc memory leak (latency thường tăng dần 15-30 phút trước khi SLO breach) |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
@@ -238,5 +238,5 @@ Mọi signal phải comply:
 - **Tenant scoping**: mọi signal payload **bắt buộc** có `tenant_id` field - AI engine không accept signal thiếu tenant_id.
 - **Time precision**: timestamp RFC3339 UTC, millisecond precision.
 - **Schema validation**: AI ingestion layer (Pydantic) validate schema; reject malformed.
-- **Data Alignment & Imputation**: Time buckets gửi vào API phải liền mạch. Nếu hạ tầng bị đứt gãy (Network jitter/Drop metric), CDO **bắt buộc** phải tiền xử lý (Forward-fill hoặc Zero-fill). AI Engine sẽ văng lỗi `400` nếu phát hiện time-series bị thủng.
-- **PII**: KHÔNG được chứa PII (email / phone / name) trong signal value hoặc labels.
+- **Data Alignment & Imputation**: Time buckets gửi vào API phải liền mạch. Nếu hạ tầng bị đứt gãy (Network jitter hoặc Drop metric), CDO **bắt buộc** phải tiền xử lý (Forward-fill hoặc Zero-fill). AI Engine sẽ văng lỗi `400` nếu phát hiện time-series bị thủng.
+- **PII**: KHÔNG được chứa PII (email, phone, name) trong signal value hoặc labels.

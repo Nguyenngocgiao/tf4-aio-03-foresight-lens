@@ -669,6 +669,56 @@ h3 {
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
+     SLIDE 06 — Architecture Diagram
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Architecture</div></div>
+    <div class="reveal reveal-delay-1"><h2>High-level Architecture</h2></div>
+    <div class="reveal reveal-delay-2" style="background:var(--glass); border:1px solid var(--glass-border); padding:20px; border-radius:var(--radius); margin-top:20px;">
+      <img src="../diagrams/02_solution_design.png" alt="Architecture Diagram" style="width: 100%; border-radius: var(--radius); border: 1px solid var(--glass-border); box-shadow: var(--shadow);">
+    </div>
+  </div>
+  
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 07 — Architectural Evolution
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-7">
+  <div class="content">
+    <div class="reveal"><div class="eyebrow">Vision & Scalability</div></div>
+    <div class="reveal reveal-delay-1"><h2>Architectural Evolution</h2></div>
+    <div class="reveal"><p class="lead">Tại sao chọn ECS Fargate thay vì Lambda cho đồ án? (Vì bài toán yêu cầu zero cold-start)</p></div>
+    <div class="reveal reveal-delay-2">
+      <div class="grid-2">
+        <div class="card card-accent-left">
+          <h3>Phase 1: Validation (Hiện tại)</h3>
+          <p style="margin-bottom:12px; font-size:0.85rem; color:var(--ink3)">Mục tiêu: Chứng minh tính khả thi (PoC) với chi phí thấp nhất.</p>
+          <table class="tbl">
+            <tr><td><strong>Compute</strong></td><td>ECS Fargate + Internal ALB</td></tr>
+            <tr><td><strong>State</strong></td><td>CloudWatch & S3</td></tr>
+            <tr><td><strong>Ưu điểm</strong></td><td><span class="tag tag-green">~$0 Cost</span> <span class="tag tag-green">Zero Ops</span> Scale to 0</td></tr>
+            <tr><td><strong>Hạn chế</strong></td><td>Cold start (~1-2s), giới hạn execution time (15ph). Không hợp streaming.</td></tr>
+          </table>
+        </div>
+        <div class="card card-warning" style="border-left: 3px solid #8b5cf6;">
+          <h3>Phase 2: Production Scale (Tương lai)</h3>
+          <p style="margin-bottom:12px; font-size:0.85rem; color:var(--ink3)">Mục tiêu: Xử lý High-Throughput (10k+ RPS), Real-time Streaming.</p>
+          <table class="tbl">
+            <tr><td><strong>Ingest</strong></td><td>Kafka / Kinesis Streams</td></tr>
+            <tr><td><strong>Compute</strong></td><td>ECS Fargate (Container 24/7)</td></tr>
+            <tr><td><strong>Ưu điểm</strong></td><td><span class="tag tag-blue">No Cold Start</span> <span class="tag tag-blue">Real-time</span> Xử lý spike traffic lớn.</td></tr>
+            <tr><td><strong>Hạn chế</strong></td><td>Fixed cost cao, đòi hỏi vận hành hạ tầng phức tạp hơn.</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 04 — 3 Contracts
      ═══════════════════════════════════════════════════════ -->
 <section class="slide" id="slide-4">
@@ -684,7 +734,7 @@ h3 {
         </div>
         <div class="card card-accent-left">
           <h3>AI API</h3>
-          <p>POST /v1/detect → drift + recommend + confidence + audit.</p>
+          <p>POST /v1/predict → drift + recommend + confidence + audit.</p>
         </div>
         <div class="card card-accent-left">
           <h3>Deployment</h3>
@@ -735,56 +785,6 @@ h3 {
   
 </section>
 
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 06 — Architecture Diagram
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-6">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Architecture</div></div>
-    <div class="reveal reveal-delay-1"><h2>High-level Architecture</h2></div>
-    <div class="reveal reveal-delay-2" style="background:var(--glass); border:1px solid var(--glass-border); padding:20px; border-radius:var(--radius); margin-top:20px;">
-      <img src="../diagrams/02_solution_design.png" alt="Architecture Diagram" style="width: 100%; border-radius: var(--radius); border: 1px solid var(--glass-border); box-shadow: var(--shadow);">
-    </div>
-  </div>
-  
-</section>
-
-<!-- ═══════════════════════════════════════════════════════
-     SLIDE 07 — Architectural Evolution
-     ═══════════════════════════════════════════════════════ -->
-<section class="slide" id="slide-7">
-  <div class="content">
-    <div class="reveal"><div class="eyebrow">Vision & Scalability</div></div>
-    <div class="reveal reveal-delay-1"><h2>Architectural Evolution</h2></div>
-    <div class="reveal"><p class="lead">Tại sao chọn ECS Fargate thay vì Lambda cho đồ án? (Vì bài toán yêu cầu zero cold-start)</p></div>
-    <div class="reveal reveal-delay-2">
-      <div class="grid-2">
-        <div class="card card-accent-left">
-          <h3>Phase 1: Validation (Hiện tại)</h3>
-          <p style="margin-bottom:12px; font-size:0.85rem; color:var(--ink3)">Mục tiêu: Chứng minh tính khả thi (PoC) với chi phí thấp nhất.</p>
-          <table class="tbl">
-            <tr><td><strong>Compute</strong></td><td>ECS Fargate + Internal ALB</td></tr>
-            <tr><td><strong>State</strong></td><td>CloudWatch & S3</td></tr>
-            <tr><td><strong>Ưu điểm</strong></td><td><span class="tag tag-green">~$0 Cost</span> <span class="tag tag-green">Zero Ops</span> Scale to 0</td></tr>
-            <tr><td><strong>Hạn chế</strong></td><td>Cold start (~1-2s), giới hạn execution time (15ph). Không hợp streaming.</td></tr>
-          </table>
-        </div>
-        <div class="card card-warning" style="border-left: 3px solid #8b5cf6;">
-          <h3>Phase 2: Production Scale (Tương lai)</h3>
-          <p style="margin-bottom:12px; font-size:0.85rem; color:var(--ink3)">Mục tiêu: Xử lý High-Throughput (10k+ RPS), Real-time Streaming.</p>
-          <table class="tbl">
-            <tr><td><strong>Ingest</strong></td><td>Kafka / Kinesis Streams</td></tr>
-            <tr><td><strong>Compute</strong></td><td>ECS Fargate (Container 24/7)</td></tr>
-            <tr><td><strong>Ưu điểm</strong></td><td><span class="tag tag-blue">No Cold Start</span> <span class="tag tag-blue">Real-time</span> Xử lý spike traffic lớn.</td></tr>
-            <tr><td><strong>Hạn chế</strong></td><td>Fixed cost cao, đòi hỏi vận hành hạ tầng phức tạp hơn.</td></tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-</section>
 
 <!-- ═══════════════════════════════════════════════════════
      SLIDE 15 — 3 Service Demo
@@ -1117,7 +1117,7 @@ h3 {
           <h3><i data-lucide="check-square" style="width:16px;height:16px;vertical-align:-2px;color:var(--green)"></i> DONE</h3>
           <table class="tbl">
             <tr><td>Engine</td><td>EWMA & STL Prebuild — <span class="tag tag-green">100%</span></td></tr>
-            <tr><td>API</td><td>FastAPI /v1/detect + /v1/verify</td></tr>
+            <tr><td>API</td><td>FastAPI /v1/predict</td></tr>
             <tr><td>Tests</td><td>10 scenarios, Precision 1.0, FP 0%</td></tr>
             <tr><td>Contracts</td><td>3/3 drafted (Telemetry, AI API, Deploy)</td></tr>
             <tr><td>Docs</td><td>Requirements, Design, Spec, Eval, ADRs</td></tr>
@@ -1152,7 +1152,7 @@ h3 {
         <div class="card" style="text-align:center">
           <div class="icon-circle" style="background:rgba(245,158,11,0.12);margin:0 auto 10px;color:var(--accent)"><i data-lucide="file-json"></i></div>
           <h3>API Contract</h3>
-          <p style="font-size:0.82rem">POST /v1/detect<br>POST /v1/verify<br>Headers: X-Tenant-Id + IAM SigV4<br>P99 &lt; 500ms · 100 RPS</p>
+          <p style="font-size:0.82rem">POST /v1/predict<br>Headers: X-Tenant-Id + IAM SigV4<br>P99 &lt; 500ms · 100 RPS</p>
         </div>
         <div class="card" style="text-align:center">
           <div class="icon-circle" style="background:rgba(59,130,246,0.12);margin:0 auto 10px;color:var(--blue)"><i data-lucide="activity"></i></div>
