@@ -13,13 +13,14 @@ class PredictContext(BaseModel):
 
 class SignalDatapoint(BaseModel):
     ts: datetime
+    tenant_id: str
     service_id: str
-    signal_name: str
+    metric_type: str
     value: float
     labels: Optional[Dict[str, Any]] = None
 
 class PredictRequest(BaseModel):
-    signal_window: List[SignalDatapoint]
+    signal_window: List[SignalDatapoint] = Field(..., max_length=10000)
     context: PredictContext
     
     @field_validator('signal_window')
@@ -30,7 +31,7 @@ class PredictRequest(BaseModel):
         return v
 
 class Recommendation(BaseModel):
-    action_verb: Literal["SCALE_UP", "ROLLBACK", "RESTART", "INVESTIGATE"]
+    action_verb: Literal["SCALE_UP", "INVESTIGATE"]
     target: str          # e.g., "payment-gw ECS Service"
     from_to: str         # e.g., "3 tasks -> 5 tasks"
     confidence: float = Field(ge=0.0, le=1.0)

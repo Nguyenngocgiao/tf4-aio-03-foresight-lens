@@ -3,6 +3,9 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from typing import Optional
+import uuid
+import time
+from collections import defaultdict
 
 from .models import PredictRequest, PredictResponse
 from .engine import AnomalyDetector
@@ -20,6 +23,21 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": jsonable_encoder(exc.errors()), "body": jsonable_encoder(exc.body)},
     )
 
+request_counts = defaultdict(list)
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    tenant_id = request.headers.get("x-tenant-id")
+    if tenant_id:
+        now = time.time()
+        request_counts[tenant_id] = [t for t in request_counts[tenant_id] if now - t < 60]
+        if len(request_counts[tenant_id]) >= 100:
+            return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"}, headers={"Retry-After": "60"})
+        request_counts[tenant_id].append(now)
+    
+    response = await call_next(request)
+    return response
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "version": "v1.0"}
@@ -27,24 +45,44 @@ async def health_check():
 @app.post("/v1/predict", response_model=PredictResponse)
 async def predict_capacity(
     request: PredictRequest,
-    x_tenant_id: str = Header(..., alias="X-Tenant-Id"),
-    authorization: str = Header(..., alias="Authorization")
+    x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-Id"),
+    authorization: Optional[str] = Header(None, alias="Authorization"),
+    x_correlation_id: Optional[str] = Header(None, alias="X-Correlation-Id")
 ):
-    # Multi-tenant isolation (ai-api-contract.md): labels.tenant_id must match the header.
+    if not x_tenant_id:
+        raise HTTPException(status_code=401, detail="X-Tenant-Id header is required")
+
+    if not x_correlation_id:
+        x_correlation_id = str(uuid.uuid4())
+
+    # Validate tenant isolation and minimum data requirements
+    if len(request.signal_window) < 120:
+        raise HTTPException(status_code=400, detail="signal_window must contain data for at least 120 minutes")
+
+    prev_ts = None
     for dp in request.signal_window:
-        label_tid = (dp.labels or {}).get("tenant_id")
-        if label_tid is not None and label_tid != x_tenant_id:
-            raise HTTPException(
-                status_code=400,
-                detail=f"tenant_id mismatch: labels.tenant_id={label_tid} != X-Tenant-Id={x_tenant_id}",
-            )
+        # Multi-tenant isolation: every datapoint's tenant_id must match the header.
+        if dp.tenant_id != x_tenant_id:
+            raise HTTPException(status_code=400, detail="tenant_id in signal datapoint does not match X-Tenant-Id header")
+
+        # Check for gaps (missing data) - Assuming 1 minute interval
+        current_ts = dp.ts.timestamp()
+        if prev_ts is not None:
+            if current_ts - prev_ts > 65:  # Tolerance of 5 seconds over 60s
+                raise HTTPException(status_code=400, detail="Missing data detected (gap > 1 minute). Data must be continuous.")
+        prev_ts = current_ts
 
     # Detect drift using STL-baseline + EWMA control chart
+
     anomaly, severity, suggested_action, reasoning, confidence = detector.detect_drift(
         tenant_id=x_tenant_id,
         signals=request.signal_window
     )
     
+    # Confidence gating MG-03
+    if suggested_action and confidence < 0.7:
+        suggested_action["action_verb"] = "INVESTIGATE"
+
     # Audit log
     response_data = {
         "anomaly": anomaly,
@@ -54,7 +92,7 @@ async def predict_capacity(
     }
     
     # Extract principal_id from authorization header (mocked for now, assumes role ARN or similar is passed)
-    principal_id = authorization.split("Credential=")[-1].split("/")[0] if "Credential=" in authorization else "mock-principal-id"
+    principal_id = authorization.split("Credential=")[-1].split("/")[0] if authorization and "Credential=" in authorization else "mock-principal-id"
     
     request_data = request.model_dump()
     request_data["principal_id"] = principal_id

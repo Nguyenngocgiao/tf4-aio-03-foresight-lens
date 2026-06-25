@@ -20,25 +20,26 @@ import numpy as np
 from .baseline import load_baseline
 from .models import SignalDatapoint
 
-EWMA_ALPHA = 0.3        # responsiveness of the EWMA (tuned: see ADR-002)
+EWMA_ALPHA = 0.3        # responsiveness of the EWMA (tuned: see ADR-006)
 SIGMA_K = 4.0           # control-limit width (K-sigma); tuned for FP 7.1% on holdout
 MIN_POINTS = 3          # need a few points before judging
 
-# Recommendation templates keyed by contract signal_name
+# Recommendation templates keyed by metric_type. action_verb is limited to the
+# model enum {SCALE_UP, INVESTIGATE} (predict + recommend; no remediation verbs).
 _RECS = {
     "cpu_usage_percent": ("SCALE_UP", "ECS Service", "Current -> +2 Tasks", "cpu",
                           "CPU drift detected. Scale out ECS service."),
     "queue_depth": ("SCALE_UP", "SQS Workers", "Current -> +5 Workers", "queue",
                     "Queue backlog building. Increase worker concurrency."),
-    "memory_usage_percent": ("ROLLBACK", "Deployment", "v_latest -> v_previous", "mem",
-                             "Memory leak trend toward OOM. Consider rollback."),
+    "memory_usage_percent": ("SCALE_UP", "Task Memory", "1024MB -> 2048MB", "mem",
+                             "Memory drift toward OOM. Scale task memory / investigate leak."),
 }
 _DEFAULT_REC = ("INVESTIGATE", "Resource", "N/A", "metric", "Anomalous drift detected.")
 
 
 class AnomalyDetector:
     def _ewma_breach(self, residuals: np.ndarray, sigma: float) -> Tuple[bool, float, int]:
-        """EWMA control chart. Returns (breached, last_statistic, direction)."""
+        """EWMA control chart. Returns (breached, last_statistic_ratio, direction)."""
         if sigma <= 0:
             sigma = 1.0
         z = 0.0  # residual baseline mean is ~0 after de-seasonalising
@@ -72,10 +73,10 @@ class AnomalyDetector:
         if not signals:
             return False, 0.0, None, "No signals provided", 1.0
 
-        # Group by (service_id, signal_name)
+        # Group by (service_id, metric_type)
         groups: dict = {}
         for s in signals:
-            groups.setdefault((s.service_id, s.signal_name), []).append(s)
+            groups.setdefault((s.service_id, s.metric_type), []).append(s)
 
         for (service_id, metric), pts in groups.items():
             pts = sorted(pts, key=lambda p: p.ts)

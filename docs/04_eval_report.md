@@ -50,7 +50,7 @@ Source: `tf4-evidence/evidence/evidence_algorithm_evaluation.json`.
 > **Note on precision (0.793):** windows on the *boundary* of an anomaly region (EWMA still
 > elevated just after a fault clears) count as FP in this strict per-window scoring. It does
 > not breach the client's hard gate (FP ≤ 12%); recall and lead time are the primary KPIs and
-> both pass with wide margin. Tuning toward higher precision (K=4.5) is logged in ADR-005.
+> both pass with wide margin. Tuning toward higher precision (K=4.5) is logged in ADR-006.
 
 ### 3.1 Algorithm comparison (A/B, measured on the same holdout)
 
@@ -84,7 +84,7 @@ first removes the daily load curve that makes Isolation Forest fire on normal pe
 - **Scenario 5** injects high queue-depth variance with no mean shift.
 - **Behaviour**: EWMA smoothing (α=0.3) averages zero-mean noise toward 0, so the K=4σ
   control limit is not breached → no alert. This is why FP stays at 7.1% rather than the
-  17.5% seen at K=3 (see ADR-005 tuning sweep).
+  17.5% seen at K=3 (see ADR-006 tuning sweep).
 
 ## 5. Curveball impact
 

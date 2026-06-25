@@ -35,7 +35,7 @@ def row_to_signals(df_win: pd.DataFrame, service: str):
         ts = pd.Timestamp(r["ts"].replace("Z", ""))
         for m in METRICS:
             sigs.append(SimpleNamespace(ts=ts.to_pydatetime(), service_id=service,
-                                        signal_name=m, value=float(r[m])))
+                                        metric_type=m, value=float(r[m])))
     return sigs
 
 

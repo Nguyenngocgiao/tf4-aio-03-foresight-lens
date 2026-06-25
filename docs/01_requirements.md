@@ -15,6 +15,12 @@
 - Chi phí bảo trì cho các công cụ AIOps trên thị trường quá đắt đỏ và cồng kềnh, không phù hợp với quy mô hiện tại.
 - Sự thiếu tin tưởng vào khả năng "tự động hành động" (Auto-remediation) của AI do sợ hệ thống tự tắt nhầm các server đang chạy tốt.
 
+### 1.2 Ràng buộc bàn giao dự án (Capstone Phased Delivery Constraints)
+> **Ràng buộc đặc thù cho Phase 2 (Tuần 11 & 12)**:
+> Do tính chất làm việc song song (Parallel execution) giữa team AI và team CDO (Cloud/DevOps), việc tích hợp phải được chia làm 2 giai đoạn:
+> - **W11 (Mock Integration)**: Team AI **BẮT BUỘC** phải bàn giao một Endpoint "Skeleton" (giàn giáo) với Dummy Logic trả về JSON tĩnh đúng Schema vào ngày T5 W11. Trong giai đoạn này, Authentication (IAM SigV4) được nới lỏng (Optional) để CDO dễ dàng test luồng.
+> - **W12 (Final Build)**: Team AI sẽ thay thế Skeleton bằng thuật toán AI/Thống kê thực tế. Lúc này, mọi quy định về IAM Auth, Validation, và Logic đều được siết chặt. Hợp đồng API (API Contract) giữ nguyên xuyên suốt để CDO không phải sửa code.
+
 ## 2. Outcomes mong muốn
 
 Dựa trên pain points của khách hàng, dự án Foresight Lens hướng tới 4 mục tiêu chính:

@@ -23,8 +23,9 @@ class AuditLogger:
         audit_id = uuid.uuid4()
         now = datetime.now(timezone.utc)
 
-        # Hash input for traceability without storing raw PII
-        input_hash = hashlib.sha256(json.dumps(request_data, default=str).encode()).hexdigest()[:16]
+        # Hash signal_window for traceability without storing raw PII (ai-api-contract.md)
+        signal_window_data = request_data.get("signal_window", [])
+        input_hash = hashlib.sha256(json.dumps(signal_window_data, default=str).encode()).hexdigest()
 
         # 6 mandatory fields (ai-api-contract.md Audit Log Schema)
         log_entry = {

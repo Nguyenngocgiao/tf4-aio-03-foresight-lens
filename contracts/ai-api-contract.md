@@ -9,6 +9,10 @@
 
 Định nghĩa **API endpoints** mà Nhóm AI expose, Nhóm CDO consume. Là service contract giữa AI engine và platform infra.
 
+> **⚠️ CAPSTONE PHASED DELIVERY NOTE:**
+> - **W11 (Mock Integration Phase):** AI team deploy một **Skeleton Endpoint** (dummy logic trả về hardcoded JSON). 
+> - **W12 (Final Build Phase):** AI team bàn giao artifact và deployment contract cho engine chứa thuật toán thực tế. API Schema ở hai giai đoạn là **như nhau**, CDO không cần sửa code khi chuyển từ W11 sang W12.
+
 ## Versioning
 
 - **Current version**: `v1.0` (in path `/v1/`)
@@ -17,7 +21,7 @@
 
 ## Authentication
 
-- **Inter-service**: IAM SigV4 (no API keys)
+- **Inter-service**: IAM SigV4 (no API keys). *Lưu ý Capstone: Trong giai đoạn W11 Mock Testing, `Authorization` header là **TÙY CHỌN (Optional)** để CDO dễ dàng test curl/Postman public. Từ W12 Final Build, IAM SigV4 sẽ bị **ENFORCE** nghiêm ngặt.*
 - **Cross-account**: STS assume-role với session tag `tenant_id`
 - **Audit**: every auth event logged
 
@@ -37,7 +41,7 @@
 
 | Header | Type | Required | Description |
 |---|---|---|---|
-| `X-Tenant-Id` | UUID v4 | ✓ | Tenant identifier |
+| `X-Tenant-Id` | string | ✓ | Tenant identifier (e.g. tnt-abc123) |
 | `Authorization` | IAM SigV4 | ✓ | Inter-service auth |
 | `X-Correlation-Id` | UUID | optional | Trace correlation (auto-generated nếu thiếu) |
 
@@ -47,10 +51,11 @@
 |---|---|---|---|
 | `signal_window` | array | ✓ | Time-series datapoints (BẮT BUỘC chứa dữ liệu của ≥ 120 phút gần nhất để AI có đủ context dự báo (Test window ≥ 2h). Thiếu -> 400 Bad Request) |
 | `signal_window[].ts` | RFC3339 | ✓ | Event timestamp UTC |
+| `signal_window[].tenant_id` | string | ✓ | Tenant identifier (Bắt buộc để đảm bảo multi-tenant isolation, phải match với header X-Tenant-Id) |
 | `signal_window[].service_id` | string | ✓ | Service identifier (Bắt buộc để mapping với per-service baseline) |
-| `signal_window[].signal_name` | string | ✓ | Tên signal (Tương đương với `metric_type` trong Learner doc) |
+| `signal_window[].metric_type` | string | ✓ | Tên loại metric (e.g. cpu_usage_percent) |
 | `signal_window[].value` | float | ✓ | Measurement value |
-| `signal_window[].labels` | object | optional | Additional context labels. *Lưu ý: Engine sẽ validate sự đồng nhất giữa `labels.tenant_id` và header `X-Tenant-Id` để đảm bảo multi-tenant isolation.* |
+| `signal_window[].labels` | object | optional | Additional context labels. |
 | `context.deployment_version` | string | ✓ | Current deploy SHA hoặc version tag |
 | `context.time_range.start_ts` | RFC3339 | ✓ | Analysis window start |
 | `context.time_range.end_ts` | RFC3339 | ✓ | Analysis window end |
@@ -60,8 +65,8 @@
 ```json
 {
   "signal_window": [
-    {"ts": "2026-06-25T10:00:00Z", "service_id": "payment-gw", "signal_name": "api_latency_ms", "value": 1200},
-    {"ts": "2026-06-25T10:01:00Z", "service_id": "payment-gw", "signal_name": "api_latency_ms", "value": 1800}
+    {"ts": "2026-06-25T10:00:00Z", "tenant_id": "tenant-cdo-demo", "service_id": "payment-gw", "metric_type": "api_latency_ms", "value": 1200},
+    {"ts": "2026-06-25T10:01:00Z", "tenant_id": "tenant-cdo-demo", "service_id": "payment-gw", "metric_type": "api_latency_ms", "value": 1800}
   ],
   "context": {
     "deployment_version": "v2.3.1",
@@ -79,7 +84,7 @@
 |---|---|---|
 | `anomaly` | bool | True nếu detect anomaly |
 | `severity` | float 0.0-1.0 | Severity score |
-| `recommendation.action_verb` | enum | `["SCALE_UP", "ROLLBACK", "RESTART", "INVESTIGATE"]` |
+| `recommendation.action_verb` | enum | `["SCALE_UP", "INVESTIGATE"]` |
 | `recommendation.target` | string | Target resource (e.g., "payment-gw ECS Service") |
 | `recommendation.from_to` | string | State transition (e.g., "3 tasks -> 5 tasks") |
 | `recommendation.confidence` | float 0.0-1.0 | Model confidence - CDO dùng cho gating |
