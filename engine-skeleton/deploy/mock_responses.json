@@ -1,0 +1,60 @@
+{
+  "_note": "Canonical responses from the REAL engine for CDO mock-testing. Generated, not hand-written.",
+  "success_normal": {
+    "http": 200,
+    "body": {
+      "anomaly": false,
+      "severity": 0.0,
+      "recommendation": null,
+      "reasoning": "No anomaly detected (EWMA within control limits).",
+      "audit_id": "e9595229-e245-4f26-8e1b-f43b29ce98f8"
+    }
+  },
+  "success_anomaly_scale_up": {
+    "http": 200,
+    "body": {
+      "anomaly": true,
+      "severity": 1.0,
+      "recommendation": {
+        "action_verb": "SCALE_UP",
+        "target": "payment-gw ECS Service",
+        "from_to": "Current -> +2 Tasks",
+        "confidence": 0.99,
+        "evidence_link": "https://dashboard.internal/metrics/payment-gw/cpu"
+      },
+      "reasoning": "CPU drift detected. Scale out ECS service. (service=payment-gw, EWMA=19.93x control limit)",
+      "audit_id": "a8c0e102-680e-4dbe-bd7b-016c99e0b681"
+    }
+  },
+  "error_400_bad_input": {
+    "http": 400,
+    "body": {
+      "detail": "signal_window must contain data for at least 120 minutes"
+    },
+    "cdo_action": "Fix client payload. KHÔNG retry."
+  },
+  "error_401_missing_tenant": {
+    "http": 401,
+    "body": {
+      "detail": "X-Tenant-Id header is required"
+    },
+    "cdo_action": "Refresh credential/header, retry once."
+  },
+  "error_429_rate_limited": {
+    "http": 429,
+    "body": {
+      "detail": "Rate limit exceeded"
+    },
+    "headers": {
+      "Retry-After": "60"
+    },
+    "cdo_action": "Exponential backoff."
+  },
+  "error_503_engine_down": {
+    "http": 503,
+    "body": {
+      "detail": "AI engine unavailable"
+    },
+    "cdo_action": "BẮT BUỘC fallback về rule-based alert (hard threshold)."
+  }
+}
