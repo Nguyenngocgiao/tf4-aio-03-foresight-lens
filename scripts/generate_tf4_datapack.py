@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 # Correct output directory according to the assignment structure
-BASE_DIR = "/home/dinh/Downloads/tf4-aio-03/xbrain-learner/capstone-phase2/data/tf4-foresight"
+BASE_DIR = "/home/dinh/TF4-AIO-03-foresight-lens-final/xbrain-learner/capstone-phase2/data/tf4-foresight"
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # ==========================================
@@ -52,6 +52,28 @@ def base_pattern(minute_of_day, base, peak, p1_start=9, p1_end=11, p2_start=14, 
     else:
         return base
 
+def generate_ou_series(minutes, base_func, theta, sigma, min_val, max_val, dt=1.0):
+    """
+    Generate time series using the Ornstein-Uhlenbeck (Vasicek) model 
+    via Euler-Maruyama method.
+    dx = theta * (mu - x) * dt + sigma * sqrt(dt) * dW
+    """
+    series = np.zeros(minutes)
+    x = base_func(0)
+    for i in range(minutes):
+        mu = base_func(i % 1440)
+        # Euler step
+        x = x + theta * (mu - x) * dt + sigma * np.sqrt(dt) * np.random.normal()
+        
+        # Soft reflection boundary to prevent flatlining (variance = 0) at extreme values
+        if x < min_val:
+            x = min_val + np.abs(x - min_val)
+        elif x > max_val:
+            x = max_val - np.abs(x - max_val)
+            
+        series[i] = x
+    return series
+
 # Structure to hold data before flattening
 raw_data = []
 
@@ -64,38 +86,36 @@ tenant_multipliers = {"tnt-alpha": 1.0, "tnt-beta": 0.6, "tnt-gamma": 0.3}
 
 for t_idx, tenant in enumerate(tenants):
     mult = tenant_multipliers[tenant]
-    for i in range(MINUTES):
-        mod = i % 1440
-        
-        # Payment-GW
-        data_dict[tenant]["payment-gw"]["cpu_pct"][i] = np.clip(base_pattern(mod, 30, 70) * mult + np.random.normal(0, 3), 5, 95)
-        data_dict[tenant]["payment-gw"]["mem_pct"][i] = np.clip((40 + np.random.normal(0, 1)) * (0.8 + mult*0.2), 10, 90)
-        data_dict[tenant]["payment-gw"]["latency_p99_ms"][i] = np.clip(base_pattern(mod, 50, 150) + np.random.normal(0, 10), 20, 500)
-        data_dict[tenant]["payment-gw"]["throughput_rps"][i] = np.clip(base_pattern(mod, 500, 2500) * mult + np.random.normal(0, 50), 10, 5000)
+    
+    # Payment-GW
+    data_dict[tenant]["payment-gw"]["cpu_pct"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 30, 70) * mult, theta=0.1, sigma=2.0, min_val=5.0, max_val=95.0)
+    data_dict[tenant]["payment-gw"]["mem_pct"] = generate_ou_series(MINUTES, lambda m: 40 * (0.8 + mult*0.2), theta=0.05, sigma=1.0, min_val=10.0, max_val=90.0)
+    data_dict[tenant]["payment-gw"]["latency_p99_ms"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 50, 150), theta=0.2, sigma=10.0, min_val=20.0, max_val=500.0)
+    data_dict[tenant]["payment-gw"]["throughput_rps"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 500, 2500) * mult, theta=0.3, sigma=50.0, min_val=10.0, max_val=5000.0)
 
-        # Fraud-Detector
-        data_dict[tenant]["fraud-detector"]["cpu_pct"][i] = np.clip(base_pattern(mod, 20, 50) * mult + np.random.normal(0, 2), 5, 95)
-        data_dict[tenant]["fraud-detector"]["mem_pct"][i] = np.clip(50 + np.random.normal(0, 2), 10, 95)
-        data_dict[tenant]["fraud-detector"]["latency_p99_ms"][i] = np.clip(base_pattern(mod, 200, 400) + np.random.normal(0, 15), 50, 1000)
-        data_dict[tenant]["fraud-detector"]["throughput_rps"][i] = data_dict[tenant]["payment-gw"]["throughput_rps"][i] * 0.9
+    # Fraud-Detector
+    data_dict[tenant]["fraud-detector"]["cpu_pct"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 20, 50) * mult, theta=0.1, sigma=1.5, min_val=5.0, max_val=95.0)
+    data_dict[tenant]["fraud-detector"]["mem_pct"] = generate_ou_series(MINUTES, lambda m: 50, theta=0.05, sigma=1.5, min_val=10.0, max_val=95.0)
+    data_dict[tenant]["fraud-detector"]["latency_p99_ms"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 200, 400), theta=0.2, sigma=15.0, min_val=50.0, max_val=1000.0)
+    data_dict[tenant]["fraud-detector"]["throughput_rps"] = data_dict[tenant]["payment-gw"]["throughput_rps"] * 0.9
 
-        # Ledger
-        data_dict[tenant]["ledger"]["cpu_pct"][i] = np.clip(base_pattern(mod, 15, 40) * mult + np.random.normal(0, 2), 5, 95)
-        data_dict[tenant]["ledger"]["mem_pct"][i] = np.clip(60 + np.random.normal(0, 1), 10, 95)
-        data_dict[tenant]["ledger"]["latency_p99_ms"][i] = np.clip(base_pattern(mod, 10, 30) + np.random.normal(0, 2), 5, 100)
-        data_dict[tenant]["ledger"]["throughput_rps"][i] = data_dict[tenant]["payment-gw"]["throughput_rps"][i] * 0.8
-        
-        # KYC
-        data_dict[tenant]["kyc"]["cpu_pct"][i] = np.clip(base_pattern(mod, 20, 60, p1_start=8, p1_end=12, p2_start=13, p2_end=15) * mult + np.random.normal(0, 3), 5, 95)
-        data_dict[tenant]["kyc"]["mem_pct"][i] = np.clip(45 + np.random.normal(0, 1.5), 10, 95)
-        data_dict[tenant]["kyc"]["latency_p99_ms"][i] = np.clip(base_pattern(mod, 100, 300) + np.random.normal(0, 15), 50, 1000)
-        data_dict[tenant]["kyc"]["throughput_rps"][i] = np.clip(base_pattern(mod, 50, 200) * mult + np.random.normal(0, 10), 5, 500)
-        
-        # Reporting
-        data_dict[tenant]["reporting"]["cpu_pct"][i] = np.clip(base_pattern(mod, 10, 80, p1_start=22, p1_end=23, p2_start=23.5, p2_end=24) * mult + np.random.normal(0, 4), 5, 95)
-        data_dict[tenant]["reporting"]["mem_pct"][i] = np.clip(30 + np.random.normal(0, 1), 10, 95)
-        data_dict[tenant]["reporting"]["latency_p99_ms"][i] = np.clip(base_pattern(mod, 500, 2000) + np.random.normal(0, 50), 100, 5000)
-        data_dict[tenant]["reporting"]["throughput_rps"][i] = np.clip(base_pattern(mod, 5, 50) * mult + np.random.normal(0, 2), 1, 100)
+    # Ledger
+    data_dict[tenant]["ledger"]["cpu_pct"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 15, 40) * mult, theta=0.1, sigma=1.5, min_val=5.0, max_val=95.0)
+    data_dict[tenant]["ledger"]["mem_pct"] = generate_ou_series(MINUTES, lambda m: 60, theta=0.05, sigma=1.0, min_val=10.0, max_val=95.0)
+    data_dict[tenant]["ledger"]["latency_p99_ms"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 10, 30), theta=0.2, sigma=2.0, min_val=5.0, max_val=100.0)
+    data_dict[tenant]["ledger"]["throughput_rps"] = data_dict[tenant]["payment-gw"]["throughput_rps"] * 0.8
+    
+    # KYC
+    data_dict[tenant]["kyc"]["cpu_pct"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 20, 60, p1_start=8, p1_end=12, p2_start=13, p2_end=15) * mult, theta=0.1, sigma=2.5, min_val=5.0, max_val=95.0)
+    data_dict[tenant]["kyc"]["mem_pct"] = generate_ou_series(MINUTES, lambda m: 45, theta=0.05, sigma=1.2, min_val=10.0, max_val=95.0)
+    data_dict[tenant]["kyc"]["latency_p99_ms"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 100, 300), theta=0.2, sigma=15.0, min_val=50.0, max_val=1000.0)
+    data_dict[tenant]["kyc"]["throughput_rps"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 50, 200) * mult, theta=0.3, sigma=10.0, min_val=5.0, max_val=500.0)
+    
+    # Reporting
+    data_dict[tenant]["reporting"]["cpu_pct"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 10, 80, p1_start=22, p1_end=23, p2_start=23.5, p2_end=24) * mult, theta=0.1, sigma=3.0, min_val=5.0, max_val=95.0)
+    data_dict[tenant]["reporting"]["mem_pct"] = generate_ou_series(MINUTES, lambda m: 30, theta=0.05, sigma=1.0, min_val=10.0, max_val=95.0)
+    data_dict[tenant]["reporting"]["latency_p99_ms"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 500, 2000), theta=0.2, sigma=40.0, min_val=100.0, max_val=5000.0)
+    data_dict[tenant]["reporting"]["throughput_rps"] = generate_ou_series(MINUTES, lambda m: base_pattern(m, 5, 50) * mult, theta=0.3, sigma=2.0, min_val=1.0, max_val=100.0)
 
 
 # ==========================================
@@ -156,13 +176,24 @@ for t in tenants:
         for m in metric_types:
             series = data_dict[t][s][m]
             for i in range(MINUTES):
-                records.append({
+                record = {
                     "timestamp": time_index[i].isoformat() + "Z",
                     "tenant_id": t,
                     "service_id": s,
                     "metric_type": m,
                     "value": round(float(series[i]), 2)
-                })
+                }
+                
+                # Inject PII in ~5% of records to test "schema whitelist, reject ingest" requirement
+                if np.random.rand() < 0.05:
+                    pii_types = [
+                        {"customer_email": f"user{np.random.randint(1000, 9999)}@gmail.com"},
+                        {"card_number": f"4242-4242-4242-{np.random.randint(1000, 9999)}"},
+                        {"ssn": f"{np.random.randint(100, 999)}-{np.random.randint(10, 99)}-{np.random.randint(1000, 9999)}"}
+                    ]
+                    record["metadata"] = json.dumps(np.random.choice(pii_types))
+                
+                records.append(record)
 
 print(f"Converting to DataFrame ({len(records)} rows)...")
 df = pd.DataFrame(records)
