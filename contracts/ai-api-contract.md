@@ -84,7 +84,7 @@
 |---|---|---|
 | `anomaly` | bool | True nếu detect anomaly |
 | `severity` | float 0.0-1.0 | Severity score |
-| `recommendation.action_verb` | enum | `["SCALE_UP", "INVESTIGATE"]` |
+| `recommendation.action_verb` | enum | `["SCALE_UP", "SCALE_DOWN", "INVESTIGATE"]` |
 | `recommendation.target` | string | Target resource (e.g., "payment-gw ECS Service") |
 | `recommendation.from_to` | string | State transition (e.g., "3 tasks -> 5 tasks") |
 | `recommendation.confidence` | float 0.0-1.0 | Model confidence - CDO dùng cho gating |
@@ -132,7 +132,8 @@ Mỗi request tới `POST /v1/predict` bắt buộc phải được ghi log (Aud
 
 | Code | Meaning | CDO action |
 |---|---|---|
-| `400` | Invalid input schema | Fix client code, KHÔNG retry |
+| `400` | Bad request | Fix client code, KHÔNG retry |
+| `422` | Unprocessable Entity (Invalid input schema/data type) | Fix payload format/data type theo đúng schema, KHÔNG retry |
 | `401` | Auth failed | Refresh credential, retry once |
 | `429` | Rate-limited | Exponential backoff (1s → 2s → 4s ...) |
 | `503` | AI engine unavailable | Fallback to rule-based alert (CDO **bắt buộc** có fallback path) |

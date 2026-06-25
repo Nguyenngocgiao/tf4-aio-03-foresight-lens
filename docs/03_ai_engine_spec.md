@@ -162,15 +162,15 @@ Toàn bộ payload nhạy cảm không bao giờ được lưu thô (No Raw Writ
 
 ```json
 {
-  "ts": "2026-06-25T10:30:00Z",
-  "correlation_id": "req-1234",
+  "audit_id": "audit-xyz789",
+  "timestamp": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-payment-core",
-  "model_version": "tf4-ewma-stl-v1",
+  "principal_id": "arn:aws:iam::123456789012:role/cdo-role",
   "input_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "data_encryption": "AWS KMS CMK (aws/s3)",
-  "decision": "SCALE_UP",
-  "confidence": 0.95,
-  "execution_ms": 4.12
+  "recommendation_snapshot": {
+    "action_verb": "SCALE_UP",
+    "from_to": "Current -> +2 Tasks"
+  }
 }
 ```
 
