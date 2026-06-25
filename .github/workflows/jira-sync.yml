@@ -1,0 +1,51 @@
+name: Jira Sync & Automations
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  jira-sync:
+    name: Sync GitHub Commits & PRs to Jira
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Jira
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Find Jira Issue Key
+        id: find_key
+        uses: atlassian/gajira-find-issue-key@v3
+        with:
+          string: ${{ github.event.pull_request.title || github.event.head_commit.message || github.ref_name }}
+
+      - name: Add comment to Jira on PR Open
+        if: github.event_name == 'pull_request' && github.event.action == 'opened' && steps.find_key.outputs.issue != ''
+        uses: atlassian/gajira-comment@v3
+        with:
+          issue: ${{ steps.find_key.outputs.issue }}
+          comment: "🚀 *Pull Request Opened*: [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})"
+
+      - name: Add comment and Transition to Done on PR Merge
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && steps.find_key.outputs.issue != ''
+        uses: atlassian/gajira-comment@v3
+        with:
+          issue: ${{ steps.find_key.outputs.issue }}
+          comment: "✅ *Pull Request Merged*: [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n\\nCommit SHA: `${{ github.event.pull_request.merge_commit_sha }}`"
+
+      - name: Add comment on Direct Commit
+        if: github.event_name == 'push' && steps.find_key.outputs.issue != ''
+        uses: atlassian/gajira-comment@v3
+        with:
+          issue: ${{ steps.find_key.outputs.issue }}
+          comment: "💻 *New Code Pushed* by ${{ github.actor }}: [View Commit](${{ github.event.head_commit.url }})\\n\\nCommit Message: `${{ github.event.head_commit.message }}`"
