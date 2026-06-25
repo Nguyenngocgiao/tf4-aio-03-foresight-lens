@@ -83,4 +83,5 @@ Kiến trúc được lựa chọn dựa trên những sự đánh đổi (Trade
 - [`03_ai_engine_spec.md`](03_ai_engine_spec.md) - Deep-dive vào thông số kỹ thuật, Thuật toán, Quản trị AI (Governance), và Security.
 - [`04_eval_report.md`](04_eval_report.md) - Bằng chứng số liệu (Brier score, Precision, FPR).
 - [`05_adrs.md`](05_adrs.md) - Architectural Decision Records (Lịch sử chốt kiến trúc).
+- [`06_metrics_justification.md`](06_metrics_justification.md) - Bằng chứng toán học & URL tham chiếu bảo vệ các con số Hợp đồng.
 - [`../contracts/ai-api-contract.md`](../contracts/ai-api-contract.md) - Khế ước API ký với CDO.
