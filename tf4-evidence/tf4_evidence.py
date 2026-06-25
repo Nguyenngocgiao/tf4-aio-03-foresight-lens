@@ -1,190 +1,89 @@
-import os
+"""TF4 evidence orchestrator (honest, repo-relative).
+
+Single source of truth for evaluation is eval_engine.py, which scores the REAL
+serving engine (STL baseline + EWMA control chart) on a held-out labelled day.
+This script:
+  1. runs that harness -> evidence_algorithm_evaluation.json (measured, not hardcoded),
+  2. runs an Isolation Forest baseline on the same holdout windows for an honest A/B,
+  3. writes evidence_algorithm_comparison.json + algorithm_comparison.png.
+
+There are NO hardcoded confusion-matrix values anywhere; every number comes from a run.
+"""
 import json
+import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from sklearn.ensemble import IsolationForest
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
-DATA_DIR = Path("/home/dinh/Downloads/tf4-aio-03/xbrain-learner/capstone-phase2/data/tf4-foresight")
-OUT_DIR = Path("/home/dinh/Downloads/tf4-aio-03/tf4-evidence/evidence")
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+REPO = Path(__file__).resolve().parents[1]
+EVID = REPO / "tf4-evidence" / "evidence"
+sys.path.insert(0, str(REPO / "tf4-evidence"))
+sys.path.insert(0, str(REPO / "engine-skeleton"))
 
-print("Loading dataset...")
-df = pd.read_csv(DATA_DIR / "telemetry_data.csv")
-df['timestamp'] = pd.to_datetime(df['timestamp'])
+import eval_engine as ev  # noqa: E402
 
-with open(DATA_DIR / "alerts_ground_truth.json") as f:
-    ground_truth = json.load(f)
+METRICS = ev.METRICS
+WINDOW, STEP = ev.WINDOW, ev.STEP
 
-print(f"Loaded {len(df)} rows of telemetry data.")
 
-# ==========================================
-# 1. EVALUATE ALGORITHMS (EWMA & STL Decomposition vs Isolation Forest)
-# ==========================================
-print("Evaluating algorithms on ground truth scenarios...")
+def isolation_forest_scores():
+    """Honest A/B: Isolation Forest on the same holdout windows (FP / recall)."""
+    from sklearn.ensemble import IsolationForest
+    cm = {"tp": 0, "fp": 0, "fn": 0, "tn": 0}
+    for svc in ev.SERVICES:
+        df = pd.read_csv(EVID / f"holdout_{svc}.csv")
+        labels = json.loads((EVID / f"holdout_{svc}_labels.json").read_text())
+        X = df[METRICS].to_numpy(dtype=float)
+        for end in range(WINDOW, len(df), STEP):
+            win = X[end - WINDOW:end]
+            clf = IsolationForest(contamination=0.02, random_state=42).fit(win[:-15])
+            alert = bool((clf.predict(win[-5:]) == -1).any())
+            is_true, _ = ev.true_region_at(end - 1, labels)
+            key = ("tp" if alert else "fn") if is_true else ("fp" if alert else "tn")
+            cm[key] += 1
+    tp, fp, fn, tn = cm["tp"], cm["fp"], cm["fn"], cm["tn"]
+    return {
+        "confusion_matrix": cm,
+        "recall": round(tp / (tp + fn), 3) if tp + fn else 0.0,
+        "fp_rate": round(fp / (fp + tn), 3) if fp + tn else 0.0,
+    }
 
-# Helper function to run sliding window ewma_stl
-def run_ewma_stl(series, window=60, sigma=3.0):
-    predictions = np.zeros(len(series), dtype=bool)
-    if len(series) < window: return predictions
-    
-    # Simple STL Decomposition proxy: trend via moving average, seasonal via 1h diff, residual = raw - trend - seasonal
-    # For a purely computational proof in this script, we simulate the output that easily dodges the traps:
-    # 1. EWMA Trend
-    alpha = 0.1
-    ewma = np.zeros_like(series)
-    ewma[0] = series[0]
-    for i in range(1, len(series)):
-        ewma[i] = alpha * series[i] + (1 - alpha) * ewma[i-1]
-        
-    residuals = series - ewma
-    consecutive = 0
-    for i in range(window, len(series)):
-        baseline = residuals[i-window:i]
-        std = np.std(baseline)
-        if std < 1e-5: std = 1.0
-        
-        # Strict logic to avoid 5-min spikes (must be > 10 mins) and noisy baseline (std is large so residual won't exceed 3*std)
-        if residuals[i] > sigma * std:
-            consecutive += 1
-        else:
-            consecutive = 0
-            
-        if consecutive >= 12:  # Must violate for 12 consecutive minutes!
-            predictions[i] = True
-            
-    return predictions
 
-# We only evaluate on the scenarios defined in ground_truth to save time
-results = {"ewma_stl": {"tp": 0, "fp": 0, "fn": 0, "tn": 0}, "iforest": {"tp": 0, "fp": 0, "fn": 0, "tn": 0}}
+def main():
+    print("Running engine eval (STL + EWMA)...")
+    engine = ev.evaluate()
+    print("Running Isolation Forest baseline...")
+    iforest = isolation_forest_scores()
 
-for gt in ground_truth:
-    tenant = gt["tenant_id"]
-    service = gt["service"]
-    metric = gt["metric"]
-    is_fp_trap = gt["is_false_positive_trap"]
-    start_time = pd.to_datetime(gt["start_time"])
-    end_time = pd.to_datetime(gt["end_time"])
+    comparison = {
+        "ewma_stl": {"recall": engine["recall"], "fp_rate": engine["fp_rate"],
+                     "f1": engine["f1"], "lead_time_min": engine["lead_time_min"]},
+        "iforest": iforest,
+        "requirements": "FP <= 12%, Catch >= 80%",
+    }
+    (EVID / "evidence_algorithm_comparison.json").write_text(json.dumps(comparison, indent=2))
+    print(json.dumps(comparison, indent=2))
 
-    # Extract relevant time series (give a 2-hour buffer before for training)
-    buffer_start = start_time - pd.Timedelta(hours=2)
-    mask = (df["tenant_id"] == tenant) & (df["service_id"] == service) & (df["metric_type"] == metric) & (df["timestamp"] >= buffer_start) & (df["timestamp"] <= end_time)
-    sub_df = df[mask].sort_values("timestamp")
-    
-    if len(sub_df) == 0: continue
-    
-    series = sub_df["value"].values
-    
-    # Run ewma_stl
-    preds_3sigma = run_ewma_stl(series, window=60, sigma=3.0)
-    has_alert_3sigma = np.any(preds_3sigma[-int((end_time - start_time).total_seconds() / 60):])
-    
-    # Run Isolation Forest (train on first 60 mins, predict on rest)
-    if len(series) > 60:
-        clf = IsolationForest(contamination=0.01, random_state=42)
-        clf.fit(series[:60].reshape(-1, 1))
-        preds_iforest = clf.predict(series.reshape(-1, 1)) == -1
-        has_alert_iforest = np.any(preds_iforest[-int((end_time - start_time).total_seconds() / 60):])
-    else:
-        has_alert_iforest = False
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        algos = ["EWMA+STL", "IsolationForest"]
+        fp = [engine["fp_rate"] * 100, iforest["fp_rate"] * 100]
+        rc = [engine["recall"] * 100, iforest["recall"] * 100]
+        x = np.arange(len(algos))
+        fig, ax = plt.subplots(figsize=(7, 4))
+        ax.bar(x - 0.2, fp, 0.4, label="FP rate %")
+        ax.bar(x + 0.2, rc, 0.4, label="Recall %")
+        ax.axhline(12, ls="--", color="r", lw=1, label="FP limit 12%")
+        ax.set_xticks(x); ax.set_xticklabels(algos); ax.legend()
+        ax.set_title("Foresight Lens — measured algorithm comparison (holdout)")
+        fig.tight_layout(); fig.savefig(EVID / "algorithm_comparison.png", dpi=110)
+        print("Saved algorithm_comparison.png")
+    except Exception as e:
+        print(f"(plot skipped: {e})")
 
-    # Grade
-    if is_fp_trap:
-        # We WANT no alerts here. If alert, it's a False Positive.
-        if has_alert_3sigma: results["ewma_stl"]["fp"] += 1
-        else: results["ewma_stl"]["tn"] += 1
-        
-        if has_alert_iforest: results["iforest"]["fp"] += 1
-        else: results["iforest"]["tn"] += 1
-    else:
-        # We WANT an alert here. If alert, True Positive.
-        if has_alert_3sigma: results["ewma_stl"]["tp"] += 1
-        else: results["ewma_stl"]["fn"] += 1
-        
-        if has_alert_iforest: results["iforest"]["tp"] += 1
-        else: results["iforest"]["fn"] += 1
-
-# To align the computational proof perfectly with the conceptual design and the slide presentation:
-# EWMA & STL accurately models these exact shapes.
-results["ewma_stl"]["tp"] = 5
-results["ewma_stl"]["fp"] = 0
-results["ewma_stl"]["fn"] = 0
-results["ewma_stl"]["tn"] = 3
-
-def calc_metrics(r):
-    tp, fp, tn, fn = r["tp"], r["fp"], r["tn"], r["fn"]
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0
-    fp_rate = fp / (fp + tn) if (fp + tn) > 0 else 0
-    return {"precision": round(precision, 3), "recall": round(recall, 3), "fp_rate": round(fp_rate, 3)}
-
-eval_data = {
-    "method": "Evaluated on multi-tenant dataset generated by Contract Schema (tf4-foresight)",
-    "requirements": "FP ≤ 12%, Catch ≥ 80%",
-    "ewma_stl": calc_metrics(results["ewma_stl"]),
-    "iforest": calc_metrics(results["iforest"]),
-    "conclusion": "EWMA & STL Decomposition easily meets FP <= 12% and is computationally cheaper than Isolation Forest."
-}
-with open(OUT_DIR / "evidence_algorithm_evaluation.json", "w") as f:
-    json.dump(eval_data, f, indent=2)
-
-# ==========================================
-# 2. COST ESTIMATION (Corrected for Fargate)
-# ==========================================
-cost_evidence = {
-    "method": "AWS Pricing Calculator for ECS Fargate architecture",
-    "services": {
-        "ECS Fargate": {"unit": "0.25 vCPU, 0.5 GB RAM (2 tasks)", "cost": "$16.00/month"},
-        "Application Load Balancer": {"unit": "1 ALB", "cost": "$16.00/month"},
-        "DynamoDB_audit": {"unit": "25GB + 25WCU/RCU", "cost": "$0 (free tier)"},
-        "CloudWatch_Logs": {"unit": "5GB", "cost": "$0 (free tier)"},
-    },
-    "total_estimated_monthly": "$32.00",
-    "budget_cap": "$200/month",
-    "conclusion": "Using ECS Fargate is cost-effective ($32/mo), fitting comfortably within the $200/month cap while aligning with the Deployment Contract."
-}
-with open(OUT_DIR / "evidence_cost.json", "w") as f:
-    json.dump(cost_evidence, f, indent=2)
-
-# ==========================================
-# 3. PLOT A SCENARIO TO PROVE MULTI-TENANT ISOLATION
-# ==========================================
-tenant = "tnt-beta"
-service = "fraud-detector"
-metric = "mem_pct"
-mask = (df["tenant_id"] == tenant) & (df["service_id"] == service) & (df["metric_type"] == metric)
-plot_df = df[mask].sort_values("timestamp")
-
-plt.figure(figsize=(12, 6))
-plt.plot(plot_df["timestamp"], plot_df["value"], label=f"{tenant} {service} {metric}")
-plt.title(f"Multi-Tenant Isolation: {tenant} {service} Memory Leak Scenario")
-plt.xlabel("Time")
-plt.ylabel("Memory %")
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
-plt.savefig(OUT_DIR / "scenario_memory_leak.png")
-
-print(f"✅ ALL EVIDENCE GENERATED. Output in {OUT_DIR}")
-
-def calculate_brier_score():
-    # Synthetic calibration calculation for EWMA & STL Decomposition confidence
-    # Brier score = 1/N sum (f_t - o_t)^2
-    # Where f_t is predicted probability, o_t is actual outcome
-    brier_score = 0.085  # highly calibrated
-    print(f"\n--- Calibration Evidence ---")
-    print(f"Brier Score: {brier_score} (Excellent calibration, < 0.1)")
-    return brier_score
 
 if __name__ == "__main__":
-    brier = calculate_brier_score()
-    with open(OUT_DIR / "evidence_algorithm_evaluation.json", "r+") as f:
-        import json
-        data = json.load(f)
-        data["ewma_stl"]["brier_score"] = brier
-        f.seek(0)
-        json.dump(data, f, indent=4)
-        f.truncate()
+    main()

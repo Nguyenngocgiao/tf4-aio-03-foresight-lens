@@ -1,0 +1,26 @@
+[
+  {
+    "metric": "cpu_usage_percent",
+    "start": 8840,
+    "end": 8930,
+    "kind": "gradual_drift"
+  },
+  {
+    "metric": "api_latency_ms",
+    "start": 9140,
+    "end": 9160,
+    "kind": "sudden_spike"
+  },
+  {
+    "metric": "memory_usage_percent",
+    "start": 9440,
+    "end": 9620,
+    "kind": "slow_leak"
+  },
+  {
+    "metric": "queue_depth",
+    "start": 9790,
+    "end": 9850,
+    "kind": "noisy_fp_trap"
+  }
+]
