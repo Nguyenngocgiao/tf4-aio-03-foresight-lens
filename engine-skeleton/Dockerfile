@@ -2,16 +2,15 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-# Install dependencies
+# Serving deps only (training deps live in requirements-train.txt, not shipped)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install uvicorn
 
-# Copy application code
+# Application code + pre-trained per-service baselines (local fallback; S3 in prod)
 COPY app/ ./app/
+COPY baselines/ ./baselines/
 
-# Port exposure
-EXPOSE 8000
+# Health check port per deployment-contract.md
+EXPOSE 8080
 
-# Run FastAPI using Uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

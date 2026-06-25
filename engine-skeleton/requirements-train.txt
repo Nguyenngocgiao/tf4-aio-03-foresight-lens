@@ -1,0 +1,6 @@
+# Offline baseline training + evidence only (NOT shipped in the serving image)
+-r requirements.txt
+pandas
+statsmodels
+scikit-learn
+matplotlib

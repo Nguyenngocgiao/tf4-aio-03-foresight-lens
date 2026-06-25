@@ -14,8 +14,9 @@ audit_logger = AuditLogger()
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    # Contract (ai-api-contract.md) maps invalid input -> 400 Bad Request (no retry).
     return JSONResponse(
-        status_code=422,
+        status_code=400,
         content={"detail": jsonable_encoder(exc.errors()), "body": jsonable_encoder(exc.body)},
     )
 
@@ -29,7 +30,16 @@ async def predict_capacity(
     x_tenant_id: str = Header(..., alias="X-Tenant-Id"),
     authorization: str = Header(..., alias="Authorization")
 ):
-    # Detect drift using ewma_stl engine
+    # Multi-tenant isolation (ai-api-contract.md): labels.tenant_id must match the header.
+    for dp in request.signal_window:
+        label_tid = (dp.labels or {}).get("tenant_id")
+        if label_tid is not None and label_tid != x_tenant_id:
+            raise HTTPException(
+                status_code=400,
+                detail=f"tenant_id mismatch: labels.tenant_id={label_tid} != X-Tenant-Id={x_tenant_id}",
+            )
+
+    # Detect drift using STL-baseline + EWMA control chart
     anomaly, severity, suggested_action, reasoning, confidence = detector.detect_drift(
         tenant_id=x_tenant_id,
         signals=request.signal_window
