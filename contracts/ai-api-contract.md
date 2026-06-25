@@ -112,7 +112,7 @@
 
 ### Audit Log Schema (Internal AI Engine)
 
-Mỗi request tới `POST /v1/predict` bắt buộc phải được ghi log (Audit) với tối thiểu 6 trường dữ liệu, lưu trữ **Encrypted at Rest** (KMS AWSManagedKey) với **Retention 3 năm**:
+Mỗi request tới `POST /v1/predict` bắt buộc phải được ghi log (Audit) với tối thiểu 6 trường dữ liệu, lưu trữ **Encrypted at Rest** (KMS AWSManagedKey) với **Retention 1 năm** (365 ngày, theo sàn PCI-DSS/SOC2; archive dài hạn hơn → S3 + Glacier):
 1. `audit_id`: UUID map với response trả về cho CDO.
 2. `timestamp`: Thời điểm request đến.
 3. `tenant_id`: ID của service yêu cầu.

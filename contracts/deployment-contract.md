@@ -137,7 +137,7 @@ Do mỗi CDO tự deploy engine lên hạ tầng riêng, URL sẽ thuộc về d
 |---|---|
 | **OTel endpoint** | collector URL per CDO platform (config qua env var) |
 | **App Log destination** | CloudWatch Logs (retention 14 ngày) cho debug/info |
-| **Audit Log destination** | CloudWatch Logs (retention 3 năm, mã hóa KMS) cho Audit prediction calls |
+| **Audit Log destination** | CloudWatch Logs (retention 1 năm = 365 ngày, mã hóa KMS) cho Audit prediction calls; archive dài hạn → S3 + Glacier lifecycle |
 | **Metrics** | Đẩy qua CloudWatch |
 | **Traces** | OpenTelemetry → AWS X-Ray |
 
