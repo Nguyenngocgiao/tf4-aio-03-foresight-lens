@@ -1,74 +1,1802 @@
 [
   {
-    "start_time": "2026-07-02T10:00:00Z",
-    "end_time": "2026-07-02T10:15:00Z",
-    "tenant_id": "tnt-alpha",
-    "service": "payment-gw",
+    "start_time": "2026-07-05T14:58:00Z",
+    "end_time": "2026-07-05T15:35:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
     "metric": "cpu_pct",
-    "description": "DDoS Spike",
+    "description": "Silent Drop (cpu_pct)",
     "is_false_positive_trap": false
   },
   {
-    "start_time": "2026-07-03T05:00:00Z",
-    "end_time": "2026-07-03T10:00:00Z",
+    "start_time": "2026-07-06T01:37:00Z",
+    "end_time": "2026-07-06T02:01:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T23:07:00Z",
+    "end_time": "2026-07-07T03:45:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Gradual Leak (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T23:51:00Z",
+    "end_time": "2026-07-04T00:09:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T15:16:00Z",
+    "end_time": "2026-07-05T19:22:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T01:54:00Z",
+    "end_time": "2026-07-04T04:36:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Gradual Leak (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T15:54:00Z",
+    "end_time": "2026-07-04T16:25:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Real Spike (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T20:23:00Z",
+    "end_time": "2026-07-06T01:16:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T15:55:00Z",
+    "end_time": "2026-07-02T16:50:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T05:45:00Z",
+    "end_time": "2026-07-02T06:18:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T02:49:00Z",
+    "end_time": "2026-07-04T05:19:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T11:37:00Z",
+    "end_time": "2026-07-04T12:22:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Real Spike (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T05:06:00Z",
+    "end_time": "2026-07-02T06:03:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T08:37:00Z",
+    "end_time": "2026-07-05T09:22:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T19:16:00Z",
+    "end_time": "2026-07-04T20:15:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Silent Drop (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T02:36:00Z",
+    "end_time": "2026-07-03T07:33:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T15:09:00Z",
+    "end_time": "2026-07-03T19:16:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T15:18:00Z",
+    "end_time": "2026-07-06T16:00:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T12:39:00Z",
+    "end_time": "2026-07-05T13:31:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T04:19:00Z",
+    "end_time": "2026-07-03T08:54:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Gradual Leak (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T12:02:00Z",
+    "end_time": "2026-07-03T16:34:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T13:15:00Z",
+    "end_time": "2026-07-02T13:56:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T10:50:00Z",
+    "end_time": "2026-07-03T11:22:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T05:54:00Z",
+    "end_time": "2026-07-02T06:43:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T18:38:00Z",
+    "end_time": "2026-07-03T22:24:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T00:14:00Z",
+    "end_time": "2026-07-03T03:34:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T13:54:00Z",
+    "end_time": "2026-07-04T14:44:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T19:44:00Z",
+    "end_time": "2026-07-04T20:42:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T06:05:00Z",
+    "end_time": "2026-07-06T06:35:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T22:58:00Z",
+    "end_time": "2026-07-05T23:31:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T06:32:00Z",
+    "end_time": "2026-07-03T07:11:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T07:20:00Z",
+    "end_time": "2026-07-06T07:35:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T19:38:00Z",
+    "end_time": "2026-07-04T23:21:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T11:22:00Z",
+    "end_time": "2026-07-02T15:00:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Gradual Leak (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T04:58:00Z",
+    "end_time": "2026-07-06T05:57:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "reporting",
+    "metric": "latency_p99_ms",
+    "description": "Silent Drop (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T22:03:00Z",
+    "end_time": "2026-07-03T22:29:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T15:00:00Z",
+    "end_time": "2026-07-02T15:58:00Z",
     "tenant_id": "tnt-beta",
     "service": "fraud-detector",
     "metric": "mem_pct",
-    "description": "Memory Leak to OOM",
+    "description": "Silent Drop (mem_pct)",
     "is_false_positive_trap": false
   },
   {
-    "start_time": "2026-07-04T13:20:00Z",
-    "end_time": "2026-07-04T15:20:00Z",
+    "start_time": "2026-07-05T08:30:00Z",
+    "end_time": "2026-07-05T09:21:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T09:56:00Z",
+    "end_time": "2026-07-02T10:54:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T05:30:00Z",
+    "end_time": "2026-07-02T05:58:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Real Spike (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T08:39:00Z",
+    "end_time": "2026-07-04T09:23:00Z",
     "tenant_id": "tnt-gamma",
     "service": "payment-gw",
     "metric": "latency_p99_ms",
-    "description": "Bad Deployment N+1 Query",
+    "description": "Silent Drop (latency_p99_ms)",
     "is_false_positive_trap": false
   },
   {
-    "start_time": "2026-07-05T10:00:00Z",
-    "end_time": "2026-07-05T10:05:00Z",
-    "tenant_id": "tnt-alpha",
-    "service": "payment-gw",
-    "metric": "cpu_pct",
-    "description": "Traffic surge, auto-scaled successfully",
-    "is_false_positive_trap": true
+    "start_time": "2026-07-05T02:16:00Z",
+    "end_time": "2026-07-05T07:00:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
   },
   {
-    "start_time": "2026-07-06T02:00:00Z",
-    "end_time": "2026-07-06T03:00:00Z",
+    "start_time": "2026-07-02T16:04:00Z",
+    "end_time": "2026-07-02T16:30:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Real Spike (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T15:43:00Z",
+    "end_time": "2026-07-04T16:35:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T02:22:00Z",
+    "end_time": "2026-07-06T03:12:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T04:09:00Z",
+    "end_time": "2026-07-05T04:58:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Silent Drop (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T18:01:00Z",
+    "end_time": "2026-07-06T18:26:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T03:03:00Z",
+    "end_time": "2026-07-03T03:43:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T09:54:00Z",
+    "end_time": "2026-07-05T10:37:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T23:58:00Z",
+    "end_time": "2026-07-06T00:57:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T02:23:00Z",
+    "end_time": "2026-07-03T06:16:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T19:53:00Z",
+    "end_time": "2026-07-03T20:43:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T16:37:00Z",
+    "end_time": "2026-07-05T16:57:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T15:15:00Z",
+    "end_time": "2026-07-02T18:16:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Gradual Leak (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T00:13:00Z",
+    "end_time": "2026-07-05T00:38:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T05:07:00Z",
+    "end_time": "2026-07-03T09:45:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T06:10:00Z",
+    "end_time": "2026-07-05T08:25:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T06:23:00Z",
+    "end_time": "2026-07-04T06:48:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T04:50:00Z",
+    "end_time": "2026-07-02T05:34:00Z",
     "tenant_id": "tnt-beta",
     "service": "payment-gw",
     "metric": "latency_p99_ms",
-    "description": "Scheduled Load Test (Chaos Eng)",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T03:03:00Z",
+    "end_time": "2026-07-02T06:50:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Gradual Leak (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T12:13:00Z",
+    "end_time": "2026-07-05T13:06:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Real Spike (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T12:14:00Z",
+    "end_time": "2026-07-04T15:06:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T03:19:00Z",
+    "end_time": "2026-07-03T03:47:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Silent Drop (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T01:21:00Z",
+    "end_time": "2026-07-05T01:54:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T08:47:00Z",
+    "end_time": "2026-07-02T09:21:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Real Spike (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T08:51:00Z",
+    "end_time": "2026-07-04T10:58:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Gradual Leak (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T07:14:00Z",
+    "end_time": "2026-07-04T07:34:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T22:43:00Z",
+    "end_time": "2026-07-04T23:04:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Silent Drop (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T05:44:00Z",
+    "end_time": "2026-07-05T09:41:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Gradual Leak (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T03:34:00Z",
+    "end_time": "2026-07-03T06:13:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Gradual Leak (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T18:12:00Z",
+    "end_time": "2026-07-04T20:23:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Gradual Leak (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T05:41:00Z",
+    "end_time": "2026-07-02T06:12:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T08:27:00Z",
+    "end_time": "2026-07-06T09:11:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T08:44:00Z",
+    "end_time": "2026-07-06T09:18:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T23:49:00Z",
+    "end_time": "2026-07-04T00:23:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T08:37:00Z",
+    "end_time": "2026-07-04T09:01:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T05:56:00Z",
+    "end_time": "2026-07-02T06:43:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Silent Drop (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T09:41:00Z",
+    "end_time": "2026-07-04T10:38:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T08:55:00Z",
+    "end_time": "2026-07-04T09:21:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T04:34:00Z",
+    "end_time": "2026-07-03T05:25:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T07:40:00Z",
+    "end_time": "2026-07-02T08:30:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Real Spike (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T01:02:00Z",
+    "end_time": "2026-07-02T02:01:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "latency_p99_ms",
+    "description": "Silent Drop (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T09:25:00Z",
+    "end_time": "2026-07-02T09:46:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T12:33:00Z",
+    "end_time": "2026-07-03T13:31:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Real Spike (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T00:51:00Z",
+    "end_time": "2026-07-03T01:10:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T03:46:00Z",
+    "end_time": "2026-07-03T04:25:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T17:20:00Z",
+    "end_time": "2026-07-02T20:31:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T06:51:00Z",
+    "end_time": "2026-07-06T07:19:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T18:31:00Z",
+    "end_time": "2026-07-03T19:20:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Silent Drop (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T12:08:00Z",
+    "end_time": "2026-07-06T16:07:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Gradual Leak (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T21:10:00Z",
+    "end_time": "2026-07-02T21:39:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Silent Drop (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-06T14:44:00Z",
+    "end_time": "2026-07-06T17:31:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-04T01:53:00Z",
+    "end_time": "2026-07-04T02:45:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Real Spike (throughput_rps)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T02:44:00Z",
+    "end_time": "2026-07-02T06:35:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Gradual Leak (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T14:14:00Z",
+    "end_time": "2026-07-03T14:53:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T14:44:00Z",
+    "end_time": "2026-07-03T16:44:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T11:30:00Z",
+    "end_time": "2026-07-03T12:18:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Silent Drop (mem_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-05T22:33:00Z",
+    "end_time": "2026-07-06T03:07:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "reporting",
+    "metric": "latency_p99_ms",
+    "description": "Gradual Leak (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-03T19:00:00Z",
+    "end_time": "2026-07-03T19:57:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "reporting",
+    "metric": "latency_p99_ms",
+    "description": "Real Spike (latency_p99_ms)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T01:32:00Z",
+    "end_time": "2026-07-02T02:27:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Real Spike (cpu_pct)",
+    "is_false_positive_trap": false
+  },
+  {
+    "start_time": "2026-07-02T04:10:00Z",
+    "end_time": "2026-07-02T05:19:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
     "is_false_positive_trap": true
   },
   {
-    "start_time": "2026-07-07T00:00:00Z",
-    "end_time": "2026-07-07T12:00:00Z",
+    "start_time": "2026-07-06T14:29:00Z",
+    "end_time": "2026-07-06T15:53:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T17:06:00Z",
+    "end_time": "2026-07-03T18:26:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T11:02:00Z",
+    "end_time": "2026-07-04T11:03:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T19:44:00Z",
+    "end_time": "2026-07-05T21:13:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T14:24:00Z",
+    "end_time": "2026-07-05T14:57:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T14:16:00Z",
+    "end_time": "2026-07-02T15:18:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T03:53:00Z",
+    "end_time": "2026-07-03T04:35:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T09:19:00Z",
+    "end_time": "2026-07-02T09:21:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T17:20:00Z",
+    "end_time": "2026-07-05T17:22:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T20:20:00Z",
+    "end_time": "2026-07-06T21:35:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T04:59:00Z",
+    "end_time": "2026-07-02T05:45:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T22:04:00Z",
+    "end_time": "2026-07-03T23:12:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T12:40:00Z",
+    "end_time": "2026-07-06T13:51:00Z",
     "tenant_id": "tnt-alpha",
     "service": "ledger",
     "metric": "cpu_pct",
-    "description": "Slow zombie process leak",
-    "is_false_positive_trap": false
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
   },
   {
-    "start_time": "2026-07-05T08:20:00Z",
-    "end_time": "2026-07-05T08:50:00Z",
+    "start_time": "2026-07-03T03:50:00Z",
+    "end_time": "2026-07-03T03:52:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T03:58:00Z",
+    "end_time": "2026-07-05T04:42:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T17:00:00Z",
+    "end_time": "2026-07-03T17:02:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T10:51:00Z",
+    "end_time": "2026-07-04T11:40:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T10:08:00Z",
+    "end_time": "2026-07-02T10:09:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T19:17:00Z",
+    "end_time": "2026-07-05T19:19:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T23:11:00Z",
+    "end_time": "2026-07-03T23:13:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T16:48:00Z",
+    "end_time": "2026-07-06T18:16:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T13:58:00Z",
+    "end_time": "2026-07-04T14:39:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T16:05:00Z",
+    "end_time": "2026-07-04T16:06:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T07:16:00Z",
+    "end_time": "2026-07-05T07:18:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T00:37:00Z",
+    "end_time": "2026-07-04T01:33:00Z",
     "tenant_id": "tnt-beta",
     "service": "payment-gw",
     "metric": "cpu_pct",
-    "description": "Service Crash (Silent)",
-    "is_false_positive_trap": false
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
   },
   {
-    "start_time": "2026-07-06T13:20:00Z",
-    "end_time": "2026-07-06T14:20:00Z",
+    "start_time": "2026-07-04T18:22:00Z",
+    "end_time": "2026-07-04T19:37:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T22:18:00Z",
+    "end_time": "2026-07-06T23:47:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T08:45:00Z",
+    "end_time": "2026-07-02T08:46:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T18:03:00Z",
+    "end_time": "2026-07-06T18:05:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T08:33:00Z",
+    "end_time": "2026-07-05T09:10:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T13:49:00Z",
+    "end_time": "2026-07-06T13:51:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T18:14:00Z",
+    "end_time": "2026-07-02T18:15:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T21:28:00Z",
+    "end_time": "2026-07-02T22:39:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T22:00:00Z",
+    "end_time": "2026-07-06T22:44:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T11:39:00Z",
+    "end_time": "2026-07-02T11:40:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T05:23:00Z",
+    "end_time": "2026-07-06T05:24:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T17:52:00Z",
+    "end_time": "2026-07-02T19:11:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T02:31:00Z",
+    "end_time": "2026-07-03T02:33:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T22:20:00Z",
+    "end_time": "2026-07-03T22:22:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T07:17:00Z",
+    "end_time": "2026-07-06T07:18:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T00:19:00Z",
+    "end_time": "2026-07-06T00:20:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T03:35:00Z",
+    "end_time": "2026-07-06T04:25:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T20:08:00Z",
+    "end_time": "2026-07-05T20:57:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T03:30:00Z",
+    "end_time": "2026-07-04T03:31:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T00:21:00Z",
+    "end_time": "2026-07-06T00:22:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T10:31:00Z",
+    "end_time": "2026-07-03T11:04:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T22:40:00Z",
+    "end_time": "2026-07-06T23:43:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T15:14:00Z",
+    "end_time": "2026-07-06T16:42:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T18:06:00Z",
+    "end_time": "2026-07-05T18:51:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T13:54:00Z",
+    "end_time": "2026-07-03T14:24:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T22:06:00Z",
+    "end_time": "2026-07-04T22:07:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T00:54:00Z",
+    "end_time": "2026-07-02T01:41:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T13:17:00Z",
+    "end_time": "2026-07-02T14:10:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T02:43:00Z",
+    "end_time": "2026-07-03T02:44:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T16:23:00Z",
+    "end_time": "2026-07-02T16:24:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T19:41:00Z",
+    "end_time": "2026-07-02T21:06:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T03:07:00Z",
+    "end_time": "2026-07-03T03:55:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T03:06:00Z",
+    "end_time": "2026-07-05T04:13:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T14:57:00Z",
+    "end_time": "2026-07-05T14:58:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Micro Spike (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T11:07:00Z",
+    "end_time": "2026-07-03T12:23:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T08:30:00Z",
+    "end_time": "2026-07-06T09:32:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T20:33:00Z",
+    "end_time": "2026-07-03T20:34:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T12:22:00Z",
+    "end_time": "2026-07-04T12:23:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T06:02:00Z",
+    "end_time": "2026-07-04T07:21:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T04:56:00Z",
+    "end_time": "2026-07-04T04:57:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T19:57:00Z",
+    "end_time": "2026-07-02T19:59:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T06:44:00Z",
+    "end_time": "2026-07-06T06:45:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T01:19:00Z",
+    "end_time": "2026-07-04T01:20:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T12:42:00Z",
+    "end_time": "2026-07-06T13:27:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T00:14:00Z",
+    "end_time": "2026-07-03T00:15:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T20:31:00Z",
+    "end_time": "2026-07-04T21:51:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T13:12:00Z",
+    "end_time": "2026-07-06T13:49:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T13:44:00Z",
+    "end_time": "2026-07-05T15:13:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T03:42:00Z",
+    "end_time": "2026-07-03T03:43:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "kyc",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T08:38:00Z",
+    "end_time": "2026-07-02T08:40:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T13:05:00Z",
+    "end_time": "2026-07-03T14:13:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T13:07:00Z",
+    "end_time": "2026-07-04T13:09:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T01:57:00Z",
+    "end_time": "2026-07-03T01:58:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T10:28:00Z",
+    "end_time": "2026-07-02T10:30:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T02:52:00Z",
+    "end_time": "2026-07-03T04:05:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T02:11:00Z",
+    "end_time": "2026-07-04T02:13:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T09:24:00Z",
+    "end_time": "2026-07-06T10:19:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T23:24:00Z",
+    "end_time": "2026-07-04T23:57:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "payment-gw",
+    "metric": "mem_pct",
+    "description": "Noisy Baseline (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T21:18:00Z",
+    "end_time": "2026-07-03T22:14:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "reporting",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T03:22:00Z",
+    "end_time": "2026-07-03T04:47:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-05T02:36:00Z",
+    "end_time": "2026-07-05T02:37:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T05:40:00Z",
+    "end_time": "2026-07-02T06:20:00Z",
     "tenant_id": "tnt-gamma",
     "service": "payment-gw",
     "metric": "latency_p99_ms",
-    "description": "Noisy baseline (High Variance)",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T12:08:00Z",
+    "end_time": "2026-07-03T12:10:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "throughput_rps",
+    "description": "Micro Spike (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T05:46:00Z",
+    "end_time": "2026-07-04T06:50:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "reporting",
+    "metric": "throughput_rps",
+    "description": "Noisy Baseline (throughput_rps)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T08:59:00Z",
+    "end_time": "2026-07-02T10:08:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T21:00:00Z",
+    "end_time": "2026-07-06T21:01:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T11:54:00Z",
+    "end_time": "2026-07-02T11:55:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "fraud-detector",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T18:36:00Z",
+    "end_time": "2026-07-02T18:38:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "payment-gw",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T21:42:00Z",
+    "end_time": "2026-07-02T21:43:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "kyc",
+    "metric": "cpu_pct",
+    "description": "Micro Spike (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T07:49:00Z",
+    "end_time": "2026-07-02T09:02:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "latency_p99_ms",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-06T06:10:00Z",
+    "end_time": "2026-07-06T06:11:00Z",
+    "tenant_id": "tnt-alpha",
+    "service": "ledger",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-04T12:11:00Z",
+    "end_time": "2026-07-04T13:05:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "kyc",
+    "metric": "latency_p99_ms",
+    "description": "Noisy Baseline (latency_p99_ms)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-02T17:48:00Z",
+    "end_time": "2026-07-02T18:51:00Z",
+    "tenant_id": "tnt-gamma",
+    "service": "ledger",
+    "metric": "cpu_pct",
+    "description": "Noisy Baseline (cpu_pct)",
+    "is_false_positive_trap": true
+  },
+  {
+    "start_time": "2026-07-03T08:20:00Z",
+    "end_time": "2026-07-03T08:21:00Z",
+    "tenant_id": "tnt-beta",
+    "service": "fraud-detector",
+    "metric": "mem_pct",
+    "description": "Micro Spike (mem_pct)",
     "is_false_positive_trap": true
   }
 ]

@@ -140,30 +140,40 @@ def inject_anomaly(start_min, duration, tenant, service, metric, value_func, des
         "is_false_positive_trap": is_fp
     })
 
-# S1: Sudden CPU Spike (Payment, tnt-alpha)
-inject_anomaly(1*1440 + 600, 15, "tnt-alpha", "payment-gw", "cpu_pct", lambda v, t: 95 + np.random.normal(0, 1), "DDoS Spike", False)
+np.random.seed(123)
 
-# S2: Gradual Memory Leak (Fraud, tnt-beta)
-inject_anomaly(2*1440 + 300, 300, "tnt-beta", "fraud-detector", "mem_pct", lambda v, t: min(v + (t * 0.15), 99), "Memory Leak to OOM", False)
+# Inject 100 REAL anomalies and 100 FALSE POSITIVE traps randomly
+for i in range(200):
+    t = np.random.choice(tenants)
+    s = np.random.choice(services)
+    m = np.random.choice(metric_types)
+    
+    # Random start time (leave first day for clean baseline)
+    start_min = np.random.randint(1440, MINUTES - 1440)
+    
+    is_fp = i >= 100  # First 100 are real, next 100 are traps
+    
+    if not is_fp:
+        # REAL ANOMALIES
+        anomaly_type = np.random.choice(["spike", "leak", "drop"])
+        if anomaly_type == "spike":
+            inject_anomaly(start_min, np.random.randint(15, 60), t, s, m, lambda v, time: v * np.random.uniform(2.5, 4.0), f"Real Spike ({m})", False)
+        elif anomaly_type == "leak":
+            inject_anomaly(start_min, np.random.randint(120, 300), t, s, m, lambda v, time: v + (time * np.random.uniform(0.1, 0.5)), f"Gradual Leak ({m})", False)
+        else: # drop
+            inject_anomaly(start_min, np.random.randint(20, 60), t, s, m, lambda v, time: v * 0.1, f"Silent Drop ({m})", False)
+            if s == "payment-gw":
+                deploy_logs.append({"ts": time_index[start_min - 5].isoformat() + "Z", "service": s, "msg": f"Deploy v{np.random.randint(1,4)}.{np.random.randint(0,9)}.0"})
+    else:
+        # FALSE POSITIVE TRAPS (Noise, tiny blips)
+        trap_type = np.random.choice(["noise", "micro_spike"])
+        if trap_type == "noise":
+            # High variance but mean remains same
+            inject_anomaly(start_min, np.random.randint(30, 90), t, s, m, lambda v, time: v + np.random.normal(0, abs(v) * 0.5 + 0.1), f"Noisy Baseline ({m})", True)
+        else:
+            # Huge spike but only lasts 1-2 minutes (should be ignored by 3-consecutive-point rule)
+            inject_anomaly(start_min, np.random.randint(1, 3), t, s, m, lambda v, time: v * 5.0, f"Micro Spike ({m})", True)
 
-# S3: Step Change Latency (Payment, tnt-gamma)
-inject_anomaly(3*1440 + 800, 120, "tnt-gamma", "payment-gw", "latency_p99_ms", lambda v, t: v + 300, "Bad Deployment N+1 Query", False)
-deploy_logs.append({"ts": time_index[3*1440 + 795].isoformat() + "Z", "service": "payment-gw", "msg": "Deploy v2.1.4"})
-
-# S4: FP Trap - Auto-scaling (Payment, tnt-alpha)
-inject_anomaly(4*1440 + 600, 5, "tnt-alpha", "payment-gw", "cpu_pct", lambda v, t: 85, "Traffic surge, auto-scaled successfully", True)
-
-# S5: FP Trap - Load Test (Payment, tnt-beta)
-inject_anomaly(5*1440 + 120, 60, "tnt-beta", "payment-gw", "latency_p99_ms", lambda v, t: v + 150, "Scheduled Load Test (Chaos Eng)", True)
-
-# S6: Very Slow CPU Drift (Ledger, tnt-alpha)
-inject_anomaly(6*1440, 720, "tnt-alpha", "ledger", "cpu_pct", lambda v, t: min(v + (t * 0.05), 98), "Slow zombie process leak", False)
-
-# S7: Silent Drop (Payment CPU drops to 0, means dead) (tnt-beta)
-inject_anomaly(4*1440 + 500, 30, "tnt-beta", "payment-gw", "cpu_pct", lambda v, t: 0, "Service Crash (Silent)", False)
-
-# S8: FP Trap - Noisy Baseline (Payment Latency highly volatile but no actual mean shift) (tnt-gamma)
-inject_anomaly(5*1440 + 800, 60, "tnt-gamma", "payment-gw", "latency_p99_ms", lambda v, t: max(v + np.random.normal(0, 150), 10), "Noisy baseline (High Variance)", True)
 
 # ==========================================
 # 4. FLATTEN AND EXPORT

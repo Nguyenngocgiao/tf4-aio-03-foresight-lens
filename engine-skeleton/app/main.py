@@ -48,16 +48,27 @@ async def predict_capacity(
     authorization: Optional[str] = Header(None, alias="Authorization"),
     x_correlation_id: Optional[str] = Header(None, alias="X-Correlation-Id")
 ):
-    if not x_tenant_id or not authorization:
-        raise HTTPException(status_code=401, detail="X-Tenant-Id and Authorization headers are required")
+    if not x_tenant_id:
+        raise HTTPException(status_code=401, detail="X-Tenant-Id header is required")
 
     if not x_correlation_id:
         x_correlation_id = str(uuid.uuid4())
 
-    # Validate tenant isolation
+    # Validate tenant isolation and minimum data requirements
+    if len(request.signal_window) < 120:
+        raise HTTPException(status_code=400, detail="signal_window must contain data for at least 120 minutes")
+
+    prev_ts = None
     for dp in request.signal_window:
-        if dp.labels and dp.labels.get("tenant_id") and dp.labels.get("tenant_id") != x_tenant_id:
-            raise HTTPException(status_code=400, detail="Tenant ID in labels does not match X-Tenant-Id header")
+        if dp.tenant_id != x_tenant_id:
+            raise HTTPException(status_code=400, detail="tenant_id in signal datapoint does not match X-Tenant-Id header")
+        
+        # Check for gaps (missing data) - Assuming 1 minute interval
+        current_ts = dp.ts.timestamp()
+        if prev_ts is not None:
+            if current_ts - prev_ts > 65:  # Tolerance of 5 seconds over 60s
+                raise HTTPException(status_code=400, detail="Missing data detected (gap > 1 minute). Data must be continuous.")
+        prev_ts = current_ts
 
     # Detect drift using ewma_stl engine
     anomaly, severity, suggested_action, reasoning, confidence = detector.detect_drift(
@@ -78,7 +89,7 @@ async def predict_capacity(
     }
     
     # Extract principal_id from authorization header (mocked for now, assumes role ARN or similar is passed)
-    principal_id = authorization.split("Credential=")[-1].split("/")[0] if "Credential=" in authorization else "mock-principal-id"
+    principal_id = authorization.split("Credential=")[-1].split("/")[0] if authorization and "Credential=" in authorization else "mock-principal-id"
     
     request_data = request.model_dump()
     request_data["principal_id"] = principal_id

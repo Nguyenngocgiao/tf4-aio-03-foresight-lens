@@ -22,7 +22,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "fraud-detection",
-  "signal_name": "cache_hit_rate_pct",
+  "metric_type": "cache_hit_rate_pct",
   "value": 45.5,
   "labels": {"cache_type": "redis", "region": "ap-southeast-1"}
 }
@@ -47,7 +47,7 @@
 | **Used for** | Phát hiện xu hướng tăng đột biến CPU |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
-| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên S3 + Athena hoặc Managed Prometheus) |
+| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên Amazon Timestream hoặc Managed Prometheus) |
 
 **Schema example** (concrete JSON payload AI nhận được):
 
@@ -56,7 +56,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "payment-gateway",
-  "signal_name": "cpu_usage_percent",
+  "metric_type": "cpu_usage_percent",
   "value": 85.5,
   "labels": {"region": "ap-southeast-1"}
 }
@@ -75,7 +75,7 @@
 | **Used for** | Dự đoán Memory Leak dẫn tới OOM (Out Of Memory) |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
-| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên S3 + Athena hoặc Managed Prometheus) |
+| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên Amazon Timestream hoặc Managed Prometheus) |
 
 **Schema example**:
 
@@ -84,7 +84,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "payment-gateway",
-  "signal_name": "memory_usage_percent",
+  "metric_type": "memory_usage_percent",
   "value": 72.1,
   "labels": {"region": "ap-southeast-1"}
 }
@@ -102,7 +102,7 @@
 | **Used for** | Correlate giữa traffic spike và resource exhaustion |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
-| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên S3 + Athena hoặc Managed Prometheus) |
+| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên Amazon Timestream hoặc Managed Prometheus) |
 
 **Schema example**:
 
@@ -111,7 +111,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "payment-gateway",
-  "signal_name": "active_connections",
+  "metric_type": "active_connections",
   "value": 4500.0,
   "labels": {"region": "ap-southeast-1"}
 }
@@ -130,7 +130,7 @@
 | **Used for** | Phát hiện cạn kiệt Connection Pool của Database do slow queries hoặc Cache Stampede |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
-| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên S3 + Athena hoặc Managed Prometheus) |
+| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên Amazon Timestream hoặc Managed Prometheus) |
 
 **Schema example**:
 
@@ -139,7 +139,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "payment-gateway",
-  "signal_name": "db_connection_pool_pct",
+  "metric_type": "db_connection_pool_pct",
   "value": 95.0,
   "labels": {"db_type": "postgres", "region": "ap-southeast-1"}
 }
@@ -158,7 +158,7 @@
 | **Used for** | Đo lường mức độ nghẽn cổ chai (backlog) của worker consuming message (ví dụ Ledger worker) |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
-| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên S3 + Athena hoặc Managed Prometheus) |
+| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên Amazon Timestream hoặc Managed Prometheus) |
 
 **Schema example**:
 
@@ -167,7 +167,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "ledger-service",
-  "signal_name": "queue_depth",
+  "metric_type": "queue_depth",
   "value": 15000.0,
   "labels": {"queue_name": "ledger-events-sqs", "region": "ap-southeast-1"}
 }
@@ -186,7 +186,7 @@
 | **Used for** | Phát hiện Cache Miss Spike dẫn đến quá tải trực tiếp xuống RDS |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
-| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên S3 + Athena hoặc Managed Prometheus) |
+| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên Amazon Timestream hoặc Managed Prometheus) |
 
 **Schema example**:
 
@@ -195,7 +195,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "fraud-detection",
-  "signal_name": "cache_hit_rate_pct",
+  "metric_type": "cache_hit_rate_pct",
   "value": 45.5,
   "labels": {"cache_type": "redis", "region": "ap-southeast-1"}
 }
@@ -217,7 +217,7 @@
 | **Used for** | Leading indicator cho connection pool exhaustion hoặc memory leak (latency thường tăng dần 15-30 phút trước khi SLO breach) |
 | **Emit SLA** | p99 latency < 60s từ lúc phát sinh metric |
 | **Volume SLA** | 50,000 events/sec peak (đáp ứng requirement TF4 Learner) |
-| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên S3 + Athena hoặc Managed Prometheus) |
+| **Cost estimate** | ~$3.5/tháng (Lưu trữ nén trên Amazon Timestream hoặc Managed Prometheus) |
 
 **Schema example**:
 
@@ -226,7 +226,7 @@
   "ts": "2026-06-25T10:30:00Z",
   "tenant_id": "tnt-abc123",
   "service_id": "payment-gateway",
-  "signal_name": "api_latency_ms",
+  "metric_type": "api_latency_ms",
   "value": 450.5,
   "labels": {"region": "ap-southeast-1"}
 }
