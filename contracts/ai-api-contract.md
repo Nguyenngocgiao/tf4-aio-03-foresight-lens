@@ -110,7 +110,7 @@
 }
 ```
 
-> **⚠️ Tránh nhầm lẫn "Scale":** `from_to` (vd `Current -> +2 Tasks`) là **khuyến nghị AI gửi CDO** về service mà CDO đang vận hành — KHÔNG phải số task của bản thân AI Engine. Việc AI Engine tự autoscale 2→10 Fargate tasks (mục 9 spec) là chuyện hạ tầng nội bộ, hoàn toàn tách biệt với `action_verb`/`from_to` của recommendation. `action_verb` chỉ nhận 1 trong 5 giá trị enum ở trên.
+> **⚠️ Tránh nhầm lẫn "Scale":** `from_to` (vd `Current -> +2 Tasks`) là **khuyến nghị AI gửi CDO** về service mà CDO đang vận hành — KHÔNG phải số task của bản thân AI Engine. Việc AI Engine tự autoscale 2→4 Fargate tasks (mục 9 spec) là chuyện hạ tầng nội bộ, hoàn toàn tách biệt với `action_verb`/`from_to` của recommendation. `action_verb` chỉ nhận 1 trong 5 giá trị enum ở trên.
 
 ### Audit Log Schema (Internal AI Engine)
 
