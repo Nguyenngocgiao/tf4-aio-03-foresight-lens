@@ -34,6 +34,11 @@
 
 > List signals AI engine cần để analyze. Hệ thống Foresight Lens sử dụng mảng dữ liệu (Rolling Window) để phát hiện bất thường dựa trên thuật toán thống kê (EWMA & STL Decomposition).
 
+> **Ý nghĩa "Volume SLA = 50.000 events/sec peak"** (1 event = 1 datapoint `{ts, tenant_id, service_id, metric_type, value}`):
+> - Đây là **trần throughput ingest đỉnh mà đường ống telemetry (phía CDO) được thiết kế để chịu**, KHÔNG phải tần suất gọi `/v1/predict` của AI engine (engine chỉ nhận window đã gom, ~vài request/phút).
+> - **Cardinality model cho 50k/s peak** (Black Friday): 50k/s đạt được khi cardinality cao — mỗi metric tách theo chiều phụ `instance_id × endpoint × AZ`. Ví dụ ~3M time-series ở 1 phút/lần, hoặc sub-second sampling trên tier-1 hot path. Đây là **design ceiling** để CDO chọn hạ tầng ingest (TSDB/streaming Kinesis-MSK) không vỡ khi traffic 9k RPS Black Friday.
+> - **Demo scope thực tế** (capstone, 3 tier-1 service × signal chính, 1 phút/lần): chỉ ~**tens of events/sec**. 50k/s là trần năng lực, không phải tải demo. Engine + eval chạy trên window đã gom nên không phụ thuộc con số này.
+
 ### Signal 1: `cpu_usage_percent`
 
 | Attribute | Value |
