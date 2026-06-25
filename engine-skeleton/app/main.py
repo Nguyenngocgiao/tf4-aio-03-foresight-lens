@@ -4,6 +4,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from typing import Optional
 import uuid
+import time
+from collections import defaultdict
 
 from .models import PredictRequest, PredictResponse
 from .engine import AnomalyDetector
@@ -16,9 +18,24 @@ audit_logger = AuditLogger()
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(
-        status_code=422,
+        status_code=400,
         content={"detail": jsonable_encoder(exc.errors()), "body": jsonable_encoder(exc.body)},
     )
+
+request_counts = defaultdict(list)
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    tenant_id = request.headers.get("x-tenant-id")
+    if tenant_id:
+        now = time.time()
+        request_counts[tenant_id] = [t for t in request_counts[tenant_id] if now - t < 60]
+        if len(request_counts[tenant_id]) >= 100:
+            return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"}, headers={"Retry-After": "60"})
+        request_counts[tenant_id].append(now)
+    
+    response = await call_next(request)
+    return response
 
 @app.get("/health")
 async def health_check():
@@ -27,10 +44,13 @@ async def health_check():
 @app.post("/v1/predict", response_model=PredictResponse)
 async def predict_capacity(
     request: PredictRequest,
-    x_tenant_id: str = Header(..., alias="X-Tenant-Id"),
-    authorization: str = Header(..., alias="Authorization"),
+    x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-Id"),
+    authorization: Optional[str] = Header(None, alias="Authorization"),
     x_correlation_id: Optional[str] = Header(None, alias="X-Correlation-Id")
 ):
+    if not x_tenant_id or not authorization:
+        raise HTTPException(status_code=401, detail="X-Tenant-Id and Authorization headers are required")
+
     if not x_correlation_id:
         x_correlation_id = str(uuid.uuid4())
 

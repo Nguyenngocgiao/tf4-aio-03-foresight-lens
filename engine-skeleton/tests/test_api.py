@@ -89,7 +89,7 @@ def test_missing_tenant_id():
         }
     }
     response = client.post("/v1/predict", json=payload, headers={"Authorization": "SigV4"})
-    assert response.status_code == 422
+    assert response.status_code == 401
 
 def test_less_than_120_points_fails():
     payload = {
@@ -101,4 +101,4 @@ def test_less_than_120_points_fails():
     }
     headers = {"X-Tenant-Id": "tnt-1", "Authorization": "SigV4"}
     response = client.post("/v1/predict", json=payload, headers=headers)
-    assert response.status_code == 422
+    assert response.status_code == 400
