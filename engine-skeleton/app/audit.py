@@ -16,7 +16,8 @@ class AuditLogger:
         now = datetime.now(timezone.utc)
         
         # Hash input for traceability without storing raw PII
-        input_hash = hashlib.sha256(json.dumps(request_data, default=str).encode()).hexdigest()[:16]
+        signal_window_data = request_data.get("signal_window", [])
+        input_hash = hashlib.sha256(json.dumps(signal_window_data, default=str).encode()).hexdigest()
         
         # 6 fields as required by Client spec
         log_entry = {
@@ -24,7 +25,7 @@ class AuditLogger:
             "timestamp": now.isoformat(),
             "tenant_id": tenant_id,
             "principal_id": request_data.get("principal_id", "unknown-principal"),
-            "input_hash": f"sha256:{input_hash}",
+            "input_hash": input_hash,
             "recommendation_snapshot": response_data.get("recommendation", {})
         }
         

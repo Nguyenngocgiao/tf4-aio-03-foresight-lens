@@ -19,7 +19,7 @@ class SignalDatapoint(BaseModel):
     labels: Optional[Dict[str, Any]] = None
 
 class PredictRequest(BaseModel):
-    signal_window: List[SignalDatapoint]
+    signal_window: List[SignalDatapoint] = Field(..., max_length=10000)
     context: PredictContext
     
     @field_validator('signal_window')

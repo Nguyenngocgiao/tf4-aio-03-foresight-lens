@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from typing import Optional
+import uuid
 
 from .models import PredictRequest, PredictResponse
 from .engine import AnomalyDetector
@@ -27,14 +28,27 @@ async def health_check():
 async def predict_capacity(
     request: PredictRequest,
     x_tenant_id: str = Header(..., alias="X-Tenant-Id"),
-    authorization: str = Header(..., alias="Authorization")
+    authorization: str = Header(..., alias="Authorization"),
+    x_correlation_id: Optional[str] = Header(None, alias="X-Correlation-Id")
 ):
+    if not x_correlation_id:
+        x_correlation_id = str(uuid.uuid4())
+
+    # Validate tenant isolation
+    for dp in request.signal_window:
+        if dp.labels and dp.labels.get("tenant_id") and dp.labels.get("tenant_id") != x_tenant_id:
+            raise HTTPException(status_code=400, detail="Tenant ID in labels does not match X-Tenant-Id header")
+
     # Detect drift using ewma_stl engine
     anomaly, severity, suggested_action, reasoning, confidence = detector.detect_drift(
         tenant_id=x_tenant_id,
         signals=request.signal_window
     )
     
+    # Confidence gating MG-03
+    if suggested_action and confidence < 0.7:
+        suggested_action["action_verb"] = "INVESTIGATE"
+
     # Audit log
     response_data = {
         "anomaly": anomaly,
