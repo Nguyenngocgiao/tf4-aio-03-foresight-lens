@@ -9,11 +9,11 @@
   "containerDefinitions": [
     {
       "name": "foresight-lens",
-      "image": "<ACCOUNT_ID>.dkr.ecr.ap-southeast-1.amazonaws.com/foresight-lens-engine:latest",
+      "image": "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/foresight-lens-engine:latest",
       "essential": true,
       "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
       "environment": [
-        { "name": "AWS_REGION", "value": "ap-southeast-1" },
+        { "name": "AWS_REGION", "value": "us-east-1" },
         { "name": "BASELINE_BACKEND", "value": "s3" },
         { "name": "BASELINE_S3_BUCKET", "value": "tf4-foresight-baselines" },
         { "name": "BASELINE_S3_PREFIX", "value": "baselines/" },
@@ -32,7 +32,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/foresight-lens-engine",
-          "awslogs-region": "ap-southeast-1",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
       }
