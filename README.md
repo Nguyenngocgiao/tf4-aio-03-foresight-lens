@@ -17,7 +17,7 @@ To optimize the strict $200 budget constraint and ensure extreme low latency, ou
   - `app/audit.py`: The secure PII-hashed audit logger.
   - `app/main.py`: The `POST /v1/predict` + `/health` API endpoints.
   - `baselines/`: Pre-trained per-service seasonal profiles (evidence).
-  - `tests/test_api.py`: 8 pytest scenarios (multi-service, happy path, drift, FP, isolation).
+  - `tests/test_api.py`: 9 pytest scenarios (multi-service, happy path, drift, FP, isolation).
 - `scripts/train_baseline.py`: Offline STL trainer producing the per-service baselines.
 - `tf4-evidence/`: Honest evaluation harness (`eval_engine.py`, `tf4_evidence.py`) generating
   measured Brier Score, Precision, Recall, FP-rate and lead-time (no hardcoded numbers).
@@ -36,14 +36,14 @@ pip install -r requirements.txt
 ```
 
 #### 2. Run Tests
-Ensure all 8 scenarios pass (happy path, drift, slow leak, FP, multi-service, X-Tenant-Id isolation):
+Ensure all 9 scenarios pass (happy path, drift, slow leak, FP, multi-service, X-Tenant-Id isolation):
 ```bash
 pytest tests/ -v
 ```
 
 #### 3. Start the Engine locally
 ```bash
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8080
 ```
 
 ### 📊 Performance & Evidence
