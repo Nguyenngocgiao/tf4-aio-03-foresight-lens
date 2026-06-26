@@ -23,7 +23,7 @@ aws s3 sync engine-skeleton/baselines s3://tf4-foresight-baselines/baselines/
 
 ## 1. Build & push image to ECR
 ```bash
-AWS_REGION=ap-southeast-1
+AWS_REGION=us-east-1
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 ECR=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/foresight-lens-engine
 
