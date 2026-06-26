@@ -27,22 +27,25 @@ Chiến lược thiết kế: Ứng dụng "Định luật Little" (Little's Law
 - **Ngân sách:** $\le \$200$/tháng.
 
 ### 2.2 Kết quả Đánh giá Khách quan (Objective Evaluation)
-Dữ liệu thử nghiệm: 604.800 dòng Telemetry sinh bằng mô hình Vasicek (có tính chu kỳ và nhiễu), chứa 200 điểm dị thường ngẫu nhiên (100 bẫy False Positive, 100 lỗi thật).
+Dữ liệu thử nghiệm (đo thật, nguồn `tf4-evidence/evidence/`): holdout 1 ngày/service trên 3 service tier-1 (payment-gw, fraud-detector, ledger), trượt window 120 phút (step 5 phút) → ~790 window được chấm điểm, gồm 4 scenario inject (gradual drift / sudden spike / slow leak / sudden drop) + 1 FP trap (noisy baseline). A/B đối chứng với Isolation Forest trên cùng tập.
 
-| Thuật toán | Chi phí/Tháng | Catch (Recall) | Báo động giả (FP Rate) | Độ trễ (Latency) |
-|---|---|---|---|---|
-| **LLM (Bedrock)** | ~$10,000 | 100% | 0% | 2000ms |
-| **Isolation Forest**| ~$150 | 79% | 67% | 20ms |
-| **One-Class SVM** | ~$400 | 100% | 77% | 50ms |
-| **EWMA + STL** | **$32** | **59%** | **7%** | **<1ms** |
+| Thuật toán | Chi phí/Tháng | Catch (Recall) | Báo động giả (FP Rate) | Độ trễ (Latency) | Đạt gate? |
+|---|---|---|---|---|---|
+| **EWMA + STL** | **~$36** | **0.971** | **7.1%** | **<10ms** | **Đạt** |
+| Isolation Forest | ~$150 | 0.638 | 21.4% | ~20ms | Không (FP > 12%) |
+| LLM (Bedrock) | ~$10,000 | — | — | ~2000ms | Không (cost phá $200, latency giây) |
 
-### 2.3 Sự đánh đổi (Trade-off) của EWMA
-Nhìn vào bảng trên, EWMA có Tỷ lệ bắt lỗi (Recall) là **59%**, có vẻ thấp hơn mức 80% kỳ vọng. Tuy nhiên, tỷ lệ báo động giả (FP Rate) cực kỳ ấn tượng ở mức **7%** (vượt xa chỉ tiêu $\le 12\%$).
+> Số EWMA+STL / Isolation Forest trích từ `evidence_algorithm_comparison.json` + `evidence_algorithm_evaluation.json` (re-run: `python tf4-evidence/tf4_evidence.py`). Hàng LLM chỉ minh hoạ lý do loại (cost + latency), không chạy thật.
 
-**Tại sao chúng ta chọn Trade-off này?**
-1. **Tránh Alert Fatigue:** Nếu dùng Isolation Forest để đạt Recall 79%, cái giá phải trả là 67% cảnh báo là RÁC. SRE sẽ bị trầm cảm và phớt lờ cảnh báo (Boy who cried wolf).
-2. **Chi phí:** Chạy ML tốn $150/tháng và đòi batch training. EWMA là thuật toán $O(N)$ chạy thời gian thực không tốn RAM, chi phí cực nhỏ ($32/tháng).
-3. **An toàn hệ thống:** Catch 59% nghĩa là bỏ qua các biến động nhỏ giọt, nhưng hệ thống vẫn bắt dính 100% các biến động lớn (Spike, OOM). Chúng ta ưu tiên độ tin cậy của mỗi cảnh báo phát ra.
+### 2.3 Vì sao chọn EWMA + STL
+EWMA + STL đạt **cả hai gate cùng lúc**: **Recall 0.971** (gate ≥ 0.80) và **FP Rate 7.1%** (gate $\le 12\%$), trong khi Isolation Forest trượt gate FP (21.4%) và recall thấp hơn (0.638).
+
+**Lý do cốt lõi:**
+1. **Khử seasonal trước (chìa khoá FP thấp):** STL tách chu kỳ ngày/đêm offline nên EWMA không bắn nhầm vào peak tải bình thường — đó là lý do FP chỉ **7.1%** so với **21.4%** của Isolation Forest (IF coi peak tải ban ngày là bất thường).
+2. **Tránh Alert Fatigue:** FP thấp → SRE không bị "Boy who cried wolf", mỗi cảnh báo phát ra đều đáng tin.
+3. **Chi phí & latency:** thuật toán $O(N)$ in-memory, ~$36/tháng (Fargate 2-task HA) và <10ms/call, $0 token cost — an toàn dưới ngân sách $200 và SLA p99 < 500ms.
+
+> **Precision 0.793:** đạt mục tiêu stretch (≥ 0.75, xem `01_requirements.md` §3); thấp hơn 0.80 vì window ở **biên** vùng anomaly (EWMA còn cao ngay sau khi sự cố vừa hết) bị tính FP trong cách chấm per-window nghiêm ngặt. Không ảnh hưởng gate chính (FP ≤ 12%, recall ≥ 80%). Trade-off K=4.0 vs K=4.5 xem `05_adrs.md` ADR-006.
 
 | Con số (Metric) | Nằm ở Contract | Giải thích & Biện luận (Justification) |
 | :--- | :--- | :--- |

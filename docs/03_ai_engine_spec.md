@@ -52,7 +52,7 @@ Một trong những yêu cầu cốt lõi là đảm bảo AI Engine có thể p
 
 <!-- Làm sao đảm bảo tenant A's data không leak sang tenant B? -->
 
-- **Tenant identification (Định danh)**: Dữ liệu được xác thực bắt buộc qua HTTP Header `X-Tenant-Id`. Nếu request không có header này, hoặc giá trị không nằm trong danh sách Whitelist được phê duyệt, request sẽ bị reject ở ngay Middleware (FastAPI layer) với lỗi `HTTP 401/403`.
+- **Tenant identification (Định danh)**: Dữ liệu được xác thực bắt buộc qua HTTP Header `X-Tenant-Id`. Nếu request không có header này, request bị reject ngay tại Middleware (FastAPI layer) với lỗi `HTTP 401`. Nếu `tenant_id` trong datapoint không khớp header → `HTTP 400` (xem `ai-api-contract.md` §Error codes).
 - **Context isolation (Cách ly bối cảnh)**: AI Engine áp dụng cơ chế xử lý phi trạng thái tuyệt đối (**Stateless Per-Request Scoping**). Thuật toán EWMA & STL được khởi tạo, tính toán, và bị hủy bỏ khỏi bộ nhớ RAM (Garbage Collected) ngay sau mỗi HTTP Request. Không có bất kỳ biến toàn cục (Global variable) nào lưu trữ trạng thái của Tenant A vượt quá vòng đời request, triệt tiêu 100% rủi ro Data Bleed.
 - **State storage (Lưu trữ trạng thái)**: Baseline của từng Tenant (nếu cần tuning riêng) được định cấu hình bằng biến môi trường (Environment Variables) hoặc lưu trữ độc lập tại phân vùng DynamoDB (`partition_key = tenant_id`).
 - **Audit log (Nhật ký thanh tra)**: Mọi quyết định AI sinh ra (AI Decision Call) đều ghi nhận một Record riêng biệt với trường `tenant_id` đóng vai trò là Primary Key, phục vụ tra cứu cách ly.

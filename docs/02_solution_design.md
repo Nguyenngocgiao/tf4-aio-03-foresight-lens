@@ -27,9 +27,9 @@ Hệ thống AI Engine bao gồm 4 khối kiến trúc chính:
 
 ## 3. Data flow (Step-by-step Execution)
 
-Toàn bộ quá trình từ khi nhận tín hiệu đến khi phản hồi kéo dài không quá 50ms (p99 latency).
+Thời gian tính toán của engine < 10ms (đo thật, NumPy in-memory); end-to-end nằm thoải mái dưới SLA contract p99 < 500ms.
 
-1. **Step 1 (Ingestion & Normalization)**: Team CDO định kỳ tổng hợp dữ liệu metric (ví dụ: `cpu_usage_pct`, `memory_bytes_used`) trong một khung thời gian 60 phút và đóng gói thành mảng `signal_window`. Dữ liệu được push qua phương thức `POST /v1/predict`.
+1. **Step 1 (Ingestion & Normalization)**: Team CDO định kỳ tổng hợp dữ liệu metric (ví dụ: `cpu_usage_percent`, `memory_usage_percent`) trong một khung thời gian ≥ 120 phút (≥ 120 datapoint, 1 phút/điểm) và đóng gói thành mảng `signal_window`. Dữ liệu được push qua phương thức `POST /v1/predict`.
 2. **Step 2 (Data Validation & Multi-tenant Routing)**: FastAPI layer lập tức kiểm tra sự tồn tại của header `X-Tenant-Id`. Nếu hợp lệ, Pydantic sẽ kiểm tra kiểu dữ liệu của mảng `signal_window` (bắt buộc timestamp chuẩn RFC3339, value kiểu float). Nếu bất kỳ trường nào sai định dạng -> Reject `HTTP 422 Unprocessable Entity` ngay lập tức.
 3. **Step 3 (Core Processing - STL & EWMA)**:
  - Dữ liệu thô được đưa qua hàm STL Decomposition để loại bỏ nhiễu cục bộ (noise) và chu kỳ (seasonality), giữ lại xu hướng cốt lõi (trend).

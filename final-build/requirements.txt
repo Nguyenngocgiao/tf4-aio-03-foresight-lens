@@ -2,5 +2,6 @@ fastapi
 uvicorn
 pydantic
 numpy
+boto3
 pytest
 httpx
