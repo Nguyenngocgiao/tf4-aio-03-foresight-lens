@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "jira": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-atlassian==0.21.0"
+      ],
+      "env": {
+        "JIRA_URL": "https://dinhknd3.atlassian.net",
+        "JIRA_EMAIL": "dinhknd3@gmail.com",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      }
+    }
+  }
+}
