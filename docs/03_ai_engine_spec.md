@@ -12,7 +12,7 @@
 > - Minimum Docs: Sections 1, 2, 3, 4 (skeleton) + 5.1-5.3 + 6.1, 6.2.1, 6.2.2 (skeleton) + 7 (skeleton) + 8 (forecast) + 9
 >
 > **Pack #2 / W12 (Final Build Phase)**: AI Team bàn giao Artifact + Thuật toán thật.
-> - Yêu cầu: Real engine logic, IAM SigV4 enforced. Schema API không đổi.
+> - Yêu cầu: Real engine logic, IAM SigV4 enforced **ở tầng edge phía CDO** (Internal ALB / API Gateway authorizer `AWS_IAM` + Security Group SG-to-SG trong private subnet) — engine chạy sau cổng này nên mọi traffic chạm tới đã được ký & xác thực; app chỉ trích `principal_id` từ header đã verify để ghi audit. Schema API không đổi.
 > - Full Docs: TẤT CẢ sections refined với:
 > - 5.5 Model NFR Control Matrix có MG-01..MG-08 evidence
 > - 6 AI Security với Bedrock Guardrails configured (NOT just spec)
