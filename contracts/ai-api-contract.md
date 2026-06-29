@@ -21,7 +21,7 @@
 
 ## Authentication
 
-- **Inter-service**: IAM SigV4 (no API keys). *Lưu ý Capstone: Trong giai đoạn W11 Mock Testing, `Authorization` header là **TÙY CHỌN (Optional)** để CDO dễ dàng test curl/Postman public. Từ W12 Final Build, IAM SigV4 sẽ bị **ENFORCE** nghiêm ngặt.*
+- **Inter-service**: IAM SigV4 (no API keys). Việc **enforce SigV4 nằm ở tầng edge** (Internal ALB / API Gateway authorizer `AWS_IAM` + Security Group SG-to-SG trong private subnet do CDO host), **không** verify chữ ký trong application code — engine tin rằng request chạm tới nó đã qua cổng SigV4, và chỉ đọc `principal_id` (đã được tầng edge xác thực) từ header `Authorization` để ghi audit. *Lưu ý Capstone: Ở W11 Mock Testing, cổng edge để mở (`Authorization` **TÙY CHỌN**) cho CDO dễ test curl/Postman public. Từ W12 Final Build, cổng edge bật **ENFORCE** SigV4 nghiêm ngặt; ở app, `Authorization` vẫn nhận Optional một cách có chủ đích vì ranh giới enforce nằm ở infra.*
 - **Cross-account**: STS assume-role với session tag `tenant_id`
 - **Audit**: every auth event logged
 
