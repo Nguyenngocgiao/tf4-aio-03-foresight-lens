@@ -15,7 +15,7 @@
 > - Yêu cầu: Real engine logic, IAM SigV4 enforced **ở tầng edge phía CDO** (Internal ALB / API Gateway authorizer `AWS_IAM` + Security Group SG-to-SG trong private subnet) — engine chạy sau cổng này nên mọi traffic chạm tới đã được ký & xác thực; app chỉ trích `principal_id` từ header đã verify để ghi audit. Schema API không đổi.
 > - Full Docs: TẤT CẢ sections refined với:
 > - 5.5 Model NFR Control Matrix có MG-01..MG-08 evidence
-> - 6 AI Security với Bedrock Guardrails configured (NOT just spec)
+> - 6 AI Security thực thi (NOT just spec): IAM SigV4 enforce ở edge (CDO) + Pydantic input validation (max 10k datapoints, ≥120 phút) + audit log 6 trường + SHA-256 hash PII. KHÔNG dùng Bedrock Guardrails vì engine là statistical (EWMA/STL), không có LLM/prompt để guard.
 > - 7 Eval với real measured numbers
 > - 8 Cost với actual measured
 >

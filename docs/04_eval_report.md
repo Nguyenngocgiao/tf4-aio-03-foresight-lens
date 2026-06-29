@@ -44,7 +44,8 @@ Source: `tf4-evidence/evidence/evidence_algorithm_evaluation.json`.
 | False Positive Rate | ≤ 0.12 | **0.071 (7.1%)** | Pass |
 | Brier Score | < 0.10 | **0.049** | Pass |
 | Lead Time (median) | ≥ 15 min | **110 min** | Pass |
-| P99 latency | < 500 ms | **< 10 ms** (in-memory NumPy) | Pass |
+| P99 latency | < 500 ms | **4.0 ms** @100 RPS (load test, §3.3) | Pass |
+| Throughput (global) | 100 RPS | **100 RPS sustained 30s, 0 errors**; 400 RPS probe also clean (§3.3) | Pass |
 | Cost / month | < $200 | **~$36 (Fargate 2-task)** | Pass |
 | Pytest scenarios | — | **9/9 passed** | Pass |
 
@@ -73,6 +74,27 @@ first removes the daily load curve that makes Isolation Forest fire on normal pe
 |---|---|---|
 | **Actual Anomaly** | TP = 169 | FN = 5 |
 | **Actual Normal** | FP = 44 | TN = 574 |
+
+### 3.3 Throughput / load test
+
+Source: `tf4-evidence/evidence/evidence_load_test.json` (re-run: start the engine with
+`uvicorn app.main:app --port 8080`, then `python tf4-evidence/load_test.py`).
+
+Method: asyncio + httpx open-loop generator (k6/Locust not available in the build env;
+httpx is already an app dependency, so the test needs no extra tooling). The **100 RPS
+target is a global throughput SLA**, whereas the API enforces a **per-tenant cap of
+600 req/min (10 RPS/tenant)**; load is therefore spread round-robin across synthetic
+tenants (~8 RPS each) — exactly how multiple CDO platforms reach aggregate throughput.
+
+| Phase | Offered load | Tenants | Result | p50 / p99 / max latency |
+|---|---|---|---|---|
+| SLA validation | **100 RPS × 30 s** | 13 | 3000/3000 → 200, **0 throttle / 0 error** | 2.8 / **4.0** / 28 ms |
+| Capacity probe | **400 RPS × 15 s** | 50 | 6000/6000 → 200, 0 error | 1.7 / **2.7** / 31 ms |
+
+The engine sustains the 100 RPS SLA with p99 = 4 ms (two orders of magnitude under the
+500 ms NFR) and shows **≥4× headroom** (clean at 400 RPS) on a single uvicorn worker —
+so it is not a bottleneck for the CDO platform. A single-tenant burst above 600/min is
+correctly throttled to HTTP 429 (anti-abuse), confirming the rate limiter works.
 
 ## 4. Failure analysis
 

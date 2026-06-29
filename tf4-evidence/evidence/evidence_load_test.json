@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-06-29T09:11:36.865953+00:00",
+  "endpoint": "http://127.0.0.1:8080/v1/predict",
+  "engine": "EWMA + STL control chart (in-window fallback path)",
+  "method": "asyncio + httpx open-loop, single uvicorn worker on localhost; load spread across synthetic tenants to respect the 600/min per-tenant cap",
+  "sla_target": {
+    "throughput_rps": 100,
+    "p99_latency_ms": 500,
+    "per_tenant_cap_rpm": 600
+  },
+  "phase1_sla": {
+    "phase": "open_loop_sla_100rps",
+    "target_rps": 100,
+    "tenants": 13,
+    "rps_per_tenant": 7.7,
+    "duration_s": 30.0,
+    "requests_sent": 3000,
+    "responses_2xx": 3000,
+    "status_breakdown": {
+      "200": 3000
+    },
+    "transport_errors": 0,
+    "achieved_rps": 100.0,
+    "success_rate": 1.0,
+    "latency_ms": {
+      "p50": 2.78,
+      "p95": 3.53,
+      "p99": 4.01,
+      "max": 28.46
+    }
+  },
+  "phase2_capacity_probe": {
+    "phase": "open_loop_capacity_probe",
+    "target_rps": 400,
+    "tenants": 50,
+    "rps_per_tenant": 8.0,
+    "duration_s": 15.0,
+    "requests_sent": 6000,
+    "responses_2xx": 6000,
+    "status_breakdown": {
+      "200": 6000
+    },
+    "transport_errors": 0,
+    "achieved_rps": 400.0,
+    "success_rate": 1.0,
+    "latency_ms": {
+      "p50": 1.7,
+      "p95": 1.98,
+      "p99": 2.71,
+      "max": 31.45
+    }
+  },
+  "gates_pass": {
+    "throughput_100rps": true,
+    "p99_under_500ms": true,
+    "no_throttle_at_sla": true,
+    "no_errors_at_sla": true
+  },
+  "overall_pass": true
+}
