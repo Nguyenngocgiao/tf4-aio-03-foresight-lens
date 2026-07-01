@@ -1,7 +1,7 @@
 # Pitch Cá Nhân — Trần Mạnh Trường
 
-**Vai trò**: Solution Architecture & Presentation Lead  
-**Nhóm**: AIO-03 — Foresight Lens  
+**Vai trò**: Documentation & ADRs
+**Nhóm**: AIO-03 — Foresight Lens
 **Giai đoạn**: Capstone Phase 2 (W11–W12)
 
 ---
@@ -10,9 +10,9 @@
 
 | Nhiệm vụ | Deliverable | Trạng thái |
 |---|---|---|
-| [W12] Document Curveball Responses | `docs/04_eval_report.md` mục 5 | Còn là placeholder — chưa điền sau W12 curveball sessions |
-| [W12] Build Pitch Slides | `tf4-foresight-lens.html` (referenced trong README) | Không có file trong repository |
 | [Docs] Solution Design & ADRs | `docs/02_solution_design.md` + `docs/05_adrs.md` + `diagrams/` | Hoàn thành |
+| [W12] Build Pitch Slides | `slides/SLIDES.pptx` + `slides/SLIDES.pdf` | Hoàn thành |
+| [W12 Tue] Viết README cho final-build | `final-build/README.md` | Hoàn thành |
 
 ---
 
@@ -50,7 +50,7 @@ Tôi viết hoặc đồng viết toàn bộ ADR log:
 - **ADR-002** — Confidence Threshold 0.7. Giải thích vì sao 0.5 (quá lỏng) và 0.8 (quá chặt) bị loại
 - **ADR-003** — Manual Retrain cho Flash Sales. Vấn đề seasonal anomaly và cơ chế Silence Alert
 - **ADR-004** — STL + EWMA vs Isolation Forest. Quyết định A/B quan trọng nhất với con số đo thực: EWMA Recall 0.971 vs IF 0.638, EWMA FP 7.1% vs IF 21.4%
-- **ADR-005** — Retrain Trigger Logic (đồng viết với Thịnh Nguyễn Hưng)
+- **ADR-005** — Retrain Trigger Logic & Baseline Refresh Cadence (đồng viết với Thịnh Nguyễn Hưng)
 - **ADR-006** — EWMA parameter sweep (alpha=0.3, K=4.0), gồm bảng so sánh 4 dòng từ holdout sweep
 
 ### `diagrams/`
@@ -59,6 +59,18 @@ Ba sơ đồ kiến trúc ở cả định dạng `.drawio` (có thể chỉnh s
 - `02_solution_design.drawio/.png` — high-level architecture
 - `03_ai_action_loop.drawio/.png` — AI request/response action loop
 - `deployment_topology.drawio/.png` — ECS Fargate deployment topology
+
+### `slides/` — Pitch Slides
+
+Bộ slide kể câu chuyện Foresight Lens cho buổi defense, giữ ở **cả hai định dạng**: `SLIDES.pptx` (chỉnh sửa được) và `SLIDES.pdf` (bản render để phân phối/chiếu). Nội dung theo mạch: bài toán capacity-exhaustion → cách tiếp cận STL + EWMA (và lý do không dùng LLM) → kết quả đo được (recall / FP / chi phí) → kiến trúc triển khai.
+
+### `final-build/README.md` — Tài liệu vận hành deliverable
+
+Tài liệu điểm-vào cho bản build cuối (W12), gom đủ 4 mảng người chấm cần:
+- **Architecture overview** — sơ đồ pipeline (rate-limit → validate → baseline → EWMA → confidence gate → audit) + bảng vai trò từng module.
+- **Build & run** — Docker (`build` + `run -p 8080:8080`) và uvicorn local, kèm **bảng đầy đủ biến môi trường** (`BASELINE_*`, `AUDIT_*`).
+- **API usage** — `/health` + `/v1/predict`, ví dụ `curl`, request/response mẫu, bảng mã lỗi.
+- **Test** — lệnh `pytest`, bảng 9 scenario, và lệnh chạy evidence harness + bảng eval metrics.
 
 ---
 
@@ -91,16 +103,16 @@ Lý do: File `.drawio` có thể chỉnh sửa — nếu kiến trúc thay đổ
 
 ## 4. Đánh đổi và nhìn lại
 
-Những gì đã làm tốt: Data flow 6 bước trong `02_solution_design.md` trở thành tài liệu onboarding hữu ích. Trong W11 integration, CDO team dùng nó để hiểu engine làm gì tại mỗi giai đoạn. ADR format (Context → Decision → Consequences → Alternatives) tạo ra tài liệu dễ scan trong buổi defense trực tiếp.
+**Làm tốt:** Data flow 6 bước trong `02_solution_design.md` trở thành tài liệu onboarding hữu ích — trong W11 integration, CDO team dùng nó để hiểu engine làm gì tại mỗi giai đoạn. ADR format (Context → Decision → Consequences → Alternatives) tạo ra tài liệu dễ scan trong buổi defense trực tiếp. README final-build trở thành điểm-vào để chạy/deploy deliverable mà không cần đọc code.
 
-Những gì chưa hoàn thành: Phần Curveball Responses trong `docs/04_eval_report.md` mục 5 còn là placeholder table. Các buổi W12 curveball đã diễn ra nhưng outcome không được ghi lại vào file. Đây là gap thật trong deliverable. Pitch Slides (`tf4-foresight-lens.html`) được đề cập trong README nhưng file không có trong repository.
+**Chưa trọn vẹn:** Bảng component breakdown trong `02_solution_design.md` chưa cross-reference tới `docs/03_ai_engine_spec.md` — tài liệu spec tồn tại nhưng solution design không link đến nó, người đọc phải tự tìm. README final-build ban đầu cũng chưa được trỏ từ README gốc của repo (README gốc vẫn dẫn `engine-skeleton/`), có nguy cơ người chấm chạy nhầm thư mục.
 
-Những gì cần làm khác: Tôi nên ghi kết quả curveball ngay sau mỗi buổi thay vì để dành "điền sau". Tài liệu hoãn lại gần như luôn là tài liệu không đầy đủ. Tôi cũng nên thêm cross-reference đến `docs/03_ai_engine_spec.md` từ bảng component breakdown trong solution design — tài liệu spec tồn tại nhưng `02_solution_design.md` không link đến nó từ bảng component.
+**Sẽ làm khác:** (1) Thêm cross-reference giữa solution design ↔ ai_engine_spec ↔ README ngay từ đầu để các tài liệu không trôi khỏi nhau. (2) Cập nhật README gốc trỏ thẳng tới `final-build/`. (3) Kiểm tra "chạy thật đầu-cuối" (build Docker + gọi thử endpoint) sớm hơn — chính bước đó mới lộ ra bản build thiếu `baselines/` và rơi về fallback z-score.
 
 ---
 
 ## 5. Tự đánh giá
 
-Solution design và ADR documents hoàn chỉnh và tạo thành một câu chuyện kiến trúc nhất quán. Sơ đồ chính xác và có thể chỉnh sửa. ADR-001 đến ADR-006 có căn cứ bằng số đo thực ở những chỗ cần thiết (ADR-004 và ADR-006 dẫn chiếu holdout numbers).
+Solution design và ADR documents hoàn chỉnh và tạo thành một câu chuyện kiến trúc nhất quán. Sơ đồ chính xác và có thể chỉnh sửa. ADR-001 đến ADR-006 có căn cứ bằng số đo thực ở những chỗ cần thiết (ADR-004 và ADR-006 dẫn chiếu holdout numbers). Slides có cả bản nguồn `.pptx` lẫn `.pdf`; README bao đủ 4 mảng build/run/API/test và đã được xác nhận bằng cách build Docker + gọi thử endpoint thật.
 
-Nhìn thẳng vào phần chưa hoàn thành: curveball section và pitch slides là gap thật, không phải thiếu sót trong tài liệu hóa. Nội dung hoặc không được capture (curveball) hoặc không được commit (slides).
+Nhìn thẳng vào phần chưa trọn: gap không nằm ở nội dung tài liệu mà ở *tính nhất quán liên kết* — solution design chưa link tới ai_engine_spec, README gốc chưa trỏ tới final-build. Bài học: tài liệu tốt còn phải được nối với nhau để người đọc lần theo được, và nên xác thực deliverable bằng cách **chạy thật** sớm thay vì để sát defense.
