@@ -3,7 +3,7 @@
   "steps": {
     "register": "~5 minutes (manual input + config gen)",
     "load_7d_data": "~10 minutes (read 30K data points from S3/TSDB)",
-    "train_baseline": "~10 minutes (EWMA + Isolation Forest on 7d data)",
+    "train_baseline": "~10 minutes (STL decomposition + EWMA baseline on 7d data)",
     "validate": "~3 minutes (run test predictions + check results)"
   },
   "total_estimated": "28-30 minutes per service",

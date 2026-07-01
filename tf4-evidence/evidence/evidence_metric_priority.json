@@ -1,86 +1,87 @@
 {
-  "method": "Multi-root-cause injection: 4 different failure modes \u2192 measure which metric detects first across all",
+  "method": "Multi-root-cause injection: 4 different failure modes -> measure which metric detects first across all",
   "circular_reasoning_fix": "Previous method injected only CPU drift (circular). Now inject 4 independent root causes.",
+  "metric_naming_note": "metric_type names follow the canonical API/contract vocabulary (cpu_usage_percent, memory_usage_percent, api_latency_ms, queue_depth), matching ai-api-contract.md and eval_engine.py.",
   "root_causes": [
     {
       "root_cause": "CPU exhaustion",
       "inject_target": "CPU +15% gradual over 12h",
       "rank": [
-        "latency_p99",
+        "api_latency_ms",
         "queue_depth",
-        "cpu_pct",
-        "mem_pct"
+        "cpu_usage_percent",
+        "memory_usage_percent"
       ],
       "detection_times": {
-        "latency_p99": 722,
+        "api_latency_ms": 722,
         "queue_depth": 726,
-        "cpu_pct": 835,
-        "mem_pct": 840
+        "cpu_usage_percent": 835,
+        "memory_usage_percent": 840
       }
     },
     {
       "root_cause": "Memory leak",
       "inject_target": "Memory +0.08%/min (0.03% for followers)",
       "rank": [
-        "latency_p99",
+        "api_latency_ms",
         "queue_depth",
-        "mem_pct",
-        "cpu_pct"
+        "memory_usage_percent",
+        "cpu_usage_percent"
       ],
       "detection_times": {
-        "latency_p99": 722,
+        "api_latency_ms": 722,
         "queue_depth": 726,
-        "mem_pct": 781,
-        "cpu_pct": 835
+        "memory_usage_percent": 781,
+        "cpu_usage_percent": 835
       }
     },
     {
       "root_cause": "Queue backlog",
-      "inject_target": "Queue depth \u00d73 (0.15/min), wide sigma",
+      "inject_target": "Queue depth x3 (0.15/min), wide sigma",
       "rank": [
-        "latency_p99",
+        "api_latency_ms",
         "queue_depth",
-        "cpu_pct",
-        "mem_pct"
+        "cpu_usage_percent",
+        "memory_usage_percent"
       ],
       "detection_times": {
-        "latency_p99": 721,
+        "api_latency_ms": 721,
         "queue_depth": 726,
-        "cpu_pct": 835,
-        "mem_pct": 840
+        "cpu_usage_percent": 835,
+        "memory_usage_percent": 840
       }
     },
     {
       "root_cause": "Connection pool leak",
-      "inject_target": "Queue depth \u00d75 (0.12/min)",
+      "inject_target": "Queue depth x5 (0.12/min)",
       "rank": [
-        "latency_p99",
+        "api_latency_ms",
         "queue_depth",
-        "cpu_pct",
-        "mem_pct"
+        "cpu_usage_percent",
+        "memory_usage_percent"
       ],
       "detection_times": {
-        "latency_p99": 722,
+        "api_latency_ms": 722,
         "queue_depth": 726,
-        "cpu_pct": 835,
-        "mem_pct": 840
+        "cpu_usage_percent": 835,
+        "memory_usage_percent": 840
       }
     }
   ],
   "aggregate_first_rank_count": {
-    "latency_p99": 4
+    "api_latency_ms": 4
   },
   "average_rank": {
-    "cpu_pct": 3.25,
-    "mem_pct": 3.75,
+    "cpu_usage_percent": 3.25,
+    "memory_usage_percent": 3.75,
     "queue_depth": 2.0,
-    "latency_p99": 1.0
+    "api_latency_ms": 1.0
   },
   "final_rank": [
-    "latency_p99",
+    "api_latency_ms",
     "queue_depth",
-    "cpu_pct",
-    "mem_pct"
+    "cpu_usage_percent",
+    "memory_usage_percent"
   ],
-  "conclusion": "Across 4 root causes, aggregate rank: latency_p99 \u2192 queue_depth \u2192 cpu_pct \u2192 mem_pct. latency_p99 is #1 in 4/4 root causes."
+  "conclusion": "Across 4 root causes, aggregate rank: api_latency_ms -> queue_depth -> cpu_usage_percent -> memory_usage_percent. api_latency_ms is #1 in 4/4 root causes."
 }

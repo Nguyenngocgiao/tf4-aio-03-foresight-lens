@@ -1,14 +1,15 @@
 {
-  "method": "Rule-based mapping from detected metric to actionable recommendation satisfying all 5 required components.",
+  "method": "Rule-based mapping from detected metric_type to actionable recommendation satisfying all 5 required components.",
   "requirement_met": "action verb + target + from->to + confidence + evidence link",
+  "confidence_note": "Confidence values below are illustrative of the response structure. In production the engine computes confidence at runtime from the EWMA breach ratio (app/engine.py _recommend: 0.6 + 0.15*(ratio-1), capped at 0.99) — it is not a fixed constant.",
   "test_cases": [
     {
-      "metric": "cpu_pct",
-      "recommendation": "SCALE_UP (Action) RDS Database (Target) from db.r5.large to db.r5.xlarge (From->To). Confidence: 0.85. Evidence: https://obs.internal/tnt-1?metric=cpu_pct"
+      "metric": "cpu_usage_percent",
+      "recommendation": "SCALE_UP (Action) RDS Database (Target) from db.r5.large to db.r5.xlarge (From->To). Confidence: 0.85 (runtime-computed). Evidence: https://obs.internal/tnt-1?metric=cpu_usage_percent"
     },
     {
       "metric": "queue_depth",
-      "recommendation": "SCALE_UP (Action) SQS Worker Concurrency (Target) from 10 to 25 (From->To). Confidence: 0.85. Evidence: https://obs.internal/tnt-1?metric=queue_depth"
+      "recommendation": "SCALE_UP (Action) SQS Worker Concurrency (Target) from 10 to 25 (From->To). Confidence: 0.85 (runtime-computed). Evidence: https://obs.internal/tnt-1?metric=queue_depth"
     }
   ]
 }
