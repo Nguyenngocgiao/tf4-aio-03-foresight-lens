@@ -94,25 +94,40 @@
     @media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto;} }
 
     @media print {
-      body {
+      @page {
+        size: 16in 9in;
+        margin: 0;
+      }
+      html, body {
         background: var(--surface-dark) !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        overflow: visible !important;
       }
       .slide {
         page-break-after: always;
         page-break-inside: avoid;
-        height: 100vh;
-        min-height: 100vh;
+        width: 16in !important;
+        height: 9in !important;
+        min-height: 9in !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        padding: clamp(32px, 5vh, 80px) clamp(24px, 5vw, 120px) !important;
+        padding: 0.5in 0.8in !important;
         box-sizing: border-box !important;
+        overflow: hidden !important;
       }
       .progress-bar, .nav-dots, .slide-counter {
         display: none !important;
+      }
+      /* Scale down image sizes for print to prevent overflowing the 9in height limit */
+      img {
+        max-height: 3.5in !important;
+        object-fit: contain !important;
+      }
+      svg {
+        max-height: 2.5in !important;
       }
     }
   </style>
