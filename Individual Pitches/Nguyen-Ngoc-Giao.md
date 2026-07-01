@@ -6,74 +6,50 @@
 
 ---
 
-## 1. Nhiệm vụ đảm nhận
+## 1. Nhiệm vụ & Kết quả
 
 | Nhiệm vụ | Deliverable | Trạng thái |
 |---|---|---|
-| [Contracts] Draft AI API Contract | `contracts/ai-api-contract.md` | Hoàn thành & Đã đóng băng |
+| Thiết kế & chốt AI API Contract | `contracts/ai-api-contract.md` | Hoàn thành & Đã đóng băng (Frozen) |
+
+Tài liệu `ai-api-contract.md` là "xương sống" cho việc giao tiếp giữa AI engine của nhóm tôi và ba nền tảng CDO (Payment, Fraud, Ledger). Để các team CDO có thể code tích hợp mà không sợ bị loạn, tài liệu này cần cực kỳ rõ ràng và ổn định.
+
+Những điểm chính tôi đã trực tiếp thiết kế trong hợp đồng này:
+
+- **Chiến lược Versioning**: Dùng path `/v1/`. Nếu có breaking changes sẽ đẩy lên `/v2/` và duy trì bản cũ ít nhất 30 ngày để các CDO team có thời gian migrate, không bị ép phải làm ngay lập tức.
+- **Mô hình Xác thực (SigV4)**: Chuyển toàn bộ việc verify IAM SigV4 ra tầng mạng ngoài cùng (Edge/Internal ALB). App sẽ không check lại chữ ký nữa mà chỉ lấy `principal_id` để ghi log. 
+- **Lộ trình bàn giao W11/W12**: Trong W11 (Mock), tôi chủ động để header `Authorization` là `Optional` để các team khác dễ dàng dùng Postman/curl test thử. Sang W12 (Real), việc chặn SigV4 sẽ do infra của CDO lo.
+- **Data Schema chuẩn chỉ**: Định nghĩa rõ input/output khớp 1-1 với Pydantic models (ví dụ: bắt buộc `signal_window` >= 120 điểm, chuẩn thời gian RFC3339).
+- **Audit Log & Rate Limiting**: Chốt luôn 6 trường bắt buộc cho Audit log, quy định rate limit rõ ràng (600 req/phút/tenant) và định nghĩa các mã lỗi HTTP (400, 401, 422, 429, 503) kèm cách xử lý cụ thể.
 
 ---
 
-## 2. Artifacts đã thực hiện
+## 2. Các quyết định thiết kế quan trọng
 
-### `contracts/ai-api-contract.md`
+### Tại sao lại đẩy SigV4 ra Edge thay vì check trong code?
+Vì engine nằm sau lớp Private ALB, bản thân ranh giới mạng đã là một lớp bảo vệ. Nếu code ứng dụng cũng verify chữ ký thì thành ra làm hai lần, vừa dư thừa vừa dễ gây nhầm lẫn về việc "ai là người chịu trách nhiệm chặn request". Đẩy ra tầng infra giúp AI engine chỉ tập trung làm đúng việc của nó là xử lý data. Đổi lại, tôi thiết lập Security Group chỉ cho nhận traffic từ CDO SGs để bù đắp rủi ro.
 
-Đây là tài liệu hợp đồng ràng buộc giữa AI engine (AIO-03) và ba nền tảng CDO (Payment, Fraud, Ledger). Mọi quyết định tích hợp phía CDO đều phụ thuộc vào tính ổn định và rõ ràng của tài liệu này.
+### Bố trí `Authorization` là Optional trong W11
+Đây là một quyết định thuần túy vì trải nghiệm của Developer (DX) bên CDO. Giai đoạn mock testing mà bắt họ phải setup tool tạo chữ ký SigV4 chỉ để gọi API thì quá tốn thời gian. Tôi ghi rõ trong hợp đồng việc này để họ yên tâm test, và cũng báo trước là sang W12 infra sẽ siết lại.
 
-Những phần tôi trực tiếp soạn thảo:
-
-**Chiến lược versioning** — định nghĩa path versioning `/v1/` với cửa sổ hỗ trợ song song 30 ngày cho breaking changes, giúp các CDO team không bị ép phải nâng cấp đồng thời.
-
-**Mô hình xác thực** — thiết kế để IAM SigV4 được enforce ở tầng edge (Internal ALB / API Gateway `AWS_IAM` authorizer + SG-to-SG), không phải trong application code. Đây là một quyết định kiến trúc có chủ ý: engine chạy sau cổng CDO-hosted nên việc verify chữ ký hai lần ở app là thừa và tạo ra ảo giác bảo mật sai chỗ.
-
-**Điều khoản bàn giao hai giai đoạn W11/W12** — ghi rõ rằng `Authorization` ở app giữ là `Optional` trong W11 là cố ý, không phải lỗi. SigV4 chỉ được enforce nghiêm từ CDO edge trong W12. Điều khoản này tránh sự nhầm lẫn cho ba CDO team trong giai đoạn test với curl/Postman.
-
-**Schema request/response đầy đủ** — tất cả các trường với kiểu dữ liệu, ràng buộc (`signal_window >= 120 datapoints`, timestamp RFC3339, giá trị float), và phân biệt required/optional. Khớp 1-1 với Pydantic models trong `engine-skeleton/app/models.py`.
-
-**Audit Log Schema** — định nghĩa 6 trường bắt buộc (`audit_id`, `timestamp`, `tenant_id`, `principal_id`, `input_hash`, `recommendation_snapshot`) cùng yêu cầu mã hóa và lưu trữ (KMS at rest, 365 ngày). Được enforce trong `engine-skeleton/app/audit.py`.
-
-**Rate limiting spec** — 600 req/phút mỗi tenant, 6000 req/phút toàn cục, HTTP 429 kèm `Retry-After`. Implement trong middleware của `engine-skeleton/app/main.py`.
-
-**Bảng mã lỗi** — 5 mã lỗi (400, 401, 422, 429, 503) với hướng dẫn xử lý cụ thể cho CDO (sửa vs retry vs fallback).
+### Đóng băng hợp đồng (Freeze)
+Ngay khi chốt xong vào ngày 25/06/2026, tôi dán nhãn `FREEZE` vào hợp đồng. Làm API contract sợ nhất là sửa ngầm (ví dụ đổi tên trường) làm chết code client. Việc đóng băng này ép mọi thay đổi phải qua quy trình rõ ràng, giống như cách làm việc ở các team production thực tế.
 
 ---
 
-## 3. Quyết định chính và lý do
+## 3. Nhìn lại: Đánh đổi & Kinh nghiệm rút ra
 
-### SigV4 enforce ở edge, không phải trong app code
+**Điểm hài lòng:**
+Chiến lược phân đoạn W11/W12 rất hiệu quả. Các team CDO không cần sửa một dòng code nào khi chuyển từ engine giả lập sang engine thật vì schema API hoàn toàn đồng nhất. Cả 9 test cases trong `tests/test_api.py` cũng chạy qua trơn tru và tuân thủ đúng các error codes đã chốt.
 
-Tôi quyết định engine không verify chữ ký SigV4 trong application code mà chỉ đọc `principal_id` từ header đã được xác thực để ghi audit. Enforcement thuộc về CDO-hosted Internal ALB.
+**Sự đánh đổi:**
+Tôi quyết định cứng rắn việc bắt buộc input phải có tối thiểu 120 data points (nếu ít hơn trả về lỗi 422). Vài team CDO than phiền vì lúc cold-start họ chưa gom đủ data. Dù vậy, tôi vẫn giữ nguyên vì thuật toán EWMA thực sự cần chừng đó điểm để không bị báo động giả (False Positive).
 
-Lý do: Trong kiến trúc microservices đặt sau private ALB, ranh giới mạng bản thân là perimeter xác thực. Nếu enforce ở cả gateway lẫn app, khi cấu hình gateway thay đổi thì app-level check trở thành tuyến phòng thủ duy nhất mà không có người chịu trách nhiệm rõ ràng. Bằng cách giữ enforcement ở infra layer của CDO, AI engine giữ được vai trò thuần xử lý. Hợp đồng ghi rõ điều này để không có sự mơ hồ về "ai enforce cái gì."
-
-Đánh đổi: Nếu ai đó bypass ALB và hit engine trực tiếp trong VPC bị cấu hình sai, auth ở app level sẽ không chặn được. Rủi ro này được giảm thiểu bởi Security Group rules (`tf-4-ai-engine-sg`) chỉ cho phép traffic từ CDO platform SGs.
-
-### Authorization header Optional trong W11 là quyết định thiết kế, không phải bug
-
-Trong W11 mock testing, `Authorization` được type là `Optional[str]` trong `main.py`. Tôi ghi rõ trong hợp đồng rằng đây là cố ý.
-
-Lý do: CDO team cần test integration bằng curl và Postman mà không cần setup SigV4 signing. Nếu bắt buộc auth ở engine level trong W11 thì sẽ mất vài ngày làm chậm tiến độ CDO. Hợp đồng nêu rõ điều này thay đổi trong W12 khi CDO edge enforce nghiêm.
-
-### Cơ chế đóng băng
-
-Sau khi hợp đồng được ký (2026-06-25), tôi thêm header `FREEZE` và quy trình change request chính thức, đồng thời thêm cảnh báo FROZEN vào `CLAUDE.md`.
-
-Lý do: API contract là loại tài liệu khó thay đổi nhất khi đã đưa vào sản xuất. Nếu CDO đã build integration dựa trên một schema mà tôi thay đổi thầm lặng một tên trường, code phía CDO hỏng mà không có cảnh báo rõ ràng. Cơ chế freeze bắt chước cách các tổ chức kỹ thuật thực sự quản lý API contract production.
+**Nếu được làm lại, tôi sẽ sửa gì?**
+- **Thêm tính năng Dry-run**: Sẽ rất tiện nếu có thêm cờ `dry_run` trong request để CDO tự test format data mà không kích hoạt xử lý hay ghi log thật.
+- **Đặt tên biến rõ ràng hơn**: Trường `from_to` trong recommendation hơi gây lú. Có người đọc vào tưởng là scale bản thân con AI engine, trong khi ý tôi là khuyên CDO scale service của họ. Nếu đặt là `target_from_to` thì sẽ đỡ phải giải thích nhiều.
 
 ---
 
-## 4. Đánh đổi và nhìn lại
-
-Những gì đã làm tốt: Điều khoản W11/W12 phased delivery giúp CDO không phải thay đổi code khi chuyển từ skeleton sang real engine vì API schema đồng nhất suốt. Spec 6 trường audit cho implementation `audit.py` một contract rõ ràng có thể test được.
-
-Đánh đổi đã thực hiện: Tôi giữ mức tối thiểu `signal_window` ở 120 datapoints và reject bằng HTTP 422 với window nhỏ hơn. Một số CDO team phản hồi về cold-start scenario. Tôi giữ nguyên vì EWMA thực sự cần 120 điểm để tạo ra mean đủ ổn định — window nhỏ hơn sẽ tăng false positive đáng kể, được ghi rõ trong `docs/06_metrics_justification.md`.
-
-Nếu làm lại: Tôi sẽ thêm một flag `dry_run` tùy chọn vào request để CDO team có thể gửi request nhận phản hồi schema validation mà không trigger prediction hay audit log thật. Điều này sẽ giúp ích nhiều trong W11 integration testing.
-
----
-
-## 5. Tự đánh giá
-
-Hợp đồng giữ nguyên không cần sửa đổi trong toàn bộ chu kỳ W11–W12. Cả W11 skeleton lẫn W12 real engine đều implement đúng schema tôi đã định nghĩa. Tất cả 9 test scenarios trong `tests/test_api.py` validate đúng với error code và field requirement của hợp đồng. Freeze được tuân thủ, không có thay đổi nào được thực hiện sau khi ký.
-
-Điểm tôi tự nhận xét thêm: trường `from_to` gây nhầm lẫn trong quá trình review — một số người tưởng nó đề cập đến việc scale bản thân AI engine thay vì service CDO đang quản lý. Tôi đã thêm note cảnh báo vào hợp đồng để làm rõ. Nếu thiết kế lại, tôi sẽ đặt tên trường này rõ hơn từ đầu, ví dụ `target_from_to`.
+## 4. Tự đánh giá chung
+Tài liệu hợp đồng API đã làm tốt vai trò "chốt chặn". Nó sống sót qua cả hai phase W11 và W12 mà không cần phải đập đi xây lại. Mã nguồn hiện tại bám sát 100% hợp đồng này.
