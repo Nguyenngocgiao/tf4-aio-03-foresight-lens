@@ -123,7 +123,7 @@ correctly throttled to HTTP 429 (anti-abuse), confirming the rate limiter works.
 
 | Phase | Forecast | Actual | Note |
 |---|---|---|---|
-| Compute (serving) | Fargate 2×(0.5vCPU,1GB) 24/7 | **~$36/mo** | flat; see docs/05_cost_analysis (CDO) |
+| Compute (serving) | Fargate 2×(0.5vCPU,1GB) 24/7 us-east-1 | **~$36/mo** | flat; +ALB ~$16 +S3 ~$1 → ~$53/mo total. See tf4-evidence/evidence/evidence_cost.json; CDO TCO in ../../cdo/docs/05_cost_analysis.md |
 | Inference token cost | $0 | **$0** | statistical model, no LLM tokens |
 | Training | one-off offline batch | **~$0** | manual weekly run, minutes of CPU |
 

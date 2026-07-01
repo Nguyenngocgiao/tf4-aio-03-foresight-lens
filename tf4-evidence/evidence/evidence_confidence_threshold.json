@@ -1,7 +1,7 @@
 {
-  "method": "Run REAL 3-sigma algorithm on 200 synthetic windows with known ground truth (50% drift injected at 3.5-8\u03c3 magnitude). NOT simulated confidence \u2014 actual z-score computation.",
-  "circular_reasoning_fix": "Previous version used random uniform confidence (self-grading). Now: generate baseline data \u2192 inject real drift \u2192 run 3-sigma \u2192 count TP/FP/TN/FN.",
-  "requirement": "FP \u226412% and Catch \u226580%",
+  "method": "EXPLORATORY threshold sweep: run a simple rolling z-score over 200 synthetic windows with known ground truth (50% drift injected at 3.5-8 sigma magnitude) to sanity-check threshold behaviour. Actual z-score computation, not simulated confidence. This is NOT the production detector.",
+  "circular_reasoning_fix": "Previous version used random uniform confidence (self-grading). Now: generate baseline data -> inject real drift -> run rolling z-score -> count TP/FP/TN/FN.",
+  "requirement": "FP <=12% and Catch >=80%",
   "results": [
     {
       "sigma_threshold": 2.0,
@@ -56,7 +56,9 @@
       "meets_requirement": true
     }
   ],
-  "recommended_sigma": 3.0,
-  "brier_score_at_3sigma": 0.0321,
+  "production_note": "This sweep runs on CLEAN synthetic data, so even a 3.0 threshold shows ~0 FP here. The production engine does NOT use a plain rolling z-score at 3.0 sigma: it uses an EWMA control chart (alpha=0.3) whose operating point K=4.0 was selected on the REAL holdout per docs/05_adrs.md ADR-006. On the real holdout K=3.0 gives FP 17.5% (fails the <=12% gate) while K=4.0 gives FP 7.1%. Treat the sweep below as a directional sanity-check, not the production threshold.",
+  "recommended_sigma_synthetic": 3.0,
+  "production_operating_point": "EWMA alpha=0.3, K=4.0 (see docs/05_adrs.md ADR-006)",
+  "brier_score_at_3sigma_synthetic": 0.0321,
   "brier_interpretation": "Brier score < 0.25 = good calibration. Lower = better."
 }
