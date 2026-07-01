@@ -80,6 +80,8 @@ Stub a mock endpoint (e.g. Prism from `/openapi.json`, or a static server) retur
 bodies to exercise every branch — especially the 503 fallback — without the engine running.
 
 ## Cost note
-2 tasks × (0.5 vCPU + 1 GB) running 24/7 ≈ **$36–45/month** (flat, request-independent);
-$0 inference token cost. Well within the $200 client budget. See `docs/05_cost_analysis.md`.
+2 tasks × (0.5 vCPU + 1 GB) running 24/7 in `us-east-1` ≈ **$36/month** (flat, request-independent);
+plus ALB ~$16 + S3 ~$1 → **~$53/month** total. $0 inference token cost. Well within the $200
+client budget. See `tf4-evidence/evidence/evidence_cost.json` (AI-side estimate) and the CDO TCO
+in `../../cdo/docs/05_cost_analysis.md`.
 ```

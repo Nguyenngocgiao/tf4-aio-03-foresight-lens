@@ -1,7 +1,7 @@
 {
-  "method": "Inject high-variance noise (std=20) to simulate noisy baseline (e.g., unpredictable traffic).",
+  "method": "Inject high-variance noise (std=20) to simulate noisy baseline (e.g., unpredictable traffic); detector = EWMA control chart (alpha=0.3, K=4.0) over de-seasonalised residuals, as in app/engine.py.",
   "test_size": 500,
   "false_positives": 2,
   "fp_rate": 0.004,
-  "conclusion": "3-sigma remains robust with <1% FP even under severe Gaussian noise. However, structural shifts (like a prolonged Flash Sale) will trigger alerts. ADR recommendation: Allow manual 'Silence & Retrain' during known business events."
+  "conclusion": "The EWMA K=4.0 control limit remains robust with <1% FP even under severe Gaussian noise. However, structural shifts (like a prolonged Flash Sale) will trigger alerts. ADR recommendation: Allow manual 'Silence & Retrain' during known business events."
 }

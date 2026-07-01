@@ -1,24 +1,24 @@
 {
-  "method": "AWS Pricing Calculator for ECS Fargate architecture",
+  "method": "AWS Pricing Calculator for ECS Fargate architecture (region us-east-1, matches deploy/task-definition.json + deployment-contract.md)",
   "services": {
     "ECS Fargate": {
-      "unit": "0.25 vCPU, 0.5 GB RAM (2 tasks)",
-      "cost": "$16.00/month"
+      "unit": "0.5 vCPU, 1 GB RAM x 2 tasks, 24/7 (matches task-definition.json cpu=512/memory=1024, min 2 tasks)",
+      "cost": "$36.00/month"
     },
     "Application Load Balancer": {
-      "unit": "1 ALB",
+      "unit": "1 internal ALB",
       "cost": "$16.00/month"
     },
-    "DynamoDB_audit": {
-      "unit": "25GB + 25WCU/RCU",
-      "cost": "$0 (free tier)"
+    "S3_audit_and_baselines": {
+      "unit": "audit objects (KMS-encrypted, 1 per decision) + per-service baseline JSON",
+      "cost": "$1.00/month"
     },
     "CloudWatch_Logs": {
       "unit": "5GB",
       "cost": "$0 (free tier)"
     }
   },
-  "total_estimated_monthly": "$32.00",
+  "total_estimated_monthly": "$53.00",
   "budget_cap": "$200/month",
-  "conclusion": "Using ECS Fargate is cost-effective ($32/mo), fitting comfortably within the $200/month cap while aligning with the Deployment Contract."
+  "conclusion": "Using ECS Fargate is cost-effective (~$53/mo) and fits comfortably within the $200/month cap. Audit + baselines are stored in S3 (KMS-encrypted), consistent with app/audit.py and the Deployment Contract; there is no DynamoDB in the deployed engine. Inference token cost is $0 (statistical model, no LLM)."
 }

@@ -1,10 +1,10 @@
 {
-  "method": "Simulate gradual CPU drift \u2192 detect via rolling 3-sigma \u2192 measure time to breach (CPU>85%)",
+  "method": "Simulate gradual CPU drift -> detect via EWMA control chart (alpha=0.3, K=4.0, as in app/engine.py) over de-seasonalised residuals -> measure time to breach (CPU>85%)",
   "drift_start_minute": 720,
   "detected_at_minute": 734,
   "breach_at_minute": 840,
   "lead_time_minutes": 106,
-  "requirement": "\u226515 minutes",
+  "requirement": ">=15 minutes",
   "pass": true,
   "source_refs": [
     "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html",
