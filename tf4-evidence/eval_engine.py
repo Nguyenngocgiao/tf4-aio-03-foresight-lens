@@ -40,9 +40,17 @@ def row_to_signals(df_win: pd.DataFrame, service: str):
 
 
 def true_region_at(idx, labels):
-    """Return (is_true_anomaly, is_fp_trap) for a window whose last point is at row idx."""
+    """Return (is_true_anomaly, is_fp_trap) for a window whose last point is at row idx.
+
+    Label `start`/`end` are absolute minute indices into the full 7-day dataset;
+    the holdout CSV is day 7 (rows 0..1439), so shift labels by 6*1440 to map them
+    onto holdout row indices. The 3 services intentionally share ONE label file:
+    anomalies are injected at the same day-relative minutes in every service
+    (controlled experiment), while the underlying per-service baselines differ.
+    """
     is_true = is_fp = False
     for lb in labels:
+        # 6*1440 = shift from absolute 7-day minute coords to the day-7 holdout row.
         if lb["start"] - 6 * 1440 <= idx <= lb["end"] - 6 * 1440:
             if lb["kind"] == "noisy_fp_trap":
                 is_fp = True
