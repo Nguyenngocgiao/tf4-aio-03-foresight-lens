@@ -6,8 +6,12 @@
       "cost": "$36.00/month"
     },
     "Application Load Balancer": {
-      "unit": "1 internal ALB",
+      "unit": "1 internal ALB (routing only; internal-facing)",
       "cost": "$16.00/month"
+    },
+    "API_Gateway_private": {
+      "unit": "private REST API with AWS_IAM authorization (enforces SigV4 at the edge, in front of the ALB)",
+      "cost": "$0 (per-request pricing; negligible at demo scale, within free tier)"
     },
     "S3_audit_and_baselines": {
       "unit": "audit objects (KMS-encrypted, 1 per decision) + per-service baseline JSON",
