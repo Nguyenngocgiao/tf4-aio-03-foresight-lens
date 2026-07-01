@@ -38,12 +38,12 @@ Source: `tf4-evidence/evidence/evidence_algorithm_evaluation.json`.
 
 | Metric | Target | Actual | Pass/Fail |
 |---|---|---|---|
-| Precision | ≥ 0.75 (stretch) | **0.793** | Pass (see note) |
-| Recall (catch rate) | ≥ 0.80 | **0.971** | Pass |
+| Precision | ≥ 0.75 (stretch) | **0.793** · 95% CI [0.734, 0.842] | Pass (see note) |
+| Recall (catch rate) | ≥ 0.80 | **0.971** · 95% CI [0.935, 0.988] | Pass |
 | F1 Score | ≥ 0.75 | **0.873** | Pass |
-| False Positive Rate | ≤ 0.12 | **0.071 (7.1%)** | Pass |
+| False Positive Rate | ≤ 0.12 | **0.071 (7.1%)** · 95% CI [5.3%, 9.4%] | Pass |
 | Brier Score | < 0.10 | **0.049** | Pass |
-| Lead Time (median) | ≥ 15 min | **110 min** | Pass |
+| Lead Time (median) | ≥ 15 min | **110 min** (synthetic slow-drift; committed gate = ≥15 min) | Pass |
 | P99 latency | < 500 ms | **4.0 ms** @100 RPS (load test, §3.3) | Pass |
 | Throughput (global) | 100 RPS | **100 RPS sustained 30s, 0 errors**; 400 RPS probe also clean (§3.3) | Pass |
 | Cost / month | < $200 | **~$36 (Fargate 2-task)** | Pass |
@@ -53,6 +53,23 @@ Source: `tf4-evidence/evidence/evidence_algorithm_evaluation.json`.
 > elevated just after a fault clears) count as FP in this strict per-window scoring. It does
 > not breach the client's hard gate (FP ≤ 12%); recall and lead time are the primary KPIs and
 > both pass with wide margin. Tuning toward higher precision (K=4.5) is logged in ADR-006.
+>
+> **Uncertainty — 95% confidence intervals.** Computed from the aggregate confusion matrix
+> with the **Wilson score interval** (`evidence_algorithm_evaluation.json` → `ci95`): recall
+> **[0.935, 0.988]**, precision **[0.734, 0.842]**, FP-rate **[5.3%, 9.4%]**. Even the
+> *unfavourable* bound clears the client gates (recall ≥ 0.80, FP ≤ 12%), so the pass is not
+> a lucky point estimate.
+>
+> **`confidence` field vs. these CIs.** The per-recommendation `confidence` the API returns is
+> a **calibrated point probability** (Brier 0.049 + `evidence_reliability_diagram.json`) — *not* an
+> interval. The Wilson CIs above are the eval-level uncertainty on the headline metrics; the
+> two answer different questions (per-decision calibration vs. metric sampling error).
+>
+> **On lead time.** The 110-min median is measured on **synthetically injected** slow-drift /
+> slow-leak scenarios; real lead time scales with how gradually an incident develops — a sudden
+> spike yields far less. The number we **commit** to is the **≥ 15-min gate**, which held on
+> every scenario including the curveballs (§5). Treat "110 min" as illustrative of a slow-ramp
+> case, not a production guarantee.
 
 ### 3.1 Algorithm comparison (A/B, measured on the same holdout)
 

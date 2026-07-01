@@ -105,10 +105,10 @@ Measured on a held-out labelled day across 3 tier-1 services (see `docs/04_eval_
 
 | Metric | Result | Client gate |
 |---|---|---|
-| Lead time (median) | ~110 min | ≥ 15 min |
-| Recall (catch rate) | 0.971 | ≥ 0.80 |
-| Precision | 0.793 | — |
-| False Positive rate | 7.1% | ≤ 12% |
+| Lead time (median) | ~110 min *(synthetic slow-drift; committed gate = ≥15 min)* | ≥ 15 min |
+| Recall (catch rate) | 0.971 · 95% CI [0.935, 0.988] | ≥ 0.80 |
+| Precision | 0.793 · 95% CI [0.734, 0.842] | — |
+| False Positive rate | 7.1% · 95% CI [5.3%, 9.4%] | ≤ 12% |
 | Brier score | 0.049 (well calibrated) | — |
 | Throughput | 100 RPS, p99 4 ms, 0 throttle | 100 RPS SLA |
 

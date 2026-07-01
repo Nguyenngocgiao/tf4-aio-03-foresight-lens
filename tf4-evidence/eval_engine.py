@@ -111,6 +111,16 @@ def evaluate():
     recall = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     fp_rate = fp / (fp + tn) if fp + tn else 0.0
+
+    def wilson_ci(x, n, z=1.96):
+        """95% Wilson score interval for a proportion x/n (better than normal approx at edges)."""
+        if n == 0:
+            return [None, None]
+        p = x / n
+        d = 1 + z * z / n
+        centre = (p + z * z / (2 * n)) / d
+        half = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5) / d
+        return [round(centre - half, 3), round(centre + half, 3)]
     brier = float(np.mean([(p - o) ** 2 for p, o in brier_pairs])) if brier_pairs else None
     from app.engine import EWMA_ALPHA, SIGMA_K
     out = {
@@ -122,6 +132,12 @@ def evaluate():
         "recall": round(recall, 3),
         "f1": round(f1, 3),
         "fp_rate": round(fp_rate, 3),
+        "ci95": {
+            "recall": wilson_ci(tp, tp + fn),
+            "precision": wilson_ci(tp, tp + fp),
+            "fp_rate": wilson_ci(fp, fp + tn),
+        },
+        "ci95_method": "Wilson score interval, 95% (z=1.96), from the aggregate confusion matrix",
         "brier_score": round(brier, 4) if brier is not None else None,
         "lead_time_min": int(np.median(lead_times)) if lead_times else None,
         "lead_time_samples": lead_times,

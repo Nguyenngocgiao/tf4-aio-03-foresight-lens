@@ -185,7 +185,7 @@ Audit record sử dụng **đúng 6 trường bắt buộc** của contract (`ai
  - **Precision**: TP/(TP+FP) = **0.793**.
  - **Recall (catch rate)**: TP/(TP+FN) = **0.971**.
  - **False Positive Rate (FPR)**: **7.1%** (gate ≤ 12%).
- - **Lead time (median)**: **110 phút** (gate ≥ 15 phút).
+ - **Lead time (median)**: **110 phút** — đo trên kịch bản **synthetic slow-drift** (không phải guarantee production; lead thật phụ thuộc tốc độ sự cố ramp). Cam kết thực tế = **gate ≥ 15 phút**, giữ được trên mọi scenario kể cả curveball (04_eval §5).
  - **P99 latency**: **< 10ms** (NumPy in-memory).
 - **Acceptance threshold (theo gate Client)**:
  - FPR bắt buộc `≤ 12%`
