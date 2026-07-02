@@ -121,6 +121,8 @@
         margin: 0;
       }
       html, body {
+        margin: 0 !important;
+        padding: 0 !important;
         background: var(--surface-dark) !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -136,10 +138,12 @@
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
-        padding: 0.4in 0.8in !important;
+        padding: 0.5in 0.8in !important;
         box-sizing: border-box !important;
         overflow: hidden !important;
-        zoom: 0.8 !important;
+      }
+      .slide-content, .slide-title, .slide-divider {
+        zoom: 0.82 !important;
       }
       .progress-bar, .nav-dots, .slide-counter {
         display: none !important;
