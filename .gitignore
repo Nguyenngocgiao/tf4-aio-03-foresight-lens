@@ -17,3 +17,6 @@ evidence/*.png
 *.tar.gz
 *.log
 logs/
+
+# Local presentation script (gitignored)
+presentation_script.md
