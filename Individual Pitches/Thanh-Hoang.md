@@ -58,7 +58,7 @@ Hai phase:
 - `evidence_algorithm_comparison.json` — A/B comparison
 - `evidence_confidence_threshold.json` — bằng chứng confidence gating (MG-03)
 - `evidence_cost.json`, `evidence_lead_time.json`, `evidence_load_test.json` — evidence bổ sung
-- `algorithm_comparison.png`, `metrics_comparison.png` — visual evidence charts
+- `algorithm_comparison.png` — visual evidence chart
 
 ---
 

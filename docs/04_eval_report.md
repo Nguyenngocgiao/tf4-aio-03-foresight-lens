@@ -61,7 +61,7 @@ Source: `tf4-evidence/evidence/evidence_algorithm_evaluation.json`.
 > a lucky point estimate.
 >
 > **`confidence` field vs. these CIs.** The per-recommendation `confidence` the API returns is
-> a **calibrated point probability** (Brier 0.049 + `evidence_reliability_diagram.json`) — *not* an
+> a **calibrated point probability** (Brier 0.049, see `evidence_algorithm_evaluation.json`) — *not* an
 > interval. The Wilson CIs above are the eval-level uncertainty on the headline metrics; the
 > two answer different questions (per-decision calibration vs. metric sampling error).
 >
