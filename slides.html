@@ -888,37 +888,53 @@
 
 <!-- ========== SLIDE 12d — Storytelling: Never Act Alone ========== -->
 <section class="slide">
-  <div class="slide-content" style="max-width: 1100px;">
-    <div class="slide-header" style="margin-bottom: 20px;">
+  <div class="slide-content" style="max-width: 1000px;">
+    <div class="slide-header">
       <div class="eyebrow">Algorithmic Rationale · Governance</div>
       <h2>An Advisor, Not an Autonomous Actor</h2>
       <p class="lead">SREs fundamentally distrust "black-box" AI restarting their production servers.</p>
     </div>
-    
-    <div class="two-col" style="grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center;">
-      <!-- Left Column: Text & Evidence -->
-      <div style="display: flex; flex-direction: column; gap: 16px;">
-        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+    <div class="two-col" style="gap: 40px; margin-top: 24px;">
+      <div>
+        <p style="margin-bottom: 16px; color: var(--text-secondary); line-height: 1.6;">
           We deliberately chose to abandon "Auto-Remediation". Foresight Lens acts strictly as a <strong>Predictive Advisor</strong>. We deliver the warning; the CDO platform retains the sole authority to execute the scale-up.
         </p>
-        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px;">
+        <p style="color: var(--text-secondary); line-height: 1.6;">
           To enforce this, we implemented strict <strong>Confidence Gating</strong>. If the engine's Brier-calibrated confidence score drops below 0.7, the recommendation is forcefully downgraded to <code>INVESTIGATE</code>.
         </p>
-        <div class="card card-accent" style="padding: 16px;">
-          <h3 style="color: var(--brand-accent); font-size: 0.95rem; margin-bottom: 8px;">Evidence: <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85em;">evidence_confidence_threshold.json</span></h3>
-          <ul class="bullets" style="font-size: 0.8rem; line-height: 1.5;">
-            <li><strong>Operating Point:</strong> EWMA α=0.3, K=4.0</li>
-            <li><strong>Brier Score:</strong> <strong style="color: var(--brand-accent);">0.049</strong> <em>(probability calibration)</em></li>
-            <li><strong>Result:</strong> Only issue <code>SCALE_UP</code> when mathematical probability is overwhelmingly high.</li>
-          </ul>
-        </div>
       </div>
-      
-      <!-- Right Column: AI Action Loop Diagram -->
-      <div class="card" style="padding: 10px; background: #fff; text-align: center; border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-        <img src="diagrams/03_ai_action_loop.png" alt="AI Action Loop" class="diagram-large" style="width: 100%; max-height: 4.8in; object-fit: contain; border-radius: 8px;" />
+      <div class="card card-accent" style="padding: 24px;">
+        <h3 style="color: var(--brand-accent);">Evidence: <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8em;">evidence_confidence_threshold.json</span></h3>
+        <ul class="bullets" style="margin-top: 12px;">
+          <li><strong>Operating Point:</strong> EWMA α=0.3, K=4.0</li>
+          <li><strong>Brier Score:</strong> <strong style="color: var(--brand-accent);">0.049</strong> <em>(Score &lt; 0.25 indicates excellent probability calibration)</em></li>
+          <li><strong>Result:</strong> We only issue a <code>SCALE_UP</code> command when the mathematical probability of exhaustion is overwhelmingly high, preserving SRE trust.</li>
+        </ul>
       </div>
     </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>AI GOVERNANCE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 12e — AI Action Loop Diagram ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1100px; text-align: center;">
+    <div class="slide-header" style="margin-bottom: 20px; text-align: left;">
+      <div class="eyebrow">AI Governance</div>
+      <h2>AI Advisor Action Loop</h2>
+      <p class="lead">Foresight Lens acts strictly as a predictive advisor, routing alerts for human SRE authorization.</p>
+    </div>
+    
+    <div class="card" style="padding: 16px; background: #fff; border: 1px solid var(--border); border-radius: 12px; display: inline-flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); max-width: 900px; margin: 0 auto;">
+      <img src="diagrams/03_ai_action_loop.png" alt="AI Action Loop" class="diagram-large" style="width: 100%; max-height: 5.2in; object-fit: contain; border-radius: 8px;" />
+    </div>
+    
+    <p style="margin-top: 16px; font-size: 0.82rem; color: var(--text-secondary); max-width: 800px; margin-left: auto; margin-right: auto;">
+      <strong>Process Flow:</strong> Telemetry collection ➔ STL+EWMA engine analysis ➔ Brier-score confidence gating ➔ CDO API recommendation ➔ Slack/PagerDuty notification ➔ Manual SRE approval & Fargate execution.
+    </p>
   </div>
   <div class="slide-footer">
     <span>TF4 FORESIGHT LENS</span>
@@ -941,46 +957,60 @@
 <!-- ========== SLIDE 13 — Architecture ========== -->
 <section class="slide">
   <div class="slide-content" style="max-width: 1100px;">
-    <div class="slide-header" style="margin-bottom: 20px;">
+    <div class="slide-header">
       <div class="eyebrow">Architecture</div>
       <h2>Unidirectional Data Flow & Stateless Processing</h2>
-      <p class="lead">Microservices strictly decoupled via HTTP API. Latency < 5ms via NumPy in-memory vectorization.</p>
+      <p class="lead">Microservices strictly decoupled via HTTP API. Latency &lt; 5ms via NumPy in-memory vectorization.</p>
+    </div>
+    <div class="grid grid-3" style="margin-top: 32px; gap: 20px;">
+      <div class="card" style="padding: 24px; background: var(--surface-card);">
+        <h3>Phase 1: Edge & Validation</h3>
+        <ul class="bullets" style="font-size: 0.82rem; line-height: 1.6; margin-top: 8px;">
+          <li><strong>Edge Auth:</strong> Private API Gateway (AWS_IAM) enforces SigV4 signature.</li>
+          <li><strong>Strict Typing:</strong> Pydantic rejects HTTP 422 if timestamps aren't RFC3339.</li>
+          <li><strong>Multi-tenant Routing:</strong> Validation via X-Tenant-Id header.</li>
+        </ul>
+      </div>
+      <div class="card" style="padding: 24px; background: var(--surface-card);">
+        <h3>Phase 2: Core Processing</h3>
+        <ul class="bullets" style="font-size: 0.82rem; line-height: 1.6; margin-top: 8px;">
+          <li><strong>Stateless Scoping:</strong> Context garbage-collected post-request to prevent data bleed.</li>
+          <li><strong>STL Decomposition:</strong> Offline-trained baseline extracts seasonality.</li>
+          <li><strong>EWMA Control Chart:</strong> Scans trend residuals for slow drift.</li>
+        </ul>
+      </div>
+      <div class="card card-accent" style="padding: 24px;">
+        <h3>Phase 3: Governance & Audit</h3>
+        <ul class="bullets" style="font-size: 0.82rem; line-height: 1.6; margin-top: 8px;">
+          <li><strong>Confidence Gating:</strong> Scored via Brier. &lt; 0.7 downgrades to INVESTIGATE.</li>
+          <li><strong>Hash Integrity:</strong> Input payload hashed (SHA-256) before KMS-encrypted audit.</li>
+          <li><strong>Actionable Output:</strong> Action verb, target, and evidence link.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ARCHITECTURE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 13b — System Architecture Diagram ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1100px; text-align: center;">
+    <div class="slide-header" style="margin-bottom: 20px; text-align: left;">
+      <div class="eyebrow">Architecture</div>
+      <h2>System Architecture & Data Flow</h2>
+      <p class="lead">Stateless, high-throughput request path with automated validation, execution, and audit trail.</p>
     </div>
     
-    <div class="two-col" style="grid-template-columns: 1.1fr 1fr; gap: 30px; align-items: center;">
-      <!-- Left Column: 3 Processing Phases -->
-      <div style="display: flex; flex-direction: column; gap: 14px;">
-        <div class="card" style="padding: 12px 18px; background: var(--surface-card);">
-          <h3 style="font-size: 0.95rem; margin-bottom: 6px; color: var(--brand-accent);">Phase 1: Edge & Validation</h3>
-          <ul class="bullets" style="font-size: 0.78rem; line-height: 1.5;">
-            <li><strong>Edge Auth:</strong> Private API Gateway (AWS_IAM) enforces SigV4 signature.</li>
-            <li><strong>Strict Typing:</strong> Pydantic rejects HTTP 422 if timestamps aren't RFC3339.</li>
-            <li><strong>Multi-tenant Routing:</strong> Validation via X-Tenant-Id header.</li>
-          </ul>
-        </div>
-        <div class="card" style="padding: 12px 18px; background: var(--surface-card);">
-          <h3 style="font-size: 0.95rem; margin-bottom: 6px; color: var(--brand-accent);">Phase 2: Core Processing</h3>
-          <ul class="bullets" style="font-size: 0.78rem; line-height: 1.5;">
-            <li><strong>Stateless Scoping:</strong> Context GC-ed post-request to prevent data bleed.</li>
-            <li><strong>STL Decomposition:</strong> Offline-trained baseline extracts seasonality.</li>
-            <li><strong>EWMA Control Chart:</strong> Scans trend residuals for slow drift.</li>
-          </ul>
-        </div>
-        <div class="card card-accent" style="padding: 12px 18px;">
-          <h3 style="font-size: 0.95rem; margin-bottom: 6px;">Phase 3: Governance & Audit</h3>
-          <ul class="bullets" style="font-size: 0.78rem; line-height: 1.5;">
-            <li><strong>Confidence Gating:</strong> Brier scored. < 0.7 downgrades to INVESTIGATE.</li>
-            <li><strong>Hash Integrity:</strong> Input payload hashed (SHA-256) before KMS audit.</li>
-            <li><strong>Actionable Output:</strong> Action verb, target, and evidence link.</li>
-          </ul>
-        </div>
-      </div>
-      
-      <!-- Right Column: System Architecture Diagram -->
-      <div class="card" style="padding: 10px; background: #fff; text-align: center; border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-        <img src="diagrams/02_solution_design.png" alt="System Architecture Diagram" class="diagram-large" style="width: 100%; max-height: 4.8in; object-fit: contain; border-radius: 8px;" />
-      </div>
+    <div class="card" style="padding: 16px; background: #fff; border: 1px solid var(--border); border-radius: 12px; display: inline-flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); max-width: 900px; margin: 0 auto;">
+      <img src="diagrams/02_solution_design.png" alt="System Architecture Diagram" class="diagram-large" style="width: 100%; max-height: 5.2in; object-fit: contain; border-radius: 8px;" />
     </div>
+    
+    <p style="margin-top: 16px; font-size: 0.82rem; color: var(--text-secondary); max-width: 800px; margin-left: auto; margin-right: auto;">
+      <strong>Data Flow:</strong> Telemetry metrics are validated via Pydantic, processed stateless memory-wise, decomposed with seasonal baselines, evaluated with EWMA, confidence-gated, and logged securely to KMS S3.
+    </p>
   </div>
   <div class="slide-footer">
     <span>TF4 FORESIGHT LENS</span>
@@ -1115,34 +1145,20 @@
 
 <!-- ========== SLIDE 14b — Deployment Topology ========== -->
 <section class="slide">
-  <div class="slide-content" style="max-width: 1100px;">
-    <div class="slide-header">
+  <div class="slide-content" style="max-width: 1100px; text-align: center;">
+    <div class="slide-header" style="margin-bottom: 20px; text-align: left;">
       <div class="eyebrow">Deployment</div>
       <h2>Serverless Deployment Topology</h2>
-      <p class="lead">Stateless, multi-AZ deployment on AWS ECS Fargate with KMS-encrypted storage and audit logging.</p>
+      <p class="lead">AWS infrastructure blueprint hosting the stateless FastAPI container cluster in private subnets.</p>
     </div>
-    <div class="two-col" style="grid-template-columns: 1fr 1.1fr; gap: 30px; align-items: center; margin-top: 24px;">
-      <!-- Left Column: AWS Topology Diagram -->
-      <div class="card" style="padding: 10px; background: #fff; text-align: center; border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-        <img src="diagrams/deployment_topology.png" alt="AWS Deployment Topology" class="diagram-large" style="width: 100%; max-height: 4.8in; object-fit: contain; border-radius: 8px;" />
-      </div>
-      
-      <!-- Right Column: AWS Infrastructure components -->
-      <div style="display: flex; flex-direction: column; gap: 16px;">
-        <div class="card" style="padding: 16px; background: var(--surface-card);">
-          <h3 style="font-size: 0.95rem; margin-bottom: 8px; color: var(--brand-accent);">VPC Network & Compute</h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
-            FastAPI tasks are hosted inside private subnets across multiple AZs on <strong>AWS ECS Fargate</strong>. Public traffic enters via a Private API Gateway and is distributed by an Internal Application Load Balancer.
-          </p>
-        </div>
-        <div class="card card-accent" style="padding: 16px;">
-          <h3 style="font-size: 0.95rem; margin-bottom: 8px; color: var(--brand-accent);">Secured Storage & Audit Trail</h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
-            Trained baseline files are fetched securely from S3. Every capacity recommendation triggers a secure audit entry, encrypted at rest using **AWS KMS**, and streamed directly to S3 / CloudWatch.
-          </p>
-        </div>
-      </div>
+    
+    <div class="card" style="padding: 16px; background: #fff; border: 1px solid var(--border); border-radius: 12px; display: inline-flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); max-width: 900px; margin: 0 auto;">
+      <img src="diagrams/deployment_topology.png" alt="AWS Deployment Topology" class="diagram-large" style="width: 100%; max-height: 5.2in; object-fit: contain; border-radius: 8px;" />
     </div>
+    
+    <p style="margin-top: 16px; font-size: 0.82rem; color: var(--text-secondary); max-width: 800px; margin-left: auto; margin-right: auto;">
+      <strong>Infrastructure:</strong> Private API Gateway ➔ Internal ALB ➔ Multi-AZ ECS Fargate Task Cluster (VPC Private Subnets) ➔ KMS Encrypted S3 Baseline Bucket & CloudWatch Audit Log Stream.
+    </p>
   </div>
   <div class="slide-footer">
     <span>TF4 FORESIGHT LENS</span>
