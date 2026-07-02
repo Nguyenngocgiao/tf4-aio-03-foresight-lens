@@ -1577,107 +1577,183 @@ final-build/tests/test_api.py .........              [100%]
 </section>
 
 
-<!-- ========== SLIDE 20 — Appendix ========== -->
+<!-- ========== SLIDE 20a — Appendix: EWMA Parameter Tuning ========== -->
 <section class="slide">
-  <div class="slide-content">
+  <div class="slide-content" style="max-width: 1000px;">
     <div class="slide-header">
-      <div class="eyebrow">Appendix</div>
-      <h2>Backup Slides (For Q&A)</h2>
+      <div class="eyebrow">Appendix A</div>
+      <h2>EWMA Parameter Grid Search</h2>
+      <p class="lead">Mathematical optimization of smoothing factor (α) and control limit coefficient (K) to balance sensitivity and false alarms.</p>
     </div>
-    <div class="grid grid-3">
-      <!-- Left: EWMA Parameter Review -->
-      <div class="card">
-        <h3>EWMA Parameter Tuning</h3>
-        <table>
+    
+    <div class="two-col" style="grid-template-columns: 1fr 1.2fr; gap: 40px; margin-top: 24px; align-items: center;">
+      <!-- Parameter Sweep Table -->
+      <div class="card" style="padding: 16px; background: var(--surface-card);">
+        <table style="font-size: 0.85rem;">
           <thead>
             <tr>
-              <th>α</th>
-              <th>K</th>
-              <th>FP%</th>
-              <th>Recall</th>
+              <th>α (Smoothing)</th>
+              <th>K (Threshold)</th>
+              <th>FP Rate (%)</th>
+              <th>Recall (%)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>0.3</td>
+              <td>0.30</td>
               <td>3.0</td>
-              <td>17.5</td>
-              <td>.977</td>
+              <td style="color: var(--brand-danger); font-weight: 600;">17.5%</td>
+              <td>97.7%</td>
             </tr>
-            <tr style="font-weight:700;">
-              <td>0.3</td>
+            <tr style="background: rgba(176,125,51,0.1); font-weight: 700; border: 2px solid var(--brand-accent);">
+              <td>0.30</td>
               <td>4.0</td>
-              <td>7.1</td>
-              <td>.971</td>
+              <td style="color: var(--brand-success);">7.1%</td>
+              <td>97.1%</td>
             </tr>
             <tr>
-              <td>0.3</td>
+              <td>0.30</td>
               <td>4.5</td>
-              <td>6.5</td>
-              <td>.966</td>
+              <td style="color: var(--brand-success);">6.5%</td>
+              <td>96.6%</td>
             </tr>
             <tr>
               <td>0.15</td>
               <td>4.0</td>
-              <td>11.8</td>
-              <td>.977</td>
+              <td style="color: var(--brand-danger); font-weight: 600;">11.8%</td>
+              <td>97.7%</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!-- Middle: Telemetry signals -->
-      <div class="card">
-        <h3>Telemetry · 7 Signals</h3>
-        <ul class="bullets">
-          <li><code>cpu_usage_percent</code></li>
-          <li><code>memory_usage_percent</code></li>
-          <li><code>api_latency_ms</code></li>
-          <li><code>queue_depth</code></li>
-          <li><code>active_connections</code></li>
-          <li><code>db_connection_pool_pct</code></li>
-          <li><code>cache_hit_rate_pct</code></li>
-        </ul>
-        <p style="margin-top:10px; font-size:0.78rem; color:var(--text-muted);">4 utilizing baseline · 3 falling back to z-score</p>
-      </div>
-      <!-- Right: API Error Codes -->
-      <div class="card">
-        <h3>API Error Codes</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>400</code></td>
-              <td>Bad request — Invalid payload format</td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>Unauthorized — Missing API key</td>
-            </tr>
-            <tr>
-              <td><code>422</code></td>
-              <td>Validation error — Invalid schema</td>
-            </tr>
-            <tr>
-              <td><code>429</code></td>
-              <td>Rate limited — Exceeded tenant quota</td>
-            </tr>
-            <tr>
-              <td><code>503</code></td>
-              <td>Service unavailable — Fail-open triggered</td>
-            </tr>
-          </tbody>
-        </table>
+      
+      <!-- Explanation Card -->
+      <div class="card card-accent" style="padding: 24px; font-size: 0.88rem; line-height: 1.6;">
+        <h3 style="margin-bottom: 12px; color: var(--brand-accent);">Optimal Sweet Spot: α=0.3, K=4.0</h3>
+        <p style="margin-bottom: 12px; color: var(--text-secondary);">
+          <strong>The Sensitivity Trade-off:</strong> Lowering K (e.g., K=3.0) flags anomalies faster but raises False Positives to 17.5%, violating the client's ≤ 12% safety gate.
+        </p>
+        <p style="color: var(--text-secondary);">
+          <strong>The Smoothing Trade-off:</strong> Lowering α (e.g., α=0.15) increases noise damping but suffers from lagging memory, causing a 11.8% False Positive rate due to delayed de-seasonalization recovery.
+        </p>
       </div>
     </div>
   </div>
   <div class="slide-footer">
     <span>TF4 FORESIGHT LENS</span>
-    <span>APPENDIX</span>
+    <span>APPENDIX A: PARAMETER TUNING</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 20b — Appendix: Telemetry & Fallback ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1000px;">
+    <div class="slide-header">
+      <div class="eyebrow">Appendix B</div>
+      <h2>Telemetry Signal Categorization</h2>
+      <p class="lead">How the engine distinguishes between predictable seasonal patterns and flat baseline metrics.</p>
+    </div>
+    
+    <div class="two-col" style="gap: 40px; margin-top: 24px;">
+      <!-- Baselined Signals -->
+      <div class="card" style="padding: 24px; background: var(--surface-card);">
+        <h3 style="color: var(--brand-secondary); margin-bottom: 12px;">4 Baselined Signals (STL)</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+          These metrics follow strong human-activity patterns (diurnal/weekly business hour peaks). The engine subtracts seasonal baselines before anomaly check:
+        </p>
+        <ul style="font-size: 0.82rem; line-height: 1.8; padding-left: 20px;">
+          <li><code>cpu_usage_percent</code> (high diurnal peak variance)</li>
+          <li><code>memory_usage_percent</code> (gradual accumulation baseline)</li>
+          <li><code>api_latency_ms</code> (p99 latency spikes during peaks)</li>
+          <li><code>throughput_rps</code> (requests per second volume)</li>
+        </ul>
+      </div>
+      
+      <!-- Fallback Signals -->
+      <div class="card card-accent" style="padding: 24px;">
+        <h3 style="color: var(--brand-accent); margin-bottom: 12px;">3 Sporadic Signals (Z-Score)</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+          These metrics have no time-of-day seasonal profiles (either flat or sparse). Using STL on these leads to model noise, so the engine falls back to standard z-score thresholds:
+        </p>
+        <ul style="font-size: 0.82rem; line-height: 1.8; padding-left: 20px;">
+          <li><code>queue_depth</code> (flat 0 under normal load; sudden spikes)</li>
+          <li><code>active_connections</code> (flat connection pool limit bounds)</li>
+          <li><code>db_connection_pool_pct</code> (database connector bounds)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>APPENDIX B: TELEMETRY FALLBACK</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 20c — Appendix: API Error Contract ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1000px;">
+    <div class="slide-header">
+      <div class="eyebrow">Appendix C</div>
+      <h2>API Incident & Error Contract</h2>
+      <p class="lead">Production-grade HTTP error boundaries designed for the CDO platform's robust fail-open logic.</p>
+    </div>
+    
+    <div class="two-col" style="grid-template-columns: 1.2fr 1fr; gap: 40px; margin-top: 24px; align-items: center;">
+      <!-- Error Codes Table -->
+      <div class="card" style="padding: 16px; background: var(--surface-card);">
+        <table style="font-size: 0.82rem;">
+          <thead>
+            <tr>
+              <th>HTTP Code</th>
+              <th>Reason Phrase</th>
+              <th>Engine / CDO Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>400 Bad Request</code></td>
+              <td>Tenant header mismatch or missing telemetry data</td>
+              <td>CDO falls back to local static thresholds.</td>
+            </tr>
+            <tr>
+              <td><code>401 Unauthorized</code></td>
+              <td>Missing or invalid security API credentials</td>
+              <td>SRE Alert raised immediately for credential audit.</td>
+            </tr>
+            <tr>
+              <td><code>422 Unprocessable</code></td>
+              <td>Rolling window data &lt; 120 points (minutes)</td>
+              <td>Ensure agent warm-up period is met.</td>
+            </tr>
+            <tr>
+              <td><code>429 Rate Limited</code></td>
+              <td>Exceeded tenant request rate (600 RPM/tenant)</td>
+              <td>CDO queues prediction requests.</td>
+            </tr>
+            <tr>
+              <td><code>503 Unavailable</code></td>
+              <td>Engine failure (e.g. timeout or database down)</td>
+              <td><strong>Fail-open:</strong> CDO bypasses AI, falls back to rules.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Explanation Card -->
+      <div class="card card-accent" style="padding: 24px; font-size: 0.88rem; line-height: 1.6;">
+        <h3 style="margin-bottom: 12px; color: var(--brand-accent);">Why this matters in Q&A</h3>
+        <p style="margin-bottom: 12px; color: var(--text-secondary);">
+          <strong>Fail-Open Security:</strong> If Foresight Lens encounters a 503 error, it does not block the platform. The CDO platform immediately falls back to standard threshold alerts.
+        </p>
+        <p style="color: var(--text-secondary);">
+          <strong>Data Warm-Up:</strong> A 422 error is returned if less than 120 minutes of rolling telemetry is supplied, as the STL seasonal baseline requires a 2-hour window to make an accurate de-seasonalized inference.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>APPENDIX C: API CONTRACT</span>
   </div>
 </section>
 
