@@ -969,6 +969,50 @@
   </div>
 </section>
 
+<!-- ========== SLIDE 13b — Pipelines ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Pipelines</div>
+      <h2>Automated Data & Deployment Pipelines</h2>
+      <p class="lead">Ensuring reproducible training, stateless inference, and serverless containerized deployments.</p>
+    </div>
+    <div class="grid grid-3" style="margin-top: 32px;">
+      <div class="card">
+        <h3>1. Offline Training Pipeline</h3>
+        <p style="margin-bottom: 12px;">Processes raw historical telemetry to extract expected seasonality profiles.</p>
+        <ul class="bullets">
+          <li><strong>Execution:</strong> Script <code>scripts/train_baseline.py</code> runs weekly or on demand.</li>
+          <li><strong>STL Decomposition:</strong> Bocks out daily normal humps (period = 1440).</li>
+          <li><strong>Artifacts:</strong> Per-service baseline JSON (S3) + evaluation holdout datasets.</li>
+        </ul>
+      </div>
+      <div class="card card-accent">
+        <h3>2. Real-Time Inference Pipeline</h3>
+        <p style="margin-bottom: 12px;">FastAPI request path to evaluate capacity exhaustion alerts under 10ms.</p>
+        <ul class="bullets">
+          <li><strong>Payload Validation:</strong> Pydantic checks schema integrity & 120-min window constraint.</li>
+          <li><strong>De-seasonalise:</strong> Subtracts seasonal profile baseline from live signals.</li>
+          <li><strong>EWMA Chart:</strong> Checks if residuals breach K-sigma (4.0σ) limits.</li>
+          <li><strong>Integrity:</strong> Inputs SHA-256 hashed and recorded in S3/KMS audit logs.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>3. Deployment Pipeline</h3>
+        <p style="margin-bottom: 12px;">Containerized serverless packaging for target cloud execution.</p>
+        <ul class="bullets">
+          <li><strong>Build Path:</strong> <code>Dockerfile</code> packaging using Python 3.13 slim base image.</li>
+          <li><strong>Fargate Task:</strong> ECS task configuration allocates 1.0 vCPU and 2.0 GB memory limits.</li>
+          <li><strong>Auto-Scale:</strong> Minimum 2 / Maximum 4 replicas dynamically managed on CPU threshold.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>PIPELINES</span>
+  </div>
+</section>
 
 <!-- ========== SLIDE 14 — Contracts ========== -->
 <section class="slide">
