@@ -28,6 +28,11 @@
   },
   "ci95_method": "Wilson score interval, 95% (z=1.96), from the aggregate confusion matrix",
   "brier_score": 0.0493,
+  "brier_baseline": {
+    "base_rate": 0.2197,
+    "brier_climatology": 0.1714,
+    "brier_skill_score": 0.7123
+  },
   "lead_time_min": 110,
   "lead_time_samples": [
     80,

@@ -122,6 +122,11 @@ def evaluate():
         half = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5) / d
         return [round(centre - half, 3), round(centre + half, 3)]
     brier = float(np.mean([(p - o) ** 2 for p, o in brier_pairs])) if brier_pairs else None
+    # Brier skill vs. climatology: a raw Brier score is only meaningful against the
+    # "always predict the base rate" forecast, whose Brier equals p*(1-p) at prevalence p.
+    base_rate = (tp + fn) / (tp + fp + fn + tn)
+    brier_climatology = base_rate * (1 - base_rate)
+    brier_skill = 1 - brier / brier_climatology if brier is not None and brier_climatology else None
     from app.engine import EWMA_ALPHA, SIGMA_K
     out = {
         "method": f"STL(period=1440) seasonal baseline + EWMA(alpha={EWMA_ALPHA}) control chart, K={SIGMA_K}",
@@ -139,6 +144,11 @@ def evaluate():
         },
         "ci95_method": "Wilson score interval, 95% (z=1.96), from the aggregate confusion matrix",
         "brier_score": round(brier, 4) if brier is not None else None,
+        "brier_baseline": {
+            "base_rate": round(base_rate, 4),
+            "brier_climatology": round(brier_climatology, 4),
+            "brier_skill_score": round(brier_skill, 4) if brier_skill is not None else None,
+        },
         "lead_time_min": int(np.median(lead_times)) if lead_times else None,
         "lead_time_samples": lead_times,
         "per_service": per_service,
