@@ -2020,6 +2020,63 @@ final-build/tests/test_api.py .........              [100%]
   </div>
 </section>
 
+<!-- ========== SLIDE — APPENDIX F: Too Long; Didn't Read? ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1100px;">
+    <div class="slide-header">
+      <div class="eyebrow">Appendix F</div>
+      <h2>Too Long; Didn't Read? (TL;DR)</h2>
+      <p class="lead">Executive summary of the mathematical validations and algorithmic defenses for Foresight Lens.</p>
+    </div>
+    <div class="grid grid-2" style="gap: 20px; margin-top: 20px;">
+      <div class="card card-accent" style="padding: 20px;">
+        <h3 style="color: var(--brand-accent); margin-bottom: 8px; font-size: 1.05rem;">1. Murphy Decomposition</h3>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem; margin-bottom: 8px;">
+          <strong>BS = UNC - RES + CAL</strong>
+        </p>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem;">
+          Inherent uncertainty <code>UNC = p̅(1 - p̅) ≈ 0.1714</code>. Our Brier Score of <code>0.0493</code> yields a model resolution of <code>RES ≈ 0.1221</code>. This means the engine successfully resolves <strong>71.23% of all uncertainty</strong> above the base rate.
+        </p>
+      </div>
+      
+      <div class="card card-accent" style="padding: 20px;">
+        <h3 style="color: var(--brand-accent); margin-bottom: 8px; font-size: 1.05rem;">2. Method Choice</h3>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem; margin-bottom: 8px;">
+          <strong>STL + EWMA vs. Wiener-Brown MC</strong>
+        </p>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem;">
+          STL+EWMA is computationally efficient <code>O(N)</code>, respects the mean-reverting nature of server metrics, and is asymptotically exact. Monte Carlo paths cost <code>O(N · S)</code>, assume free diffusion (incorrect for resource metrics), and amplify False Positives.
+        </p>
+      </div>
+
+      <div class="card card-accent" style="padding: 20px;">
+        <h3 style="color: var(--brand-accent); margin-bottom: 8px; font-size: 1.05rem;">3. Wilson Score Interval</h3>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem; margin-bottom: 8px;">
+          <strong>Statistical Bound Guarantees</strong>
+        </p>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem;">
+          Wilson Score Intervals are derived by inverting the score test, guaranteeing strict <code>[0, 1]</code> probability coverage. Wald approximations break near boundaries. Even the lower/upper bounds clear all client gates.
+        </p>
+      </div>
+
+      <div class="card card-accent" style="padding: 20px;">
+        <h3 style="color: var(--brand-accent); margin-bottom: 8px; font-size: 1.05rem;">4. McNemar Significance Test</h3>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem; margin-bottom: 8px;">
+          <strong>Model Superiority Verification</strong>
+        </p>
+        <p style="color: var(--text-secondary); line-height: 1.55; font-size: 0.85rem;">
+          On the same 792 paired windows, STL+EWMA achieves <code>χ² ≈ 13.88</code> against Isolation Forest, yielding <code>p ≈ 0.0002</code>. The performance gap is statistically significant at <code>α = 0.001</code>, proving it is not a random fluke.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>APPENDIX F: TL;DR SUMMARY</span>
+  </div>
+</section>
+
+
 
 
 
