@@ -1288,7 +1288,7 @@
     <div class="slide-header">
       <div class="eyebrow">Validation</div>
       <h2>Statistical Rigor & Holdout Evaluation</h2>
-      <p class="lead">Measured on 792 paired windows across 3 tier-1 services with 22% anomaly prevalence.</p>
+      <p class="lead"><strong>Method:</strong> STL(period=1440) seasonal baseline + EWMA(α=0.3) control chart, K=4.0 | <strong>Setup:</strong> 3 services, holdout day, 120-min sliding window step 5 (22% prevalence).</p>
     </div>
     <div class="grid grid-4" style="margin-bottom: 24px;">
       <div class="card card-accent" style="text-align: center;">
@@ -1952,6 +1952,53 @@ final-build/tests/test_api.py .........              [100%]
     <span>APPENDIX D: BRIER DECOMPOSITION</span>
   </div>
 </section>
+
+<!-- ========== SLIDE — APPENDIX E: Wilson Score Interval ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1100px;">
+    <div class="slide-header">
+      <div class="eyebrow">Appendix E</div>
+      <h2>Wilson Score Confidence Intervals</h2>
+      <p class="lead">Why we reject normal Wald approximations for boundary proportions in tier-1 SRE metrics.</p>
+    </div>
+    <div class="two-col" style="gap: 40px; align-items: start;">
+      <div>
+        <h3 style="margin-bottom: 12px; color: var(--brand-accent); font-size: 1.1rem;">Why Normal (Wald) Approximation Fails:</h3>
+        <p style="margin-bottom: 16px; color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem;">
+          The standard Wald interval <code>p̂ ± z * &radic;(p̂(1-p̂)/n)</code> systematically under-covers near boundaries (actual coverage is often &lt; 93% instead of nominal 95%) and can produce invalid bounds outside [0, 1].
+        </p>
+        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; font-size: 0.9rem;">
+          By inverting the score test, the <strong>Wilson Score Interval</strong> guarantees bounds strictly within [0, 1] and provides accurate coverage even for extreme proportions. Under H₀, the score test statistic is:
+        </p>
+        <div class="card card-accent" style="padding: 12px 16px; display: inline-block;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Score Test Statistic Setup</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; color: var(--text-primary); font-weight: bold;">Z(p₀) = (p̂ - p₀) / &radic;(p₀(1-p₀)/n) ➔ N(0, 1)</div>
+        </div>
+      </div>
+      
+      <div class="card" style="padding: 20px;">
+        <h3 style="color: var(--brand-accent); margin-bottom: 12px; font-size: 1rem;">Wilson Interval Formula & Roots</h3>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text-primary); line-height: 1.5; background: var(--surface-card); padding: 12px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 12px; font-weight: bold;">
+          [l, u] = (p̂ + z² / 2n ∓ z * &radic;(p̂(1-p̂)/n + z² / 4n²)) / (1 + z² / n)
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 8px;">
+          This is derived by solving the quadratic inequality <code>|Z(p₀)| &le; z</code> for the true proportion <code>p₀</code>:
+        </p>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45; background: rgba(0,0,0,0.02); padding: 8px; border-radius: 4px; border-left: 3px solid var(--brand-accent); margin-bottom: 12px;">
+          (1 + z²/n)p₀² - (2p̂ + z²/n)p₀ + p̂² &le; 0
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45; border-top: 1px solid var(--border); padding-top: 8px;">
+          <strong>Frequentist Certainty:</strong> Applied to our holdout, even the most pessimistic lower bounds (Recall &ge; 93.5%, FP Rate &le; 9.4%) comfortably clear all client requirements, ensuring our pass is statistically robust and not a point-estimate fluke.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>APPENDIX E: WILSON SCORE CI</span>
+  </div>
+</section>
+
 
 
 
