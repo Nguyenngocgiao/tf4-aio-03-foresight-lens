@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foresight Lens — W12 Final Build</title>
+  <meta name="description" content="Foresight Lens: Resource exhaustion prediction system for Tier 1 cloud services. XBrain Capstone · Task Force 4 · AIO-03." />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-primary: #1B1B19;
+      --brand-accent: #B07D33;
+      --brand-accent-2: #A8432E;
+      --brand-secondary: #1F5061;
+      --brand-danger: #A8432E;
+      --brand-success: #22c55e;
+      --text-primary: #1B1B19;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --surface-dark: #EDEAE0;
+      --surface-card: #F5F3EB;
+      --gradient-warm: linear-gradient(135deg, #B07D33, #A8432E);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr) !important;
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr) !important;
+      }
+      .two-col {
+        grid-template-columns: 1fr 1fr !important;
+        display: grid !important;
+      }
+      /* Reset any flex columns */
+      .flow {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+      }
+      .flow-arrow {
+        transform: rotate(0deg) !important;
+      }
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-snap-type: y mandatory; scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--surface-dark); color: var(--text-primary); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    .slide { min-height: 100vh; width: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: clamp(32px, 5vh, 80px) clamp(24px, 5vw, 120px); position: relative; overflow: hidden; }
+    .slide-title { background: var(--surface-dark); text-align: center; }
+    .slide-title::before { content: ''; position: absolute; top: -30%; right: -20%; width: 60%; height: 80%; background: radial-gradient(circle, rgba(176,125,51,0.12) 0%, transparent 70%); pointer-events: none; }
+    .slide-title::after { content: ''; position: absolute; bottom: -20%; left: -15%; width: 50%; height: 60%; background: radial-gradient(circle, rgba(31,80,97,0.08) 0%, transparent 70%); pointer-events: none; }
+    .slide-title h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .slide-title .lead { font-size: clamp(1rem, 2vw, 1.3rem); color: var(--text-secondary); max-width: 700px; }
+    .gradient-text { background: var(--gradient-warm); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .slide-divider { background: var(--surface-dark); text-align: center; }
+    .slide-divider::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(176,125,51,0.06) 0%, transparent 60%); pointer-events: none; }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: clamp(5rem, 12vw, 10rem); font-weight: 700; -webkit-text-stroke: 2px rgba(176,125,51,0.2); color: transparent; line-height: 1; margin-bottom: -20px; }
+    .section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--brand-accent); margin-bottom: 8px; }
+    .slide-divider h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+    .slide-divider .lead { font-size: clamp(0.95rem, 1.5vw, 1.15rem); color: var(--text-secondary); margin-top: 12px; max-width: 600px; }
+    .slide-content { width: 100%; max-width: 1100px; }
+    .slide-header { margin-bottom: clamp(20px, 3vh, 40px); }
+    .slide-header h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+    .slide-header .lead { font-size: clamp(0.85rem, 1.2vw, 1rem); color: var(--text-secondary); margin-top: 6px; }
+    .slide-footer { position: absolute; bottom: 20px; left: 40px; right: 40px; display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--brand-accent); margin-bottom: 8px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+    .badge-accent { background: rgba(176,125,51,0.15); color: var(--brand-accent); }
+    .badge-blue { background: rgba(31,80,97,0.15); color: var(--brand-secondary); }
+    .badge-danger { background: rgba(168,67,46,0.15); color: var(--brand-danger); }
+    .badge-success { background: rgba(34,197,94,0.15); color: var(--brand-success); }
+    .grid { display: grid; gap: clamp(12px, 2vw, 20px); }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 12px; padding: clamp(16px, 2vw, 24px); transition: transform 0.3s var(--ease-out); }
+    .card:hover { transform: translateY(-2px); }
+    .card h3 { font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 700; margin-bottom: 8px; }
+    .card p, .card li { font-size: clamp(0.82rem, 1vw, 0.92rem); color: var(--text-secondary); line-height: 1.55; }
+    .card-accent { background: linear-gradient(135deg, rgba(176,125,51,0.1), rgba(168,67,46,0.05)); border-color: rgba(176,125,51,0.3); }
+    .card-accent h3 { color: var(--brand-accent); }
+    .card-number { font-family: 'JetBrains Mono', monospace; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; color: var(--brand-accent); line-height: 1; }
+    .card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; }
+    .flow-step { background: var(--surface-card); border: 1px solid var(--border); border-radius: 10px; padding: clamp(10px, 1.5vw, 18px) clamp(14px, 2vw, 22px); text-align: center; font-size: clamp(0.78rem, 1vw, 0.9rem); font-weight: 600; }
+    .flow-arrow { color: var(--brand-accent); font-size: 1.3rem; padding: 0 8px; flex-shrink: 0; }
+    .bullets { list-style: none; padding: 0; }
+    .bullets li { padding: 8px 0 8px 24px; position: relative; font-size: clamp(0.88rem, 1.1vw, 0.98rem); color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+    .bullets li:last-child { border-bottom: none; }
+    .bullets li::before { content: ''; position: absolute; left: 0; top: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-accent); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 3vw, 40px); align-items: start; }
+    table { width: 100%; border-collapse: collapse; font-size: clamp(0.8rem, 1vw, 0.9rem); }
+    th { text-align: left; padding: 10px 14px; background: var(--surface-card); color: var(--brand-accent); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 2px solid rgba(176,125,51,0.3); }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em; background: rgba(176,125,51,0.08); color: var(--brand-accent); padding: 2px 6px; border-radius: 4px; }
+    .diagram { background: #fff8eb; border: 1px solid rgba(176,125,51,0.2); border-radius: 10px; padding: 18px; font-family: 'JetBrains Mono', monospace; font-size: clamp(0.72rem, 0.85vw, 0.85rem); white-space: pre; overflow-x: auto; line-height: 1.55; color: var(--text-primary); }
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-warm); z-index: 1000; width: 0%; transition: width 0.3s; }
+    .nav-dots { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(148,163,184,0.4); cursor: pointer; transition: all 0.3s; border: none; padding: 0; }
+    .nav-dot.active { background: var(--brand-accent); transform: scale(1.4); }
+    .slide-counter { position: fixed; bottom: 20px; right: 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); z-index: 1000; }
+    .slide-counter strong { color: var(--text-primary); }
+    .slide-closing { text-align: center; }
+    .slide-closing h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+    .tag-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; margin-bottom: 24px; }
+    .tag-pill { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; background: rgba(176,125,51,0.12); color: var(--brand-accent); border: 1px solid rgba(176,125,51,0.25); }
+    .svg-caption { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; max-width: 700px; text-align: center; font-style: italic; }
+    .blockquote-styled { border-left: 4px solid var(--brand-accent); padding: 16px 20px; font-style: italic; font-size: clamp(0.92rem, 1.2vw, 1.08rem); color: var(--text-secondary); line-height: 1.7; background: rgba(176,125,51,0.04); border-radius: 0 8px 8px 0; margin-bottom: clamp(16px, 2vh, 28px); }
+    .blockquote-styled .source { display: block; font-style: normal; font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; font-weight: 600; }
+    .note { font-size: 0.78rem; color: var(--text-muted); margin-top: 12px; text-align: center; }
+    @media (max-width: 767px) { .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;} .two-col{grid-template-columns:1fr;} .flow{flex-direction:column;} .flow-arrow{transform:rotate(90deg);} .nav-dots{display:none;} }
+    @media (max-height: 700px) { .slide { padding: 24px 20px; } }
+    @media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto;} }
+
+    @media print {
+      @page {
+        size: 16in 9in;
+        margin: 0;
+      }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: var(--surface-dark) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        overflow: visible !important;
+      }
+      .slide {
+        page-break-after: always;
+        page-break-inside: avoid;
+        width: 16in !important;
+        height: 9in !important;
+        min-height: 9in !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0.5in 0.8in !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+      }
+      .slide-content, .slide-title, .slide-divider {
+        zoom: 0.82 !important;
+      }
+      .progress-bar, .nav-dots, .slide-counter {
+        display: none !important;
+      }
+      /* Scale down image sizes for print to prevent overflowing the 9in height limit */
+      img {
+        max-height: 2.2in !important; /* Scale down slightly more */
+        object-fit: contain !important;
+      }
+      svg {
+        max-height: 2.0in !important;
+      }
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr) !important;
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr) !important;
+      }
+      .two-col {
+        grid-template-columns: 1fr 1fr !important;
+        display: grid !important;
+      }
+      .flow {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+      }
+      .flow-arrow {
+        transform: rotate(0deg) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progress"></div>
+
+<!-- Navigation dots -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- Slide counter -->
+<div class="slide-counter" id="counter"><strong>01</strong> / --</div>
+
+
+<!-- ========== SLIDE 1 — Title ========== -->
+<section class="slide slide-title">
+  <div class="eyebrow">XBrain Capstone · Task Force 4 · AIO-03</div>
+  <h1>Foresight <span class="gradient-text">Lens</span></h1>
+  <p class="lead">Resource exhaustion prediction system for Tier 1 cloud services.</p>
+  <div class="tag-pills">
+    <span class="tag-pill">Lead time ≥ 15 min</span>
+    <span class="tag-pill">Inference ~$0 cost</span>
+    <span class="tag-pill">Model ewma-stl-v1</span>
+  </div>
+  <svg viewBox="0 0 800 200" style="width: 100%; max-width: 700px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect x="0" y="0" width="800" height="200" rx="10" fill="#fff8eb" stroke="rgba(176,125,51,0.2)" stroke-width="1"/>
+    <!-- Grid lines -->
+    <line x1="60" y1="170" x2="760" y2="170" stroke="#e2e8f0" stroke-width="1"/>
+    <line x1="60" y1="130" x2="760" y2="130" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+    <line x1="60" y1="90" x2="760" y2="90" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+    <!-- Y-axis -->
+    <line x1="60" y1="20" x2="60" y2="170" stroke="#94a3b8" stroke-width="1"/>
+    <!-- X-axis -->
+    <line x1="60" y1="170" x2="760" y2="170" stroke="#94a3b8" stroke-width="1"/>
+    <!-- 4σ control limit (threshold) -->
+    <line x1="60" y1="60" x2="760" y2="60" stroke="#A8432E" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <text x="65" y="54" fill="#A8432E" font-size="10" font-family="JetBrains Mono, monospace" font-weight="700">4σ control limit</text>
+    <!-- EWMA curve -->
+    <path d="M 60 155 C 120 152, 180 148, 240 145 C 300 140, 340 132, 380 120 C 420 108, 440 95, 470 80 C 500 65, 520 55, 550 48 C 580 42, 620 38, 680 35 C 720 33, 740 32, 760 30"
+          fill="none" stroke="#B07D33" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Alert point (crossing threshold) -->
+    <circle cx="490" cy="72" r="6" fill="#B07D33" stroke="#fff8eb" stroke-width="2"/>
+    <text x="498" y="82" fill="#B07D33" font-size="10" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">alert</text>
+    <!-- SLO breach point -->
+    <circle cx="680" cy="35" r="6" fill="#A8432E" stroke="#fff8eb" stroke-width="2"/>
+    <text x="688" y="30" fill="#A8432E" font-size="10" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">SLO breach</text>
+    <!-- Lead-time bracket -->
+    <line x1="490" y1="92" x2="490" y2="100" stroke="#1F5061" stroke-width="1"/>
+    <line x1="680" y1="52" x2="680" y2="100" stroke="#1F5061" stroke-width="1"/>
+    <line x1="490" y1="100" x2="680" y2="100" stroke="#1F5061" stroke-width="1.5"/>
+    <text x="555" y="115" fill="#1F5061" font-size="11" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" text-anchor="middle">~106 min lead time</text>
+    <!-- Axis labels -->
+    <text x="400" y="192" fill="#94a3b8" font-size="10" font-family="Plus Jakarta Sans, sans-serif" text-anchor="middle">Time →</text>
+    <text x="18" y="100" fill="#94a3b8" font-size="10" font-family="Plus Jakarta Sans, sans-serif" text-anchor="middle" transform="rotate(-90 18 100)">EWMA Signal</text>
+  </svg>
+  <p class="svg-caption">Fig. 1 — EWMA control chart issuing early alerts ~106 minutes before SLO breach.</p>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>TITLE</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE 2 — Section Divider: Client Context ========== -->
+<section class="slide slide-divider">
+  <div class="section-number">02</div>
+  <div class="section-label">Client Context</div>
+  <h2>When the monitor turns <span class="gradient-text">red</span>, it's already too late</h2>
+  <p class="lead">Traditional monitoring only triggers at 99% — leaving SREs with zero response time.</p>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>CLIENT CONTEXT</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE 3 — Client Context Content ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Client Context</div>
+      <h2>8 Core Requirements</h2>
+    </div>
+    <div class="card" style="margin-bottom: clamp(16px, 2vh, 28px);">
+      <ul class="bullets">
+        <li><strong>Proactive prediction:</strong> Must alert before actual system crash (Lead time &ge; 15 mins).</li>
+        <li><strong>High Precision:</strong> FP rate &le; 12%, detecting &ge; 80% of drifts.</li>
+        <li><strong>Cost Control:</strong> Total monthly AWS bill strictly under $200.</li>
+        <li><strong>Multi-tenant Security:</strong> Applied to 3 tier-1 services with isolated baselines and zero cross-tenant bleed.</li>
+        <li><strong>No Auto-remediation:</strong> AI strictly acts as an advisor (PURELY Predictive) without system intervention.</li>
+        <li><strong>Per-service Baseline:</strong> Train baselines per service (1 manual run) + ADRs defining retrain triggers.</li>
+        <li><strong>Actionable Recommendation:</strong> Must include 5 components (action verb, target, from&rarr;to, confidence, evidence).</li>
+        <li><strong>Audit Log:</strong> Log every prediction request, encrypted at rest.</li>
+      </ul>
+    </div>
+    <div class="grid grid-3">
+      <div class="card" style="text-align:center;">
+        <div class="card-number">≤ $200</div>
+        <div class="card-label">AWS Budget/month</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="card-number">Advise</div>
+        <div class="card-label">no auto-remediation</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="card-number">3 svc</div>
+        <div class="card-label">Payment · Fraud · Ledger</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>CLIENT CONTEXT</span>
+  </div>
+</section>
+
+
+
+<!-- ========== SLIDE 4 — Out of Scope ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Project Boundary</div>
+      <h2>Out of Scope (Client Confirmed)</h2>
+      <p class="lead">Strict boundaries established from W11 to ensure focus and operational safety.</p>
+    </div>
+    <div class="two-col">
+      <div class="card" style="padding: 24px;">
+        <h3>Functional Exclusions</h3>
+        <ul class="bullets">
+          <li><strong>Auto-remediation:</strong> Predict &amp; recommend only.</li>
+          <li><strong>Cross-service RCA:</strong> Per-service drift only.</li>
+          <li><strong>Cost forecasting:</strong> Transferred to Task Force 2.</li>
+          <li><strong>Business Metrics:</strong> Infra metrics only (no fraud rate, tx count).</li>
+        </ul>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <h3>Operational Exclusions</h3>
+        <ul class="bullets">
+          <li><strong>Auto-retrain pipeline:</strong> Design ADR is sufficient.</li>
+          <li><strong>Multi-region deployment:</strong> Single region, DR design-only.</li>
+          <li><strong>Production traffic mirror:</strong> Local load test with k6/Locust.</li>
+          <li><strong>Scale targets:</strong> 99.5% SLO (not 99.99%) &amp; exactly 3 Tier-1 services.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>PROJECT BOUNDARY</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 5 — Section Divider: The Problem ========== -->
+<section class="slide slide-divider">
+  <div class="section-number">03</div>
+  <div class="section-label">The Problem</div>
+  <h2>Traditional monitoring alerts <span class="gradient-text">too late</span></h2>
+  <p class="lead">Failure symptoms persist for over 90 minutes, yet systems only alert at the absolute brink.</p>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>THE PROBLEM</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE 6 — The Problem Content ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">The Problem</div>
+      <h2>4 Factors Driving the Shift to Predictive Alerts</h2>
+    </div>
+    <div class="grid grid-2">
+      <div class="card" style="padding: 24px;">
+        <h3>1. Silent Exhaustion</h3>
+        <p>Incidents don't explode instantly; they silently decay (Memory leak, queue backlog) over 90+ minutes.</p>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <h3>2. Alert Fatigue</h3>
+        <p>A low Static threshold causes endless False Positives; a high one only alerts post-crash.</p>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <h3>3. 24/7 Blindspot</h3>
+        <p>Systems generate too many metrics. Nobody has the time to stare at 12 Grafana dashboards 24/7.</p>
+      </div>
+      <div class="card" style="padding: 24px;">
+        <h3>4. Dynamic Seasonality</h3>
+        <p>Fintech traffic has stark day/night cycles. Relying on a fixed baseline is entirely meaningless.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>THE PROBLEM</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 7 — Memory Leak Illustration ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1200px;">
+    <div class="slide-header">
+      <div class="eyebrow">Harsh Reality</div>
+      <h2>Illustration: Silent Exhaustion Incident</h2>
+      <p class="lead">The system struggles for 3 continuous hours, yet the Static threshold remains completely blind.</p>
+    </div>
+    <div class="card" style="padding: 0; border: 2px solid rgba(168,67,46,0.5); background: #fff; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(168,67,46,0.15);">
+      <img src="tf4-evidence/evidence/scenario_memory_leak.png" alt="Memory Leak Scenario" style="width: 100%; display: block;">
+    </div>
+    <p class="svg-caption" style="margin-top: 16px;">Fig. 2 &mdash; A memory leak creeping up silently for 180 minutes. The 99% mark (Static threshold) flashes red only upon crashing. Lead time = 0.</p>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>THE PROBLEM</span>
+  </div>
+</section>
+
+
+
+
+<!-- ========== SLIDE 8 — Section Divider: Results ========== -->
+<section class="slide slide-divider">
+  <div class="section-number">04</div>
+  <div class="section-label">Results</div>
+  <h2>Early predictions, clear advice — <span class="gradient-text">no unauthorized actions</span></h2>
+  <p class="lead">Strictly acting as an Advisor. The CDO platform retains ultimate decision-making authority.</p>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>RESULTS</span>
+  </div>
+</section>
+
+
+
+
+
+<!-- ========== SLIDE 9 — Minutes Lead Time ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 900px; margin: 0 auto; width: 100%;">
+    <div class="slide-header" style="text-align: center; margin-bottom: 30px;">
+      <div class="eyebrow">Measurable Outcomes (1/4)</div>
+      <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); margin: 10px 0;"><span class="gradient-text">106</span> Minutes Lead Time</h2>
+      <p class="lead" style="font-size: 1.15rem; max-width: 700px; margin: 0 auto;">Memory leak anomaly alerted 106 minutes before capacity exhaustion crash. Exceeds the &ge; 15m requirement.</p>
+    </div>
+    
+    <div class="diagram" style="white-space: pre-wrap; word-break: break-word; text-align: left; box-shadow: 0 10px 30px -10px rgba(176,125,51,0.15);">
+<span style="color: var(--brand-accent); font-weight:bold; margin-bottom: 8px; display:block;">// evidence_lead_time.json</span>
+{
+  "method": "Simulate gradual CPU drift -> detect via EWMA...",
+  <span style="color: #94a3b8;">...</span>
+  <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"detected_at_minute": 734,</span>
+  <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"breach_at_minute": 840,</span>
+  <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"lead_time_minutes": 106,</span>
+  "requirement": ">=15 minutes",
+  "pass": true
+}
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>RESULTS</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 10 — Isolated Tenants ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 900px; margin: 0 auto; width: 100%;">
+    <div class="slide-header" style="text-align: center; margin-bottom: 30px;">
+      <div class="eyebrow">Measurable Outcomes (2/4)</div>
+      <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); margin: 10px 0;"><span class="gradient-text">3</span> Isolated Tenants</h2>
+      <p class="lead" style="font-size: 1.15rem; max-width: 700px; margin: 0 auto; margin-bottom: 30px;">Per-service baselines strictly maintain tenant isolation with statistical proof of pattern diversity.</p>
+    </div>
+    
+    <div class="grid grid-2" style="align-items: start;">
+      <div class="card" style="padding: 16px; display: flex; flex-direction: column; justify-content: center; background: #fff;">
+        <img src="tf4-evidence/evidence/service_comparison_cpu.png" alt="Service Pattern Diversity" style="width: 100%; border-radius: 6px; border: 1px solid rgba(176,125,51,0.2);">
+        <div style="text-align: center; margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
+          Fig — 3 services exhibiting entirely different daily traffic behaviors. A 1-size-fits-all static threshold is impossible.
+        </div>
+      </div>
+      <div>
+        <div class="diagram" style="white-space: pre-wrap; word-break: break-word; text-align: left; box-shadow: 0 10px 30px -10px rgba(176,125,51,0.15);">
+<span style="color: var(--brand-accent); font-weight:bold; margin-bottom: 8px; display:block;">// evidence_pattern_diversity.json</span>
+{
+  "claim": "3 services exhibit distinctly different CPU patterns",
+  "tests": {
+    <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"anova": { "f_statistic": 3234.51, "p_value": 0.0, "significant": true },</span>
+    <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"peak_hour_analysis": {</span>
+      "payment-gw": 10,
+      "ledger": 1,
+      "fraud-detector": 13
+    }
+  },
+  "conclusion": "Static thresholds would trigger massive False Positives."
+}</div>
+        <div class="card card-accent" style="padding: 10px 16px; margin-top: 16px; display: inline-block; background: transparent; border-color: rgba(176,125,51,0.5);">
+          <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">evidence_pattern_diversity.json</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>RESULTS</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 11 — Token Cost ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 900px; margin: 0 auto; width: 100%;">
+    <div class="slide-header" style="text-align: center; margin-bottom: 30px;">
+      <div class="eyebrow">Measurable Outcomes (3/4)</div>
+      <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); margin: 10px 0;"><span class="gradient-text">$0</span> Token Cost</h2>
+      <p class="lead" style="font-size: 1.15rem; max-width: 700px; margin: 0 auto;">In-house statistical model costs zero LLM tokens. Complete AWS footprint runs at ~$53/month.</p>
+    </div>
+    
+    <div class="diagram" style="white-space: pre-wrap; word-break: break-word; text-align: left; box-shadow: 0 10px 30px -10px rgba(176,125,51,0.15);">
+<span style="color: var(--brand-accent); font-weight:bold; margin-bottom: 8px; display:block;">// evidence_cost.json</span>
+{
+  "services": {
+    "ECS Fargate": { "cost": "$36.00/month" },
+    "Application Load Balancer": { "cost": "$16.00/month" },
+    "API_Gateway_private": { "cost": "$0" },
+    "S3_audit_and_baselines": { "cost": "$1.00/month" }
+  },
+  <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"total_estimated_monthly": "$53.00",</span>
+  "budget_cap": "$200/month",
+  "conclusion": "Using ECS Fargate is cost-effective (~$53/mo)... <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">Inference token cost is $0.</span>"
+}
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>RESULTS</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 12 — Action Components ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 900px; margin: 0 auto; width: 100%;">
+    <div class="slide-header" style="text-align: center; margin-bottom: 30px;">
+      <div class="eyebrow">Measurable Outcomes (4/4)</div>
+      <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); margin: 10px 0;"><span class="gradient-text">5</span> Action Components</h2>
+      <p class="lead" style="font-size: 1.15rem; max-width: 700px; margin: 0 auto;">Alerts are bundled with specific action verbs, targets, transitions, confidence scores, and evidence.</p>
+    </div>
+    
+    <div class="diagram" style="white-space: pre-wrap; word-break: break-word; text-align: left; box-shadow: 0 10px 30px -10px rgba(176,125,51,0.15);">
+<span style="color: var(--brand-accent); font-weight:bold; margin-bottom: 8px; display:block;">// evidence_recommendation.json</span>
+{
+  "requirement_met": "action verb + target + from->to + confidence + evidence link",
+  "test_cases": [
+    {
+      "metric": "cpu_usage_percent",
+      <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"recommendation": "SCALE_UP (Action) RDS Database (Target) from db.r5.large to db.r5.xlarge (From->To). Confidence: 0.85 (runtime-computed). Evidence: https://obs.internal/tnt-1?metric=cpu_usage_percent"</span>
+    },
+    <span style="color: #94a3b8;">...</span>
+  ]
+}
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>RESULTS</span>
+  </div>
+</section>
+<!-- ========== SLIDE 12a — Section Divider: Methodology ========== -->
+<section class="slide slide-divider">
+  <div class="section-number">05</div>
+  <div class="section-label">Methodology & Rationale</div>
+  <h2>Why we built it this way</h2>
+  <p class="lead">Behind every design decision is a rigorous defense backed by hard evidence.</p>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>METHODOLOGY</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE: Training Baseline ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1000px;">
+    <div class="slide-header" style="margin-bottom: 20px;">
+      <div class="eyebrow">Algorithmic Rationale · Pre-Flight</div>
+      <h2>Synthetic Baseline Generation</h2>
+      <p class="lead">How we generated statistically rigorous training data and holdout sets for the STL model.</p>
+    </div>
+
+    <div class="grid grid-2" style="align-items: start; gap: 40px;">
+      <div class="card" style="padding: 24px; background: #fff; border-left: 4px solid var(--brand-accent);">
+        <h3 style="color: var(--brand-accent); font-size: 1.1rem; margin-bottom: 12px;">7-Day Telemetry Simulation</h3>
+        <p style="margin-top: 8px; font-size: 0.9rem;">To train our models without access to production data, we simulated 7 days of 1-minute granularity telemetry per service.</p>
+        <ul class="bullets" style="margin-top: 12px; font-size: 0.85rem;">
+          <li><strong>Base Seasonal Trend:</strong> <code>daily_shape()</code> applies a "business-hours double-hump load curve" (peaking at 9-11 AM and 2-4 PM).</li>
+          <li><strong>Noise Injection:</strong> Gaussian white noise <code>RNG.normal(0, sigma)</code> added to simulate real-world traffic fluctuations.</li>
+          <li><strong>STL Extraction:</strong> We then ran STL (period=1440) on the clean data (Days 0-5) to extract the seasonal profile and residual standard deviation.</li>
+        </ul>
+      </div>
+
+      <div class="card card-accent" style="padding: 24px;">
+        <h3>Holdout Set & Honest Evaluation</h3>
+        <p style="margin-top: 8px; font-size: 0.9rem;">We isolated <strong>Day 6</strong> as our Holdout evaluation set and injected 4 specific anomalies to measure detection speed:</p>
+        <ul class="bullets" style="margin-top: 12px; font-size: 0.85rem;">
+          <li><strong>Gradual Drift:</strong> CPU ramps from 40% to 94% over 90 mins.</li>
+          <li><strong>Sudden Spike:</strong> Latency jumps +600ms for 20 mins.</li>
+          <li><strong>Slow Leak:</strong> Memory creeps from 50% to 96% over 180 mins.</li>
+          <li><strong style="color: var(--brand-danger);">Noisy FP Trap:</strong> Massive queue depth variance but <em>no real mean shift</em> (Detector must stay silent).</li>
+        </ul>
+        <div class="badge badge-accent" style="margin-top: 16px;">Evidence: scripts/train_baseline.py</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE: Metric Priority 0A ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header" style="max-width: 900px;">
+      <div class="eyebrow">Algorithmic Rationale · Step 0A</div>
+      <h2>Grounding tests in Historical Outages</h2>
+      <p class="lead">We didn't invent random test cases. We mapped our Multi-Root-Cause Injection framework directly to the Client's exact pain points from the last 3 months.</p>
+    </div>
+
+    <div class="grid grid-2" style="gap: 30px;">
+      <div class="card" style="border-left: 4px solid var(--brand-danger);">
+        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--text-muted); margin-bottom: 8px;">Client Brief (W11)</div>
+        <p style="font-style: italic; color: var(--text-primary); font-size: 1.05rem;">"RDS CPU bò lên 100% trong 90 phút..."</p>
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+          <div class="badge badge-danger">Test Vector 1</div>
+          <h3 style="margin-top: 8px;">CPU Exhaustion</h3>
+        </div>
+      </div>
+      
+      <div class="card" style="border-left: 4px solid var(--brand-danger);">
+        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--text-muted); margin-bottom: 8px;">Client Brief (W11)</div>
+        <p style="font-style: italic; color: var(--text-primary); font-size: 1.05rem;">"...trước khi connection pool exhaust."</p>
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+          <div class="badge badge-danger">Test Vector 2</div>
+          <h3 style="margin-top: 8px;">Connection Pool Leak</h3>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--brand-danger);">
+        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--text-muted); margin-bottom: 8px;">Client Brief (W11)</div>
+        <p style="font-style: italic; color: var(--text-primary); font-size: 1.05rem;">"Queue worker backlog âm thầm 6x..."</p>
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+          <div class="badge badge-danger">Test Vector 3</div>
+          <h3 style="margin-top: 8px;">Queue Backlog</h3>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--brand-danger);">
+        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--text-muted); margin-bottom: 8px;">Client Brief (W11)</div>
+        <p style="font-style: italic; color: var(--text-primary); font-size: 1.05rem;">"Memory leak dẫn đến OOM..."</p>
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+          <div class="badge badge-danger">Test Vector 4</div>
+          <h3 style="margin-top: 8px;">Memory Leak</h3>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 20px;">
+      <div class="card card-accent" style="padding: 10px 16px; display: inline-block; background: transparent; border-color: rgba(176,125,51,0.5);">
+        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">TF4_FORESIGHT_LEARNER.md (Client Brief W11)</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE: Metric Priority 0B1 ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header" style="max-width: 900px; margin-bottom: 20px;">
+      <div class="eyebrow">Algorithmic Rationale · Step 0B</div>
+      <h2>Visualizing the Lagging Trap</h2>
+      <p class="lead">Across all simulated historical outages, <strong>API Latency</strong> and <strong>Queue Depth</strong> consistently break bounds long before CPU or Memory.</p>
+    </div>
+
+    <div class="card" style="padding: 24px; background: #fff; max-width: 900px; margin: 0 auto;">
+      <img src="tf4-evidence/evidence/metric_priority_multi_root.png" alt="Multi-Root Cause Detection Times" style="width: 100%; border-radius: 6px; border: 1px solid rgba(176,125,51,0.2);">
+      <div style="text-align: center; margin-top: 16px; font-size: 0.9rem; color: var(--text-muted);">
+        Fig 1 — Detection timeline. Latency detects at minute 722, Memory only flags at 781.
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE: Metric Priority 0B2 ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header" style="max-width: 900px; margin-bottom: 20px;">
+      <div class="eyebrow">Algorithmic Rationale · Step 0B (Cont.)</div>
+      <h2>Metric Priority Assessment</h2>
+      <p class="lead">Ranking the metrics based on detection speed across all fault vectors.</p>
+    </div>
+
+    <div class="card" style="padding: 24px; background: #fff; max-width: 900px; margin: 0 auto;">
+      <img src="tf4-evidence/evidence/metric_priority_chart.png" alt="Metric Priority Chart" style="width: 100%; border-radius: 6px; border: 1px solid rgba(176,125,51,0.2);">
+      <div style="text-align: center; margin-top: 16px; font-size: 0.9rem; color: var(--text-muted);">
+        Fig 2 — Overall Metric Priority Score.
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE: Metric Priority 0C ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 900px;">
+    <div class="slide-header" style="margin-bottom: 20px;">
+      <div class="eyebrow">Algorithmic Rationale · Step 0C</div>
+      <h2>Mathematical Proof of Priority</h2>
+      <p class="lead">We aggregated detection ranks across all 4 root causes. The result completely ruled out CPU and Memory as viable early-warning signals.</p>
+    </div>
+
+    <div class="card card-accent" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+      <div class="diagram" style="white-space: pre-wrap; word-break: break-word; text-align: left; box-shadow: 0 10px 30px -10px rgba(176,125,51,0.15); font-size: 0.8rem; margin: 0;">
+<span style="color: var(--brand-accent); font-weight:bold; margin-bottom: 8px; display:block;">// evidence_metric_priority.json</span>
+{
+  "method": "Multi-root-cause injection: 4 different failure modes",
+  "circular_reasoning_fix": "Previous method injected only CPU drift. Now inject 4 independent root causes.",
+  "root_causes": [
+    { "root_cause": "CPU exhaustion" },
+    { "root_cause": "Memory leak" },
+    { "root_cause": "Queue backlog" },
+    { "root_cause": "Connection pool leak" }
+  ],
+  "average_rank": {
+    <span style="background:rgba(34,197,94,0.15); color:var(--brand-success); font-weight:700; padding:2px 6px; border-radius:4px;">"api_latency_ms": 1.0,</span>
+    <span style="background:rgba(34,197,94,0.15); color:var(--brand-success); font-weight:700; padding:2px 6px; border-radius:4px;">"queue_depth": 2.0,</span>
+    <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"cpu_usage_percent": 3.25,</span>
+    <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"memory_usage_percent": 3.75</span>
+  },
+  "final_rank": [
+    "api_latency_ms", "queue_depth", 
+    "cpu_usage_percent", "memory_usage_percent"
+  ],
+  "conclusion": "Across 4 root causes, api_latency_ms is #1 in 4/4 root causes."
+}</div>
+      <div class="card card-accent" style="padding: 10px 16px; align-self: flex-start; background: transparent; border-color: rgba(176,125,51,0.5);">
+        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">evidence_metric_priority.json</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+
+
+
+
+
+<!-- ========== SLIDE 12c-1 — Algorithm: STL ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Algorithmic Rationale · Step 1</div>
+      <h2>De-seasonalise: STL Decomposition</h2>
+      <p class="lead">If we use static thresholds, daytime traffic peaks will trigger false alarms.</p>
+    </div>
+    <div class="two-col" style="align-items: center;">
+      <div>
+        <h3 style="margin-bottom: 16px; color: var(--brand-accent);">Stripping the Day/Night Cycle</h3>
+        <p style="margin-bottom: 16px; color: var(--text-secondary); line-height: 1.6;">
+          Infrastructure metrics naturally rise during business hours (e.g., 09:00-11:00) and fall at night. A simple threshold would constantly fire false alerts during peak load.
+        </p>
+        <p style="margin-bottom: 24px; color: var(--text-secondary); line-height: 1.6;">
+          <strong>STL (Seasonal and Trend decomposition using Loess)</strong> mathematically extracts this daily pattern offline. When running in production, we subtract the expected pattern from the live signal, leaving only the "raw residual truth" to be scanned for anomalies.
+        </p>
+        <div class="card card-accent" style="padding: 12px 16px; display: inline-block;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">evidence_seasonality.json</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="card" style="padding: 10px; background: #fff;">
+          <img src="tf4-evidence/evidence/service_payment-gw_profile.png" alt="Payment-GW STL Profile" style="width: 100%; border-radius: 6px;">
+          <div style="text-align: center; margin-top: 6px; font-size: 0.7rem; color: var(--text-muted);">Payment-GW: Peak at 10:00</div>
+        </div>
+        <div class="grid grid-2" style="gap: 8px;">
+          <div class="card" style="padding: 8px; background: #fff;">
+            <img src="tf4-evidence/evidence/service_fraud-detector_profile.png" alt="Fraud-Detector STL Profile" style="width: 100%; border-radius: 4px;">
+            <div style="text-align: center; margin-top: 4px; font-size: 0.65rem; color: var(--text-muted);">Fraud-Detector: Peak at 13:00</div>
+          </div>
+          <div class="card" style="padding: 8px; background: #fff;">
+            <img src="tf4-evidence/evidence/service_ledger_profile.png" alt="Ledger STL Profile" style="width: 100%; border-radius: 4px;">
+            <div style="text-align: center; margin-top: 4px; font-size: 0.65rem; color: var(--text-muted);">Ledger: Peak at 01:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 12c-2 — Algorithm: EWMA ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Algorithmic Rationale · Step 2</div>
+      <h2>Detect: The EWMA Radar</h2>
+      <p class="lead">A memory leak isn't a sudden spike; it's a slow, creeping death.</p>
+    </div>
+    <div class="two-col" style="align-items: center;">
+      <div class="card" style="padding: 16px; background: #fff;">
+        <img src="tf4-evidence/evidence/scenario_memory_leak.png" alt="EWMA Memory Leak Detection" style="width: 100%; border-radius: 6px;">
+        <div style="text-align: center; margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
+          Fig: Drift detected at min 734, SLA breached at min 840.
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom: 16px; color: var(--brand-accent);">Catching Sustained Drift</h3>
+        <p style="margin-bottom: 16px; color: var(--text-secondary); line-height: 1.6;">
+          Instead of reacting to a single noisy CPU spike (which could just be a temporary garbage-collection pause), we scan the STL residuals using an <strong>EWMA (Exponentially Weighted Moving Average)</strong> control chart.
+        </p>
+        <p style="margin-bottom: 24px; color: var(--text-secondary); line-height: 1.6;">
+          EWMA acts as a low-pass filter. It accumulates small, consistent deviations over time, catching sustained drift early with a <strong>106-minute lead time</strong>. Tests prove it is highly resilient to high-variance telemetry, maintaining a <strong>&lt;1% False Positive Rate</strong> (0.004) under severe Gaussian noise (std=20).
+        </p>
+        <div style="display: flex; gap: 12px;">
+          <div class="card card-accent" style="padding: 10px 14px; background: transparent; border-color: rgba(176,125,51,0.5);">
+            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Lead Time Proof</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-primary);">evidence_lead_time.json</div>
+          </div>
+          <div class="card card-accent" style="padding: 10px 14px; background: transparent; border-color: rgba(176,125,51,0.5);">
+            <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Noise Robustness</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-primary);">evidence_noisy_baseline.json</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 12c-3 — Algorithm: A/B Test ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Algorithmic Defense</div>
+      <h2>Why Statistical won over Machine Learning</h2>
+      <p class="lead">We evaluated Isolation Forest (ML) against STL+EWMA on our holdout data. The results forced our hand.</p>
+    </div>
+    <div class="two-col" style="align-items: center;">
+      <div>
+        <h3 style="margin-bottom: 16px; color: var(--brand-accent);">The False Positive Problem</h3>
+        <p style="margin-bottom: 16px; color: var(--text-secondary); line-height: 1.6;">
+          Machine Learning models like <strong>Isolation Forest</strong> treat time-series data without intrinsic knowledge of seasonality. In our holdout tests, it triggered false alarms on perfectly normal daytime traffic peaks.
+        </p>
+        <p style="margin-bottom: 24px; color: var(--text-secondary); line-height: 1.6;">
+          By explicitly de-seasonalising the data first (STL) and scanning for sustained drift (EWMA), our Statistical Engine outperformed the ML approach in both <strong>Catch Rate (Recall)</strong> and <strong>Safety (False Positives)</strong>.
+        </p>
+        <div class="card card-accent" style="padding: 12px 16px; display: inline-block;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">evidence_algorithm_comparison.json</div>
+        </div>
+      </div>
+      <div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+        <img src="tf4-evidence/evidence/algorithm_comparison.png" alt="Algorithm Comparison Chart" style="width: 100%; border-radius: 6px; border: 1px solid rgba(176,125,51,0.2);">
+        <div class="grid grid-2" style="gap: 12px;">
+          <div style="background: rgba(168,67,46,0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(168,67,46,0.2);">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">Isolation Forest</div>
+            <div style="font-family: 'JetBrains Mono'; font-size: 1.4rem; font-weight: bold; color: var(--brand-danger);">21.4% FP</div>
+            <div style="font-size: 0.75rem; color: var(--brand-danger); margin-top: 4px;">Failed ≤12% gate</div>
+          </div>
+          <div style="background: rgba(34,197,94,0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(34,197,94,0.3);">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">STL + EWMA</div>
+            <div style="font-family: 'JetBrains Mono'; font-size: 1.4rem; font-weight: bold; color: var(--brand-success);">7.1% FP</div>
+            <div style="font-size: 0.75rem; color: var(--brand-success); margin-top: 4px;">Safely passed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ALGORITHMIC RATIONALE</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 12d — Storytelling: Never Act Alone ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Algorithmic Rationale · Governance</div>
+      <h2>An Advisor, Not an Autonomous Actor</h2>
+      <p class="lead">SREs fundamentally distrust "black-box" AI restarting their production servers.</p>
+    </div>
+    <div class="two-col">
+      <div>
+        <p style="margin-bottom: 16px; color: var(--text-secondary);">
+          We deliberately chose to abandon "Auto-Remediation". Foresight Lens acts strictly as a <strong>Predictive Advisor</strong>. We deliver the warning; the CDO platform retains the sole authority to execute the scale-up.
+        </p>
+        <p style="color: var(--text-secondary);">
+          To enforce this, we implemented strict <strong>Confidence Gating</strong>. If the engine's Brier-calibrated confidence score drops below 0.7, the recommendation is forcefully downgraded to <code>INVESTIGATE</code>.
+        </p>
+      </div>
+      <div class="card card-accent">
+        <h3 style="color: var(--brand-accent);">Evidence: <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8em;">evidence_confidence_threshold.json</span></h3>
+        <ul class="bullets" style="margin-top: 12px;">
+          <li><strong>Operating Point:</strong> EWMA α=0.3, K=4.0</li>
+          <li><strong>Brier Score:</strong> <strong style="color: var(--brand-accent);">0.049</strong> <em>(Score < 0.25 indicates excellent probability calibration)</em></li>
+          <li><strong>Result:</strong> We only issue a <code>SCALE_UP</code> command when the mathematical probability of exhaustion is overwhelmingly high, preserving SRE trust.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>AI GOVERNANCE</span>
+  </div>
+</section>
+
+<!-- ========== Section Divider: Engineering & Validation ========== -->
+<section class="slide slide-divider">
+  <div class="section-number">06</div>
+  <div class="section-label">Engineering & Validation</div>
+  <h2>Architected for <span class="gradient-text">production trust</span></h2>
+  <p class="lead">Every layer — from API contracts to cost guardrails — is backed by measurable evidence.</p>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ENGINEERING</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 13 — Architecture ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Architecture</div>
+      <h2>Unidirectional Data Flow & Stateless Processing</h2>
+      <p class="lead">Microservices strictly decoupled via HTTP API. Latency < 5ms via NumPy in-memory vectorization.</p>
+    </div>
+    <div class="grid grid-3" style="margin-top: 32px;">
+      <div class="card">
+        <h3>Phase 1: Edge & Validation</h3>
+        <ul class="bullets">
+          <li><strong>Edge Auth:</strong> Private API Gateway (AWS_IAM) enforces SigV4 signature.</li>
+          <li><strong>Strict Typing:</strong> Pydantic rejects HTTP 422 if timestamps aren't RFC3339.</li>
+          <li><strong>Multi-tenant Routing:</strong> Validation via X-Tenant-Id header.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Phase 2: Core Processing</h3>
+        <ul class="bullets">
+          <li><strong>Stateless Scoping:</strong> Context garbage-collected post-request to prevent data bleed.</li>
+          <li><strong>STL Decomposition:</strong> Offline-trained baseline extracts seasonality.</li>
+          <li><strong>EWMA Control Chart:</strong> Scans trend residuals for slow drift.</li>
+        </ul>
+      </div>
+      <div class="card card-accent">
+        <h3>Phase 3: Governance & Audit</h3>
+        <ul class="bullets">
+          <li><strong>Confidence Gating:</strong> Scored via Brier. < 0.7 downgrades to INVESTIGATE.</li>
+          <li><strong>Hash Integrity:</strong> Input payload hashed (SHA-256) before KMS-encrypted audit.</li>
+          <li><strong>Actionable Output:</strong> Action verb, target, and evidence link.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ARCHITECTURE</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE 14 — Contracts ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Contracts</div>
+      <h2>Strict API Boundaries & Stable Interfaces</h2>
+      <p class="lead">Protecting system integrity by separating telemetry collection from decision reasoning.</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3 style="margin-bottom: 12px;">01 · Telemetry Contract</h3>
+        <div class="diagram">
+// 120-min rolling window
+{
+  "tenant_id": "payment-core",
+  "resolution": "1-minute",
+  "gauges": ["cpu", "mem"]
+}</div>
+        <p style="margin-top: 12px; font-size: 0.8rem;"><strong>Imputation strictly enforced.</strong> Missing data yields immediate HTTP 400 Bad Request.</p>
+      </div>
+      <div class="card card-accent">
+        <h3 style="margin-bottom: 12px;">02 · AI API (Additive v1.1)</h3>
+        <div class="diagram">
+// POST /v1/predict
+{
+  "sla": "p99 < 500ms",
+  "responses": {
+    "200": "Recommendation",
+    "422": "Schema Violation",
+    "503": "Fail Open"
+  }
+}</div>
+        <p style="margin-top: 12px; font-size: 0.8rem;"><strong>Unit Normalization:</strong> Handled unit discrepancies (e.g., ms vs us) at the boundary via Pydantic mapping.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom: 12px;">03 · Deployment Contract</h3>
+        <div class="diagram">
+// aws_ecs.yml
+{
+  "compute": "Fargate",
+  "scaling": "min 2 / max 4",
+  "circuit_breaker": {
+    "max_cost": "$200/mo"
+  }
+}</div>
+        <p style="margin-top: 12px; font-size: 0.8rem;"><strong>Stateless Resilience:</strong> Deployed on multi-AZ ECS Fargate for high availability and automatic recovery.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>CONTRACTS</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE 15 — Evaluation ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Validation</div>
+      <h2>Statistical Rigor & Holdout Evaluation</h2>
+      <p class="lead">Measured on 790 windows across 3 tier-1 services with 4 injected drift scenarios + FP traps.</p>
+    </div>
+    <div class="grid grid-4" style="margin-bottom: 24px;">
+      <div class="card card-accent" style="text-align: center;">
+        <div class="card-number">0.971</div>
+        <div class="card-label">Catch Rate (Recall)</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">95% CI: [0.935, 0.988]<br>TP / (TP + FN)</p>
+      </div>
+      <div class="card card-accent" style="text-align: center;">
+        <div class="card-number">7.1<span style="font-size:0.5em">%</span></div>
+        <div class="card-label">False Positive Rate</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">95% CI: [5.3%, 9.4%]<br>Client Gate: ≤ 12%</p>
+      </div>
+      <div class="card" style="text-align: center;">
+        <div class="card-number">106</div>
+        <div class="card-label">Minutes Lead Time</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">Synthetic slow-drift.<br>Client Gate: ≥ 15 min</p>
+      </div>
+      <div class="card" style="text-align: center;">
+        <div class="card-number">0.049</div>
+        <div class="card-label">Brier Score</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">Well-calibrated confidence.<br>Precision: 0.793</p>
+      </div>
+    </div>
+
+    <div class="grid grid-3" style="margin-top: 16px;">
+      <div class="card" style="text-align: center; padding: 12px;">
+        <h3 style="font-size: 0.85rem; color: var(--brand-accent);">Payment-GW</h3>
+        <p style="font-size: 0.78rem;">TP 58 · FP 13 · FN 0 · TN 193</p>
+      </div>
+      <div class="card" style="text-align: center; padding: 12px;">
+        <h3 style="font-size: 0.85rem; color: var(--brand-accent);">Fraud-Detector</h3>
+        <p style="font-size: 0.78rem;">TP 56 · FP 15 · FN 2 · TN 191</p>
+      </div>
+      <div class="card" style="text-align: center; padding: 12px;">
+        <h3 style="font-size: 0.85rem; color: var(--brand-accent);">Ledger</h3>
+        <p style="font-size: 0.78rem;">TP 55 · FP 16 · FN 3 · TN 190</p>
+      </div>
+    </div>
+    <div class="card card-accent" style="padding: 10px 16px; margin-top: 12px; display: inline-block; background: transparent; border-color: rgba(176,125,51,0.5);">
+      <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">evidence_algorithm_evaluation.json</div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>VALIDATION</span>
+  </div>
+</section>
+
+
+
+<!-- ========== SLIDE: Load Test ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 1000px;">
+    <div class="slide-header">
+      <div class="eyebrow">Performance Validation</div>
+      <h2>Load Test: 400 RPS with Zero Errors</h2>
+      <p class="lead">We stress-tested the engine at 4× the SLA target. Result: p99 latency under 5ms, 100% success rate.</p>
+    </div>
+    <div class="grid grid-4" style="margin-bottom: 24px;">
+      <div class="card card-accent" style="text-align: center;">
+        <div class="card-number">100</div>
+        <div class="card-label">RPS SLA Target</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">3,000 requests · 30s</p>
+      </div>
+      <div class="card card-accent" style="text-align: center;">
+        <div class="card-number">4.01<span style="font-size:0.5em">ms</span></div>
+        <div class="card-label">p99 Latency</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">SLA gate: < 500ms ✓</p>
+      </div>
+      <div class="card" style="text-align: center;">
+        <div class="card-number">400</div>
+        <div class="card-label">RPS Capacity Probe</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">6,000 requests · 15s</p>
+      </div>
+      <div class="card" style="text-align: center;">
+        <div class="card-number">2.71<span style="font-size:0.5em">ms</span></div>
+        <div class="card-label">p99 at 400 RPS</div>
+        <p style="font-size: 0.7rem; margin-top:8px;">Zero errors at 4× load</p>
+      </div>
+    </div>
+    <div class="diagram" style="white-space: pre-wrap; word-break: break-word; text-align: left; box-shadow: 0 10px 30px -10px rgba(176,125,51,0.15);">
+<span style="color: var(--brand-accent); font-weight:bold; margin-bottom: 8px; display:block;">// evidence_load_test.json (excerpt)</span>
+{
+  "phase1_sla": {
+    "target_rps": 100, "requests_sent": 3000,
+    <span style="background:rgba(34,197,94,0.15); color:var(--brand-success); font-weight:700; padding:2px 6px; border-radius:4px;">"success_rate": 1.0,</span>
+    "latency_ms": { "p50": 2.78, "p95": 3.53, <span style="background:rgba(34,197,94,0.15); color:var(--brand-success); font-weight:700; padding:2px 6px; border-radius:4px;">"p99": 4.01</span> }
+  },
+  "phase2_capacity_probe": {
+    "target_rps": 400, "requests_sent": 6000,
+    <span style="background:rgba(34,197,94,0.15); color:var(--brand-success); font-weight:700; padding:2px 6px; border-radius:4px;">"success_rate": 1.0,</span>
+    "latency_ms": { "p50": 1.7, "p95": 1.98, <span style="background:rgba(34,197,94,0.15); color:var(--brand-success); font-weight:700; padding:2px 6px; border-radius:4px;">"p99": 2.71</span> }
+  },
+  "overall_pass": true
+}</div>
+    <div class="card card-accent" style="padding: 10px 16px; margin-top: 16px; display: inline-block; background: transparent; border-color: rgba(176,125,51,0.5);">
+      <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">evidence_load_test.json</div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>VALIDATION</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 16 — Cost Model ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">FinOps</div>
+      <h2>Flat-Rate Serverless Economics</h2>
+      <p class="lead">Rejecting LLM per-token pricing in favor of in-house statistical compute.</p>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card card-accent" style="margin-bottom: 20px;">
+          <h3 style="font-size: 2rem; margin-bottom: 4px;">$53<span style="font-size: 1rem; color: var(--text-secondary);"> / month</span></h3>
+          <p>Total TCO — 26.5% of the $200 limit.</p>
+        </div>
+        <div class="grid grid-2">
+          <div class="card" style="text-align: center; padding: 16px;">
+            <div class="card-number" style="font-size: 2rem;">$0</div>
+            <div class="card-label">Inference Tokens</div>
+          </div>
+          <div class="card" style="text-align: center; padding: 16px;">
+            <div class="card-number" style="font-size: 2rem;">< $1</div>
+            <div class="card-label">Marginal Cost / Tenant</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="height: 100%;">
+        <h3>Cost Breakdown</h3>
+        <ul class="bullets" style="margin-top: 16px;">
+          <li><strong>ECS Fargate (~$36):</strong> Flat billing by task-second, NOT request volume. Min 2 / Max 4 tasks auto-scale.</li>
+          <li><strong>Internal ALB (~$16):</strong> Base hourly + LCU.</li>
+          <li><strong>Private API Gateway (~$0):</strong> Within AWS free tier for demo volumes.</li>
+          <li><strong>S3 & KMS (~$1):</strong> Baseline JSON storage and audit log encryption.</li>
+        </ul>
+        <p style="margin-top: 16px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 12px;">
+          <strong>Strategic Advantage:</strong> Decoupled from expensive SIEM platforms and unpredictable GenAI API token spikes.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>FINOPS</span>
+  </div>
+</section>
+
+
+
+<!-- ========== SLIDE: Onboarding ========== -->
+<section class="slide">
+  <div class="slide-content" style="max-width: 900px;">
+    <div class="slide-header">
+      <div class="eyebrow">Operability</div>
+      <h2>28-Minute Service Onboarding</h2>
+      <p class="lead">From zero to fully-operational per-service baseline in under 30 minutes.</p>
+    </div>
+    <div class="flow" style="margin-bottom: 30px;">
+      <div class="flow-step" style="padding: 14px 20px;">
+        <div style="font-weight: 700; color: var(--brand-accent);">Register</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">~5 min</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="padding: 14px 20px;">
+        <div style="font-weight: 700; color: var(--brand-accent);">Load 7d Data</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">~10 min</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="padding: 14px 20px;">
+        <div style="font-weight: 700; color: var(--brand-accent);">Train Baseline</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">~10 min</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="padding: 14px 20px;">
+        <div style="font-weight: 700; color: var(--brand-accent);">Validate</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">~3 min</div>
+      </div>
+    </div>
+    <div class="diagram" style="white-space: pre-wrap; word-break: break-word; text-align: left; box-shadow: 0 10px 30px -10px rgba(176,125,51,0.15);">
+<span style="color: var(--brand-accent); font-weight:bold; margin-bottom: 8px; display:block;">// evidence_onboarding.json</span>
+{
+  "steps": {
+    "register": "~5 minutes (manual input + config gen)",
+    "load_7d_data": "~10 minutes (read 30K data points from S3/TSDB)",
+    "train_baseline": "~10 minutes (STL decomposition + EWMA baseline)",
+    "validate": "~3 minutes (run test predictions + check results)"
+  },
+  <span style="background:rgba(176,125,51,0.2); color:#A8432E; font-weight:700; padding:2px 6px; border-radius:4px;">"total_estimated": "28-30 minutes per service"</span>
+}</div>
+    <div class="card card-accent" style="padding: 10px 16px; margin-top: 16px; display: inline-block; background: transparent; border-color: rgba(176,125,51,0.5);">
+      <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Evidence Reference</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-primary);">evidence_onboarding.json</div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>OPERABILITY</span>
+  </div>
+</section>
+
+<!-- ========== SLIDE 17 — Safety Guardrails ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">AI Governance</div>
+      <h2>Security-by-Design & Defense in Depth</h2>
+      <p class="lead">GenAI risks (Prompt Injection, Hallucination) are mathematically impossible in a statistical engine.</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>01 · Deterministic Output</h3>
+        <p>Same JSON in, same output out. Reproducible mathematical execution with zero hallucination.</p>
+      </div>
+      <div class="card">
+        <h3>02 · Confidence Gating</h3>
+        <p>Hardcoded safety logic: <code>if confidence < 0.7</code> → downgrade to INVESTIGATE.</p>
+      </div>
+      <div class="card">
+        <h3>03 · Traceable Audit</h3>
+        <p>SHA-256 hash of input payloads written to KMS-encrypted JSONL for SIEM queryability.</p>
+      </div>
+      <div class="card card-accent">
+        <h3>04 · Fail-Open Degrade</h3>
+        <p>Engine outage triggers CDO fallback to rules. Stateless design allows instant ECS restart (<strong>RTO < 60s</strong>).</p>
+      </div>
+      <div class="card">
+        <h3>05 · Context Isolation</h3>
+        <p>Stateless Per-Request Scoping + Mandatory X-Tenant-Id validation absolutely prevents data bleed.</p>
+      </div>
+      <div class="card">
+        <h3>06 · DoS Protection</h3>
+        <p>Pydantic enforces max 10,000 datapoints. API Gateway applies 600 req/min/tenant limit.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>AI GOVERNANCE</span>
+  </div>
+</section>
+
+
+
+
+<!-- ========== SLIDE 18 — Architecture Decision Records ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Trade-offs</div>
+      <h2>Architecture Decision Records (ADRs)</h2>
+      <p class="lead">Documenting our core architectural decisions, trade-offs, and parameter selection.</p>
+    </div>
+    <div class="grid grid-3" style="gap: 20px;">
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 0.95rem; color: var(--brand-accent);">ADR-001: Statistical vs LLM</h3>
+        <p style="font-size: 0.82rem; margin-top: 8px;"><strong>Chosen:</strong> STL + EWMA.<br><strong>Rationale:</strong> Bedrock latency (seconds) and monthly costs ($10k+) made GenAI unviable. Statistical engine guarantees mathematical accuracy and $0 token cost.</p>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 0.95rem; color: var(--brand-accent);">ADR-002: Confidence Threshold</h3>
+        <p style="font-size: 0.82rem; margin-top: 8px;"><strong>Chosen:</strong> 0.7 Gate.<br><strong>Rationale:</strong> Balances recall with Alert Fatigue. Weak signals (<0.7) are automatically downgraded to INVESTIGATE to prevent accidental scale-up triggers.</p>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 0.95rem; color: var(--brand-accent);">ADR-003: Flash Sales Silence</h3>
+        <p style="font-size: 0.82rem; margin-top: 8px;"><strong>Chosen:</strong> Manual Silence.<br><strong>Rationale:</strong> Unpredictable spikes during planned campaigns (e.g. Black Friday) will trigger alerts. SREs can manually silence/retrain baselines for these events.</p>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 0.95rem; color: var(--brand-accent);">ADR-004: STL vs Isolation Forest</h3>
+        <p style="font-size: 0.82rem; margin-top: 8px;"><strong>Chosen:</strong> STL + EWMA.<br><strong>Rationale:</strong> ML model (Isolation Forest) yielded 21.4% FP rate on holdout data. De-seasonalising first using STL reduced the FP rate to 7.1%.</p>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 0.95rem; color: var(--brand-accent);">ADR-005: Baseline Refresh</h3>
+        <p style="font-size: 0.82rem; margin-top: 8px;"><strong>Chosen:</strong> Weekly Refresh.<br><strong>Rationale:</strong> Baseline trained manually using offline script. Refresh triggered weekly (every Monday morning) or when Brier score degrades.</p>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 0.95rem; color: var(--brand-accent);">ADR-006: EWMA Tuning</h3>
+        <p style="font-size: 0.82rem; margin-top: 8px;"><strong>Chosen:</strong> α=0.3, K=4.0.<br><strong>Rationale:</strong> 16-point sweep optimized detection. K=3.0 triggered 17.5% FP rate (failed gate); K=4.0 kept FP at 7.1% while maintaining 97.1% recall.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>ADRS</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE 19 — Closing ========== -->
+<section class="slide slide-closing slide-title">
+  <div class="eyebrow">Achievements</div>
+  <h2>Surpassed all stringent Client requirements,<br><span class="gradient-text">exceeding expectations</span></h2>
+  <p class="lead">A fully robust FastAPI engine deployed on Fargate, backed by 100% reproducible evidence — ready for the W12 Final Pitch.</p>
+  <div class="grid grid-4" style="margin-top: clamp(20px,3vh,36px); width: 100%; max-width: 800px;">
+    <div class="card" style="text-align:center;">
+      <div class="card-number">~$53</div>
+      <div class="card-label">26.5% Budget</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="card-number">3</div>
+      <div class="card-label">executed contracts</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="card-number">9/9</div>
+      <div class="card-label">tests completely passed</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="card-number">106 min</div>
+      <div class="card-label">lead time</div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>SUMMARY</span>
+  </div>
+</section>
+
+
+<!-- ========== SLIDE 20 — Appendix ========== -->
+<section class="slide">
+  <div class="slide-content">
+    <div class="slide-header">
+      <div class="eyebrow">Appendix</div>
+      <h2>Backup Slides (For Q&A)</h2>
+    </div>
+    <div class="grid grid-3">
+      <!-- Left: EWMA Parameter Review -->
+      <div class="card">
+        <h3>EWMA Parameter Tuning</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>α</th>
+              <th>K</th>
+              <th>FP%</th>
+              <th>Recall</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0.3</td>
+              <td>3.0</td>
+              <td>17.5</td>
+              <td>.977</td>
+            </tr>
+            <tr style="font-weight:700;">
+              <td>0.3</td>
+              <td>4.0</td>
+              <td>7.1</td>
+              <td>.971</td>
+            </tr>
+            <tr>
+              <td>0.3</td>
+              <td>4.5</td>
+              <td>6.5</td>
+              <td>.966</td>
+            </tr>
+            <tr>
+              <td>0.15</td>
+              <td>4.0</td>
+              <td>11.8</td>
+              <td>.977</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Middle: Telemetry signals -->
+      <div class="card">
+        <h3>Telemetry · 7 Signals</h3>
+        <ul class="bullets">
+          <li><code>cpu_usage_percent</code></li>
+          <li><code>memory_usage_percent</code></li>
+          <li><code>api_latency_ms</code></li>
+          <li><code>queue_depth</code></li>
+          <li><code>active_connections</code></li>
+          <li><code>db_connection_pool_pct</code></li>
+          <li><code>cache_hit_rate_pct</code></li>
+        </ul>
+        <p style="margin-top:10px; font-size:0.78rem; color:var(--text-muted);">4 utilizing baseline · 3 falling back to z-score</p>
+      </div>
+      <!-- Right: API Error Codes -->
+      <div class="card">
+        <h3>API Error Codes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>400</code></td>
+              <td>Bad request — Invalid payload format</td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>Unauthorized — Missing API key</td>
+            </tr>
+            <tr>
+              <td><code>422</code></td>
+              <td>Validation error — Invalid schema</td>
+            </tr>
+            <tr>
+              <td><code>429</code></td>
+              <td>Rate limited — Exceeded tenant quota</td>
+            </tr>
+            <tr>
+              <td><code>503</code></td>
+              <td>Service unavailable — Fail-open triggered</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span>TF4 FORESIGHT LENS</span>
+    <span>APPENDIX</span>
+  </div>
+</section>
+
+
+<script>
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.current = 0;
+    this.total = this.slides.length;
+    document.getElementById('counter').innerHTML = `<strong>01</strong> / ${String(this.total).padStart(2, '0')}`;
+    this.buildNavDots();
+    this.bindEvents();
+    this.observe();
+  }
+  buildNavDots() {
+    const nav = document.getElementById('navDots');
+    this.slides.forEach((s, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => this.scrollTo(i));
+      nav.appendChild(dot);
+    });
+  }
+  bindEvents() {
+    document.addEventListener('keydown', e => {
+      if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
+        e.preventDefault(); this.scrollTo(Math.min(this.current + 1, this.total - 1));
+      } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
+        e.preventDefault(); this.scrollTo(Math.max(this.current - 1, 0));
+      } else if (e.key === 'Home') this.scrollTo(0);
+      else if (e.key === 'End') this.scrollTo(this.total - 1);
+    });
+    document.addEventListener('scroll', () => {
+      const p = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      document.getElementById('progress').style.width = `${p * 100}%`;
+    });
+  }
+  observe() {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const idx = [...this.slides].indexOf(e.target);
+          this.current = idx;
+          document.getElementById('counter').innerHTML = `<strong>${String(idx + 1).padStart(2, '0')}</strong> / ${String(this.total).padStart(2, '0')}`;
+          document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+      });
+    }, { threshold: 0.5 });
+    this.slides.forEach(s => io.observe(s));
+  }
+  scrollTo(idx) { this.slides[idx].scrollIntoView({ behavior: 'smooth' }); }
+}
+document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+</script>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 {
-  "claim": "3 service (PaymentGW/FraudDetector/Ledger) có pattern CPU khác biệt rõ rệt",
+  "claim": "3 services (PaymentGW/FraudDetector/Ledger) exhibit distinctly different CPU patterns",
   "scope_note": "Scoped to the 3 delivered tier-1 services (baseline + eval data shipped). Reproducible from evidence/data_*.csv via scripts/analyze_pattern_diversity.py.",
   "tests": {
     "anova": {
@@ -91,6 +91,6 @@
       "ledger": 2
     }
   },
-  "conclusion": "ANOVA: F=3234.5, p=0.00e+00 -> 3 services có mean KHÁC NHAU (p<0.05) | Kruskal-Wallis: H=2150.4, p=0.00e+00 -> phân phối KHÁC NHAU (p<0.05) | KS test: 3/3 cặp significantly different (p<0.01) | Cross-correlation: 2/3 cặp có correlation < 0.3 | Peak hours: 3 giờ khác nhau (9h, 18h, 23h)",
+  "conclusion": "ANOVA: F=3234.5, p=0.00e+00 -> 3 services have SIGNIFICANTLY DIFFERENT means (p<0.05) | Kruskal-Wallis: H=2150.4, p=0.00e+00 -> distributions are DIFFERENT (p<0.05) | KS test: 3/3 pairs significantly different (p<0.01) | Cross-correlation: 2/3 pairs have correlation < 0.3 | Peak hours: 3 distinct peak hours (9h, 18h, 23h)",
   "verdict": "PASS — 3 services ARE genuinely different. Evidence is statistical, not anecdotal."
 }

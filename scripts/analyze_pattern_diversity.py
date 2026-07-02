@@ -100,7 +100,7 @@ def main():
 
     names = ", ".join(f"{peak[s]['max_hour']}h" for s in SERVICES)
     result = {
-        "claim": f"3 service ({'/'.join(LABEL[s] for s in SERVICES)}) có pattern CPU khác biệt rõ rệt",
+        "claim": f"3 services ({'/'.join(LABEL[s] for s in SERVICES)}) exhibit distinctly different CPU patterns",
         "scope_note": "Scoped to the 3 delivered tier-1 services (baseline + eval data shipped). "
                       "Reproducible from evidence/data_*.csv via scripts/analyze_pattern_diversity.py.",
         "tests": {
@@ -123,11 +123,11 @@ def main():
             "hierarchical_clustering": clustering,
         },
         "conclusion": (
-            f"ANOVA: F={round(float(f_stat), 1)}, p={f_p:.2e} -> 3 services có mean KHÁC NHAU (p<0.05) | "
-            f"Kruskal-Wallis: H={round(float(h_stat), 1)}, p={h_p:.2e} -> phân phối KHÁC NHAU (p<0.05) | "
-            f"KS test: {ks_sig}/{n_pairs} cặp significantly different (p<0.01) | "
-            f"Cross-correlation: {xcorr_low}/{n_pairs} cặp có correlation < 0.3 | "
-            f"Peak hours: {distinct_peak_hours} giờ khác nhau ({names})"
+            f"ANOVA: F={round(float(f_stat), 1)}, p={f_p:.2e} -> 3 services have SIGNIFICANTLY DIFFERENT means (p<0.05) | "
+            f"Kruskal-Wallis: H={round(float(h_stat), 1)}, p={h_p:.2e} -> distributions are DIFFERENT (p<0.05) | "
+            f"KS test: {ks_sig}/{n_pairs} pairs significantly different (p<0.01) | "
+            f"Cross-correlation: {xcorr_low}/{n_pairs} pairs have correlation < 0.3 | "
+            f"Peak hours: {distinct_peak_hours} distinct peak hours ({names})"
         ),
         "verdict": "PASS — 3 services ARE genuinely different. Evidence is statistical, not anecdotal.",
     }
