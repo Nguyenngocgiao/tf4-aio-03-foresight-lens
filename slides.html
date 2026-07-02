@@ -902,9 +902,15 @@
         <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
           With a calculated test statistic of <strong style="color: var(--brand-accent);">χ² = 13.9</strong>, the p-value is approximately <strong style="color: var(--brand-accent);">0.0002</strong>. We reject the null hypothesis H₀ at p &lt; 0.001. The superiority of our statistical approach is mathematically guaranteed and not a sampling artifact.
         </p>
-        <div class="card card-accent" style="padding: 12px 16px; display: inline-block;">
-          <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Hypothesis Test Formula</div>
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; color: var(--text-primary); font-weight: bold;">χ² = (|b - c| - 1)² / (b + c) ≈ 13.9</div>
+        <div class="card card-accent" style="padding: 12px 16px; display: inline-block; width: 100%;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--brand-accent); margin-bottom: 4px;">Hypothesis Test Calculation</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-primary); line-height: 1.45;">
+            χ² = (|b - c| - 1)² / (b + c)
+            <br>
+            χ² = (|146 - 88| - 1)² / (146 + 88)
+            <br>
+            χ² = 57² / 234 = 3249 / 234 = <strong>13.88</strong>
+          </div>
         </div>
       </div>
       
@@ -1292,29 +1298,29 @@
     </div>
     <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 24px;">
       <div class="card card-accent" style="text-align: center; padding: 16px 8px;">
-        <div class="card-number" style="font-size: 2.2rem;">0.971</div>
-        <div class="card-label" style="font-size: 0.7rem;">Recall (Catch)</div>
-        <p style="font-size: 0.65rem; margin-top:8px; line-height: 1.3;">95% CI: [0.935, 0.988]<br>Client Gate: &ge; 80%</p>
+        <div class="card-number" style="font-size: 2.0rem;">97.1<span style="font-size:0.5em">%</span></div>
+        <div class="card-label" style="font-size: 0.7rem; font-weight: bold;">Recall (Catch)</div>
+        <p style="font-size: 0.62rem; margin-top:8px; line-height: 1.45;">TP / (TP + FN)<br>169 / 174 = 0.971<br>95% CI: [0.935, 0.988]</p>
       </div>
       <div class="card card-accent" style="text-align: center; padding: 16px 8px;">
-        <div class="card-number" style="font-size: 2.2rem;">0.793</div>
-        <div class="card-label" style="font-size: 0.7rem;">Precision</div>
-        <p style="font-size: 0.65rem; margin-top:8px; line-height: 1.3;">95% CI: [0.734, 0.842]<br>F1-Score: 0.873</p>
+        <div class="card-number" style="font-size: 2.0rem;">79.3<span style="font-size:0.5em">%</span></div>
+        <div class="card-label" style="font-size: 0.7rem; font-weight: bold;">Precision</div>
+        <p style="font-size: 0.62rem; margin-top:8px; line-height: 1.45;">TP / (TP + FP)<br>169 / 213 = 0.793<br>95% CI: [0.734, 0.842]</p>
       </div>
       <div class="card card-accent" style="text-align: center; padding: 16px 8px;">
-        <div class="card-number" style="font-size: 2.2rem;">7.1<span style="font-size:0.5em">%</span></div>
-        <div class="card-label" style="font-size: 0.7rem;">False Positive Rate</div>
-        <p style="font-size: 0.65rem; margin-top:8px; line-height: 1.3;">95% CI: [5.3%, 9.4%]<br>Client Gate: &le; 12%</p>
+        <div class="card-number" style="font-size: 2.0rem;">7.1<span style="font-size:0.5em">%</span></div>
+        <div class="card-label" style="font-size: 0.7rem; font-weight: bold;">False Positive Rate</div>
+        <p style="font-size: 0.62rem; margin-top:8px; line-height: 1.45;">FP / (FP + TN)<br>44 / 618 = 0.071<br>95% CI: [0.053, 0.094]</p>
       </div>
       <div class="card" style="text-align: center; padding: 16px 8px;">
-        <div class="card-number" style="font-size: 2.2rem;">110</div>
-        <div class="card-label" style="font-size: 0.7rem;">Minutes Lead Time</div>
-        <p style="font-size: 0.65rem; margin-top:8px; line-height: 1.3;">Median: 110m (Min: 80m)<br>Samples: [80, 150...]</p>
+        <div class="card-number" style="font-size: 2.0rem;">110</div>
+        <div class="card-label" style="font-size: 0.7rem; font-weight: bold;">Minutes Lead Time</div>
+        <p style="font-size: 0.62rem; margin-top:8px; line-height: 1.45;">Median: 110 min<br>Min: 80 min (Gate: &ge; 15m)<br>Samples: [80, 150, 80...]</p>
       </div>
       <div class="card" style="text-align: center; padding: 16px 8px;">
-        <div class="card-number" style="font-size: 2.2rem;">0.0493</div>
-        <div class="card-label" style="font-size: 0.7rem;">Brier Score</div>
-        <p style="font-size: 0.65rem; margin-top:8px; line-height: 1.3;">BSS: 71.23%<br>UNC: 0.1714 | CAL: ~0</p>
+        <div class="card-number" style="font-size: 2.0rem;">0.0493</div>
+        <div class="card-label" style="font-size: 0.7rem; font-weight: bold;">Brier Score</div>
+        <p style="font-size: 0.62rem; margin-top:8px; line-height: 1.45;">(1/N)*&Sigma;(f_t - o_t)²<br>BSS = 1 - (BS/UNC)<br>BSS = 71.23% (UNC=0.1714)</p>
       </div>
     </div>
 
@@ -1947,7 +1953,13 @@ final-build/tests/test_api.py .........              [100%]
           </tbody>
         </table>
         <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45; border-top: 1px solid var(--border); padding-top: 8px;">
-          <strong>Brier Skill Score (BSS) = RES / UNC = 71.23%</strong>: Indicates that our model resolves 71.23% of the inherent uncertainty over a naive baseline forecaster that always predicts the base rate (p̅ ≈ 22%).
+          <strong>Brier Skill Score (BSS) Calculation:</strong>
+          <br>
+          BSS = 1 - (BS / BS_climatology) = 1 - (BS / UNC)
+          <br>
+          BSS = 1 - (0.0493 / 0.1714) = 1 - 0.2876 = <strong>71.23%</strong>
+          <br>
+          This indicates that our model resolves 71.23% of the inherent uncertainty over a naive baseline forecaster that always predicts the base rate (p̅ ≈ 22%).
         </div>
       </div>
     </div>
@@ -1982,18 +1994,22 @@ final-build/tests/test_api.py .........              [100%]
       </div>
       
       <div class="card" style="padding: 20px;">
-        <h3 style="color: var(--brand-accent); margin-bottom: 12px; font-size: 1rem;">Wilson Interval Formula & Roots</h3>
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text-primary); line-height: 1.5; background: var(--surface-card); padding: 12px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 12px; font-weight: bold;">
-          [l, u] = (p̂ + z² / 2n ∓ z * &radic;(p̂(1-p̂)/n + z² / 4n²)) / (1 + z² / n)
+        <h3 style="color: var(--brand-accent); margin-bottom: 12px; font-size: 1rem;">Wilson Interval Formula & Concrete Example</h3>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-primary); line-height: 1.4; background: var(--surface-card); padding: 10px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 12px; font-weight: bold;">
+          [l, u] = (p̂ + z²/2n ∓ z * &radic;(p̂(1-p̂)/n + z²/4n²)) / (1 + z²/n)
         </div>
-        <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 8px;">
-          This is derived by solving the quadratic inequality <code>|Z(p₀)| &le; z</code> for the true proportion <code>p₀</code>:
-        </p>
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45; background: rgba(0,0,0,0.02); padding: 8px; border-radius: 4px; border-left: 3px solid var(--brand-accent); margin-bottom: 12px;">
-          (1 + z²/n)p₀² - (2p̂ + z²/n)p₀ + p̂² &le; 0
+        <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 8px;">
+          <strong>Recall CI Calculation Example (z = 1.96, n = 174, p̂ = 0.971):</strong>
+          <ul style="padding-left: 15px; margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; list-style-type: decimal;">
+            <li>z²/2n = 1.96² / 348 ≈ 0.01104; Denominator = 1 + 1.96²/174 ≈ 1.02208</li>
+            <li>Center = (0.97126 + 0.01104) / 1.02208 ≈ 0.96108</li>
+            <li>Variance term = 1.96 * &radic;(0.97126*0.02874/174 + 1.96²/(4*174²)) ≈ 0.02658</li>
+            <li>Lower Limit = (0.98230 - 0.02658) / 1.02208 ≈ <strong>0.9345 (93.5%)</strong></li>
+            <li>Upper Limit = (0.98230 + 0.02658) / 1.02208 ≈ <strong>0.9877 (98.8%)</strong></li>
+          </ul>
         </div>
-        <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45; border-top: 1px solid var(--border); padding-top: 8px;">
-          <strong>Frequentist Certainty:</strong> Applied to our holdout, even the most pessimistic lower bounds (Recall &ge; 93.5%, FP Rate &le; 9.4%) comfortably clear all client requirements, ensuring our pass is statistically robust and not a point-estimate fluke.
+        <div style="font-size: 0.7rem; color: var(--text-secondary); line-height: 1.45; border-top: 1px solid var(--border); padding-top: 8px;">
+          Even the lower bound (Recall &ge; 93.5%, FPR &le; 9.4%) clears client gates, ensuring our pass is statistically robust.
         </div>
       </div>
     </div>
